@@ -8,7 +8,20 @@
 | Configuration $q$ | Joint Configuration | 机器人所有关节位置/角度组成的配置向量。 |
 | DOF | Degrees of Freedom | 可以独立改变的运动自由度数量。 |
 | Coordinate Frame | Coordinate Reference Frame | 表示位置、姿态和速度的参考坐标系；必须明确 frame tree。 |
-| SE(3) | Special Euclidean Group in 3D | 同时表示三维旋转和平移的刚体位姿空间。 |
+| SO(3) | Special Orthogonal Group in 3D | 三维合法旋转的集合；$R^\mathsf{T}R=I$ 且 $\det(R)=1$，只有 3 个旋转自由度。 |
+| SE(3) | Special Euclidean Group in 3D | 三维刚体位姿的集合；元素是包含 $R\in SO(3)$ 和 $p\in\mathbb{R}^3$ 的 $4\times4$ 齐次变换，有 6 个自由度。 |
+| 3D Rotation | Three-dimensional Rotation | $SO(3)$ 中的一个旋转；可用 Euler 角、旋转向量、四元数或旋转矩阵等不同参数化表示。 |
+| Rotation Vector | Axis-angle / Rotation Vector | 三维向量 $r=\theta u$；方向是旋转轴，长度是弧度角，通过 Rodrigues/指数映射得到 $SO(3)$。 |
+| Quaternion | Unit Quaternion | 用 4 个数表示三维旋转；必须满足单位范数，且 $q$ 与 $-q$ 表示同一旋转。ROS 2 消息字段顺序通常是 `x,y,z,w`。 |
+| 6D Rotation | 6D Continuous Rotation Representation | 用两个三维向量经正交化恢复 $3\times3$ 旋转矩阵；是 6 个表示数，不是 6 个旋转自由度，也不是 $SE(3)$ 位姿。 |
+| SE(3)-Equivariant | SE(3)-Equivariant Model | 输入整体经过刚体变换后，输出按相应的旋转/平移规则一起变换；例如向量输出 $v$ 变为 $Rv$。 |
+| SE(3)-Invariant | SE(3)-Invariant Model/Feature | 输入整体经过刚体变换后，输出保持不变；例如物体类别、点间距离或碰撞判定。 |
+| E(3) | Euclidean Group in 3D | 三维旋转、平移以及镜像反射的变换集合；相比 $SE(3)$ 还允许 $\det(R)=-1$ 的反射。 |
+| Irrep | Irreducible Representation | 群作用下不能再拆分的基本表示；在 $SO(3)$ 等变网络中常按阶数 $l$ 组织标量、向量和高阶特征。 |
+| Spherical Harmonics | Spherical Harmonic Basis | 定义在球面方向上的一组基函数；常用于把相对方向编码成可组合的旋转特征。 |
+| Equivariant Layer | Equivariant Neural Layer | 输入和输出按群表示变换的网络层；常用相对位置、标量门控、张量积或几何 attention 保持等变。 |
+| Equivariant Diffusion | Equivariant Diffusion / Score Model | 让加噪过程、噪声/score/速度预测和每一步去噪更新遵守同一群作用，使生成的动作或轨迹随坐标变换而变换。 |
+| Score | Score Function | $s_t(x)=\nabla_x\log p_t(x)$，扩散模型中描述带噪分布对输入的对数密度梯度；等变 score 会按向量表示变换。 |
 | FK | Forward Kinematics | 根据关节配置计算末端位姿，$x=f(q)$。 |
 | IK | Inverse Kinematics | 根据目标末端位姿求关节配置，需处理多解、限位和碰撞。 |
 | Jacobian | Geometric / Analytical Jacobian | 将关节速度映射为末端速度，$\dot{x}=J(q)\dot{q}$。 |
@@ -80,11 +93,20 @@
 | Decimation | Action Decimation | 一个策略动作保持的物理步数，常写为 policy_dt / physics_dt。 |
 | TF / tf2 | Transform Library | ROS 2 Humble 中带时间戳的坐标变换树与查询库；用于在 frame 之间转换位姿、点和向量。 |
 | rclpy | ROS 2 Python Client Library | ROS 2 Humble 的 Python 客户端库；提供 `Node`、参数、定时器、通信接口和 executor 调度，常用于编写 TF/传感器/控制节点。 |
+| Topic | ROS 2 Topic | ROS 2 中持续发布消息的一对多通信接口，常用于图像、关节状态、TF 和传感器数据。 |
+| Service | ROS 2 Service | ROS 2 中一次请求对应一次响应的短操作接口，适合复位、查询和触发操作。 |
+| Action | ROS 2 Action | ROS 2 中带反馈、可取消和最终结果的长任务接口，常用于轨迹执行和导航。 |
+| QoS | Quality of Service | ROS 2 消息传输策略，包括 reliability、durability、history、depth、deadline 和 lifespan；发布者与订阅者的关键 QoS 必须兼容。 |
+| OpenCV | Open Source Computer Vision Library | 计算机视觉库；ROS 2 中通常通过 `cv_bridge` 在 `sensor_msgs/Image` 与 `cv::Mat`/`numpy.ndarray` 之间转换。 |
+| cv_bridge | ROS OpenCV Bridge | ROS 2 图像消息与 OpenCV 图像之间的转换包，需与当前 ROS 2 发行版和 Python/C++ 环境匹配。 |
+| image_transport | ROS Image Transport | ROS 2 图像传输接口，统一处理 raw、compressed 等图像传输插件。 |
 | RViz 2 | ROS 2 Visualization Tool | ROS 2 Humble 的三维可视化与交互工具；订阅 topic 并通过 TF 显示机器人、传感器和 MoveIt 2 规划场景，本身不负责仿真或底层控制。 |
 | Planning Frame | Planning Frame | MoveIt 2 Humble 规划所使用的参考坐标系，目标位姿必须明确表达在哪个 frame 中。 |
 | Planning Scene | Planning Scene | MoveIt 2 Humble 保存机器人状态、障碍物、附着物体和碰撞规则的场景快照。 |
 | SRDF | Semantic Robot Description Format | 在 URDF 之上描述 MoveIt 2 Humble 语义信息的文件格式，例如 planning group、末端执行器和禁碰对。 |
 | ros2_control | ROS 2 Control | ROS 2 Humble 的硬件接口与控制器框架，MoveIt 2 通常通过轨迹控制器执行规划结果。 |
+| controller_manager | ros2_control Controller Manager | 管理硬件接口和控制器加载、配置、激活与切换的 ros2_control 节点。 |
+| rosbag2 | ROS 2 Bag | ROS 2 的消息记录与回放工具，用于复查时间同步、TF、传感器和控制器反馈；回放不等于重现真实硬件动力学。 |
 | Success Rate | Task Success Rate | 多次评测中满足成功判定的比例；需同时报告任务、初始条件和 seed。 |
 
 ## 容易混淆的概念
