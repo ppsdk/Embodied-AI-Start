@@ -26,6 +26,7 @@
 | 只想先看懂全貌       | [知识图谱](docs/knowledge-map.md) → [学习路线](docs/roadmap.md)                         | 只需阅读文档                                 |
 | 跑经典 RL            | [强化学习基础](docs/reinforcement-learning.md) → [MuJoCo 教程](docs/mujoco-tutorial.md) | Python、Gymnasium、MuJoCo                    |
 | 调试机器人坐标和规划 | [机器人学基础](docs/robotics.md)                                                      | Ubuntu 22.04、ROS 2 Humble、RViz 2、MoveIt 2 |
+| 实践 Piper 机械臂       | [Piper ROS Humble 实践](docs/robotics.md#13-piper-ros-humble从仿真到真实机械臂)             | Ubuntu 22.04、ROS 2 Humble；真机另需 USB-CAN |
 | 做 GPU 并行仿真或 RL | [Isaac Sim 教程](docs/isaac-sim-tutorial.md)                                          | NVIDIA 驱动、匹配版本的 Isaac Sim/Isaac Lab  |
 | 研究 VLA/WM/WAM      | [模型基础](docs/model-basics.md) → [论文清单](docs/papers.md)                           | 先读懂方法，再按项目 README 配环境           |
 

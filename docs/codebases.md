@@ -12,6 +12,7 @@
 | OpenPI       | Physical Intelligence 的 π0 / π0.5 开源实现与模型入口 | [GitHub](https://github.com/Physical-Intelligence/openpi) · [π0.5 Paper](https://arxiv.org/abs/2504.16054)                                          |
 | bimanual-vla | 双臂 VLA 真机部署入口与运行参考                         | [GitHub](https://github.com/SUNNYsyy2005/bimanual-vla)                                                                                             |
 | XPolicyLab   | 策略适配、服务化部署与跨 benchmark 评测接口             | [GitHub](https://github.com/XPolicyLab/XPolicyLab) · [Website](https://xpolicylab.github.io/) · [教程](xpolicylab-tutorial.md) |
+| Piper ROS    | AgileX Piper 机械臂的 ROS 2 Humble 驱动、URDF、MoveIt 2、Gazebo、MuJoCo 与 CAN 配置资源 | [GitHub humble](https://github.com/agilexrobotics/piper_ros/tree/humble) · [上游 README](https://github.com/agilexrobotics/piper_ros/blob/humble/README.MD) |
 
 ROS 2 Humble 的最小机器人学工程建议组合使用以下官方仓库，而不是寻找一个把 TF、RViz 2、MoveIt 2 和控制器全部揉在一起的仓库：
 

@@ -100,6 +100,130 @@ Python 项目可以在虚拟环境中安装纯 Python 依赖，但不要随意�
 
 - [鱼香 ROS 社区论坛](https://fishros.org.cn/forum/)：安装报错、驱动、相机和 ROS 2 实践问题的讨论入口。
 
+### 1.3 Piper ROS Humble：从仿真到真实机械臂
+
+[Piper ROS](https://github.com/agilexrobotics/piper_ros/tree/humble) 是 AgileX Piper 机械臂的 ROS 2 资源集合。本教程引用它的 `humble` 分支，其中包含驱动、`piper_description`（URDF）、MoveIt 2、Gazebo、MuJoCo 以及 USB-CAN 配置脚本。它是 Piper 专用资源，不是通用机械臂驱动；关节名称、夹爪参数、控制器和 CAN 波特率应以该分支当前 README 与本机固件为准。
+
+建议先在 Ubuntu 22.04 上完成仿真，再连接真实硬件：
+
+```bash
+git clone https://github.com/agilexrobotics/piper_ros.git ~/piper_ros
+cd ~/piper_ros
+git checkout humble
+
+source /opt/ros/humble/setup.bash
+sudo apt update
+sudo apt install -y \
+  ros-humble-ros2-control ros-humble-ros2-controllers \
+  ros-humble-controller-manager ros-humble-xacro \
+  ros-humble-joint-state-publisher ros-humble-robot-state-publisher \
+  ros-humble-rviz2 ros-humble-moveit ros-humble-gazebo-ros-pkgs
+python3 -m pip install -U piper_sdk python-can scipy
+
+colcon build --symlink-install
+source install/setup.bash
+```
+
+先验证模型和仿真链路：
+
+```bash
+ros2 launch piper_description display_urdf.launch.py
+
+# Gazebo 仿真（二选一）
+ros2 launch piper_gazebo piper_gazebo.launch.py
+ros2 launch piper_gazebo piper_no_gripper_gazebo.launch.py
+
+# MuJoCo 仿真（二选一）
+ros2 run piper_mujoco piper_mujoco_ctrl.py
+ros2 run piper_mujoco piper_no_gripper_mujoco_ctrl.py
+```
+
+仿真启动后，另开终端检查接口：
+
+```bash
+source /opt/ros/humble/setup.bash
+source ~/piper_ros/install/setup.bash
+ros2 topic list
+ros2 topic echo /joint_states --once
+ros2 run tf2_tools view_frames
+ros2 control list_controllers
+```
+
+真实 Piper 的 MoveIt 入口按是否带夹爪选择：
+
+```bash
+# 真机：先启动 piper_single_ctrl，再二选一
+ros2 launch piper_with_gripper_moveit demo.launch.py
+ros2 launch piper_no_gripper_moveit demo.launch.py
+```
+
+Gazebo 的 MoveIt 入口不同，必须先启动 Gazebo，再启动对应的 `piper_moveit.launch.py`：
+
+```bash
+ros2 launch piper_gazebo piper_gazebo.launch.py
+ros2 launch piper_with_gripper_moveit piper_moveit.launch.py
+
+# 无夹爪模型
+ros2 launch piper_gazebo piper_no_gripper_gazebo.launch.py
+ros2 launch piper_no_gripper_moveit piper_moveit.launch.py
+```
+
+具体参数和当前文件布局以 [`src/piper_moveit/README.md`](https://github.com/agilexrobotics/piper_ros/blob/humble/src/piper_moveit/README.md) 及 [`src/piper_sim/README.md`](https://github.com/agilexrobotics/piper_ros/blob/humble/src/piper_sim/README.md) 为准。规划成功只说明规划场景和控制器接口可用，不等于真实机械臂已经安全执行。
+
+接入真机时，先安装并检查 CAN 工具。USB-CAN 的硬件端口编码必须替换成自己机器上 `find_all_can_port.sh` 输出的值：
+
+```bash
+sudo apt install -y can-utils ethtool iproute2
+bash find_all_can_port.sh
+
+# 只有一个 CAN 模块时；can0 可改名，波特率 1000000 按 Piper 要求保留
+bash can_activate.sh can0 1000000
+
+# 多个模块时，按上游脚本说明使用实际 USB 端口编码
+# 例如：bash can_activate.sh can_piper 1000000 "3-1.4:1.0"
+ip -details link show can0
+```
+
+确认 CAN 接口后，再启动单臂驱动。`auto_enable:=false` 用于把“上电”和“使能”分成两个可检查步骤：
+
+```bash
+ros2 run piper piper_single_ctrl \
+  --ros-args \
+  -p can_port:=can0 \
+  -p auto_enable:=false \
+  -p gripper_exist:=true \
+  -p gripper_val_mutiple:=2
+
+# 也可以使用上游 launch（参数按硬件配置调整）
+ros2 launch piper start_single_piper.launch.py \
+  can_port:=can0 auto_enable:=false \
+  gripper_exist:=true gripper_val_mutiple:=2
+
+ros2 launch piper start_single_piper_rviz.launch.py
+ros2 topic echo /joint_states --once
+ros2 service call /enable_srv piper_msgs/srv/Enable \
+  "{enable_request: true}"
+```
+
+验证顺序应是：急停可用 → 机械臂处于安全工作空间 → CAN 无错误帧 → `/joint_states` 持续更新 → TF 树连通 → 低速单关节小幅动作 → 再做夹爪、RViz/MoveIt 和任务级动作。结束测试时显式关闭使能：
+
+```bash
+ros2 service call /enable_srv piper_msgs/srv/Enable \
+  "{enable_request: false}"
+```
+
+常见问题的定位边界：
+
+| 现象 | 先查什么 | 不要直接假设 |
+| --- | --- | --- |
+| 找不到 `piper` 包 | 是否 `source install/setup.bash`，是否成功 `colcon build` | 不是先改 Python 路径 |
+| 没有 `/joint_states` | 驱动进程、`can_port`、CAN 链路和控制器状态 | RViz 本身不会产生关节状态 |
+| RViz 模型姿态错误 | URDF 版本、`robot_state_publisher` 和 TF frame | 不要用任意静态 TF“修正”模型 |
+| MoveIt 能规划但不运动 | controller action、硬件使能和速度/限位 | 规划成功不代表执行成功 |
+| 夹爪数值不对 | `gripper_exist` 和 `gripper_val_mutiple`、固件版本 | 不要把夹爪当普通转动关节处理 |
+
+Piper 的 URDF 涉及固件版本差异：上游 README 对 `S-V1.6-3` 前后的 J2/J3 DH 坐标有说明。若模型与真机零位不一致，先核对固件和对应 URDF，再进行手眼标定；不要通过修改标定外参掩盖模型版本错误。完成标定后，可按本章手眼标定和 `rosbag2` 小节记录 `/tf`、`/tf_static`、图像、`/joint_states` 与动作命令，保留失败复现所需的时间戳和参数。
+
 ## 2. 坐标系、旋转和位姿
 
 ### 2.1 frame 和变换记号
