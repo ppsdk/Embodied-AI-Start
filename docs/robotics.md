@@ -21,6 +21,19 @@ VLA、World Model、MBRL、WAM 和 RL 最终都要落到一个具体机器人上
 - [ModernRobotics 仓库](https://github.com/NxRLab/ModernRobotics)：教材配套的 Python/MATLAB 实现。
 - [Pinocchio](https://github.com/stack-of-tasks/pinocchio)：刚体运动学、动力学和解析/自动微分接口。
 
+### 1.1 可以直接拿来跑的开源组合
+
+目前没有一个官方仓库同时把 TF、RViz 2、MoveIt 2、URDF、控制器和所有依赖做成一个 Humble 极简工程。最稳妥的做法是组合官方示例，并固定分支：
+
+| 目标 | 现成项目 | 先跑什么 |
+| --- | --- | --- |
+| TF2 广播/监听 | [geometry2 `examples_tf2_py`](https://github.com/ros2/geometry2/tree/humble/examples_tf2_py) | `ros2 launch examples_tf2_py broadcasters.launch.xml`，再运行 `dynamic_broadcaster`、`static_broadcaster` 或 `frame_dumper` |
+| RViz 2 + MoveIt 2 | [moveit2_tutorials `humble`](https://github.com/moveit/moveit2_tutorials/tree/humble) | [RViz quickstart](https://github.com/moveit/moveit2_tutorials/tree/humble/doc/tutorials/quickstart_in_rviz)，按文档启动 demo launch |
+| 机器人模型和配置 | [moveit_resources `ros2`](https://github.com/moveit/moveit_resources/tree/ros2) | 先用 Panda 资源确认 URDF、SRDF、planning group 和 RViz 显示 |
+| 控制器连接 | [ros2_control_demos `humble`](https://github.com/ros-controls/ros2_control_demos/tree/humble) | 在规划成功后再接 `ros2_control`，不要把控制器问题和 TF/规划问题混在一起 |
+
+这四个仓库分别负责坐标变换、可视化/规划、机器人资源和控制器示例。先用 `geometry2` 验证 TF 树，再用 MoveIt quickstart 验证 RViz 和规划，最后才接真实驱动。
+
 ## 2. 坐标系与 SE(3)
 
 用 $T^A_B\in SE(3)$ 表示“坐标系 B 在坐标系 A 中的位姿”：

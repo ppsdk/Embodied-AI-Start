@@ -29,6 +29,30 @@ python -m pip install "gymnasium[mujoco]" stable-baselines3
 
 记录实验时固定 Python、MuJoCo、Gymnasium、操作系统、渲染后端和随机种子。
 
+## 1.1 现成的 Gymnasium + MuJoCo RL 项目
+
+如果目标是先跑一个完整的连续动作 RL 训练循环，优先使用 [CleanRL](https://github.com/vwxyzjn/cleanrl) 的单文件 PPO 实现。它的 `ppo_continuous_action.py` 直接导入 `gymnasium`，默认环境是 `HalfCheetah-v4`；代码里包含 rollout、GAE、PPO 更新、日志和可选模型保存。
+
+```bash
+git clone https://github.com/vwxyzjn/cleanrl.git
+cd cleanrl
+python -m pip install -r requirements/requirements-mujoco.txt
+python cleanrl/ppo_continuous_action.py \
+  --env-id HalfCheetah-v4 \
+  --total-timesteps 100000
+```
+
+想要统一训练、评测、调参和画图脚本，可以改用 [RL Baselines3 Zoo](https://github.com/DLR-RM/rl-baselines3-zoo)：
+
+```bash
+git clone https://github.com/DLR-RM/rl-baselines3-zoo.git
+cd rl-baselines3-zoo
+pip install -e .
+python train.py --algo sac --env HalfCheetah-v4
+```
+
+两者定位不同：CleanRL 适合读懂一个算法文件；RL Baselines3 Zoo 适合批量实验。它们都使用 Gymnasium/Stable-Baselines3 生态，不等于 MuJoCo 本身提供了 PPO。
+
 ## 2. URDF、MJCF 和 MuJoCo
 
 三者的关系可以先记成：

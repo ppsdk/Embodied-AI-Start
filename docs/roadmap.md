@@ -42,8 +42,11 @@ flowchart TD
 - [Modern Robotics](https://modernrobotics.northwestern.edu/)：运动学、动力学和控制教材。
 - [ModernRobotics](https://github.com/NxRLab/ModernRobotics)：教材配套实现。
 - [Pinocchio](https://github.com/stack-of-tasks/pinocchio)：刚体运动学、动力学和自动微分。
+- [MoveIt 2 Humble Tutorials](https://github.com/moveit/moveit2_tutorials/tree/humble)：官方 RViz 2 quickstart、规划和执行示例。
+- [ROS 2 geometry2 Humble examples](https://github.com/ros2/geometry2/tree/humble/examples_tf2_py)：官方 TF2 Python 广播和监听示例。
 - [MuJoCo](https://github.com/google-deepmind/mujoco)：接触动力学仿真。
 - [MuJoCo 仿真教程](mujoco-tutorial.md)：从常见的 URDF 资产入口过渡到 MJCF，运行仿真循环并接入 Gymnasium。
+- [CleanRL MuJoCo PPO](https://github.com/vwxyzjn/cleanrl/blob/master/cleanrl/ppo_continuous_action.py)：用一个 Gymnasium 连续动作 PPO 文件跑通训练循环。
 - [Isaac Sim 仿真教程](isaac-sim-tutorial.md)：导入 URDF 到 USD 场景，读取 Articulation/传感器并了解 Isaac Lab。
 - [XPolicyLab 教程](xpolicylab-tutorial.md)：用统一的策略适配器、websocket 服务和 debug 后端连接 RoboDojo。
 - [ROS 2 Humble 文档](https://docs.ros.org/en/humble/)：节点、topic、TF/tf2 和工具链；本仓库机器人学章节统一以 Ubuntu 22.04 + ROS 2 Humble 为基线。

@@ -13,6 +13,15 @@
 | bimanual-vla | 双臂 VLA 真机部署入口与运行参考                         | [GitHub](https://github.com/SUNNYsyy2005/bimanual-vla)                                                                                             |
 | XPolicyLab   | 策略适配、服务化部署与跨 benchmark 评测接口             | [GitHub](https://github.com/XPolicyLab/XPolicyLab) · [Website](https://xpolicylab.github.io/) · [教程](xpolicylab-tutorial.md) |
 
+ROS 2 Humble 的最小机器人学工程建议组合使用以下官方仓库，而不是寻找一个把 TF、RViz 2、MoveIt 2 和控制器全部揉在一起的仓库：
+
+| 组件 | 用途 | 推荐版本/入口 |
+| --- | --- | --- |
+| MoveIt 2 Tutorials | Panda 配置、RViz 2 quickstart、规划与执行示例 | [GitHub](https://github.com/moveit/moveit2_tutorials/tree/humble) · [RViz quickstart](https://github.com/moveit/moveit2_tutorials/tree/humble/doc/tutorials/quickstart_in_rviz) |
+| ROS 2 geometry2 | TF2 Python 广播、监听、等待变换和 frame dump 示例 | [GitHub](https://github.com/ros2/geometry2/tree/humble/examples_tf2_py) |
+| MoveIt Resources | Panda、Fanuc、PR2 等 URDF 和 MoveIt 配置资源 | [GitHub](https://github.com/moveit/moveit_resources/tree/ros2) |
+| ros2_control_demos | `ros2_control` 和控制器的 RRBot 等示例；不是 MoveIt 教程本身 | [GitHub](https://github.com/ros-controls/ros2_control_demos/tree/humble) |
+
 StarVLA 与 RLinf 的直接组合示例：
 
 - [RL on StarVLA Models](https://rlinf.readthedocs.io/en/latest/rst_source/examples/embodied/starvla.html)
@@ -49,6 +58,8 @@ StarVLA 与 RLinf 的直接组合示例：
 | RLinf             | VLA/基础模型的大规模 RL 后训练                                     | [GitHub](https://github.com/RLinf/RLinf)                                                                |
 | AReaL             | 支持 GRPO、SAPO 等基础模型 RL 后训练算法                           | [GitHub](https://github.com/areal-project/AReaL) · [算法文档](https://github.com/areal-project/AReaL/blob/main/docs/zh/algorithms/grpo_series.md) |
 | CleanRL           | 单文件 RL 实现，包含 PPO/SAC/DQN 等算法                            | [GitHub](https://github.com/vwxyzjn/cleanrl) · [Docs](https://docs.cleanrl.dev/)                          |
+| CleanRL MuJoCo PPO | Gymnasium MuJoCo 连续动作 PPO 单文件示例；默认 `HalfCheetah-v4` | [代码](https://github.com/vwxyzjn/cleanrl/blob/master/cleanrl/ppo_continuous_action.py) · [MuJoCo 依赖](https://github.com/vwxyzjn/cleanrl/blob/master/requirements/requirements-mujoco.txt) |
+| RL Baselines3 Zoo | 基于 Stable-Baselines3 的训练、评测、调参和视频脚本；适合批量比较环境/算法 | [GitHub](https://github.com/DLR-RM/rl-baselines3-zoo) · [Docs](https://rl-baselines3-zoo.readthedocs.io/) |
 | Stable-Baselines3 | 易用的经典 model-free RL 基线                                      | [GitHub](https://github.com/DLR-RM/stable-baselines3) · [Docs](https://stable-baselines3.readthedocs.io/) |
 | DQN Zoo           | DQN 及其变体的参考实现                                             | [GitHub](https://github.com/google-deepmind/dqn_zoo)                                                     |
 | d3rlpy            | Offline RL 算法与数据接口                                          | [GitHub](https://github.com/takuseno/d3rlpy) · [Docs](https://d3rlpy.readthedocs.io/)                     |
