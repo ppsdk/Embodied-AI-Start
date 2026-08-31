@@ -209,5 +209,7 @@ VLA、WM 和 RL/MBRL 是并行研究路线，不要求先完成其中一条才�
 - [TianxingChen/Embodied-AI-Guide](https://github.com/TianxingChen/Embodied-AI-Guide)：具身学习方向分类与阅读线索。
 - [OpenMOSS/Awesome-WAM](https://github.com/OpenMOSS/Awesome-WAM)：World Action Model 资源索引。
 - [Embodied Meta-LLM Leaderboard](https://ppsdk.github.io/embodied-meta-leaderboard/)：跨论文 benchmark 和协议追踪的索引思路。
+- [RoboDojo](https://robodojo-benchmark.com/)：统一仿真与真实世界的通用机器人操作评测。
+- [XPolicyLab](https://github.com/XPolicyLab/XPolicyLab)：机器人策略适配、服务化部署与跨 benchmark 评测接口。
 
-同时感谢本仓库所链接的 OpenVLA、OpenPI、StarVLA、FastWAM、RLinf、V-JEPA 2、Diffusion Policy、TD-MPC2、DreamerV3、RoboTwin、LIBERO、ManiSkill 与 [bimanual-vla](https://github.com/SUNNYsyy2005/bimanual-vla) 等项目的开源工作。各项目的代码、论文、数据和许可证归原作者及其维护者所有，本仓库仅作学习导航与交叉引用。
+同时感谢本仓库所链接的 OpenVLA、OpenPI、StarVLA、FastWAM、RLinf、V-JEPA 2、Diffusion Policy、TD-MPC2、DreamerV3、RoboTwin、RoboCasa、RoboDojo、XPolicyLab、LIBERO、CALVIN、ManiSkill、MuJoCo、Isaac Sim、ROS 2、MoveIt 2 与 [bimanual-vla](https://github.com/SUNNYsyy2005/bimanual-vla) 等项目的开源工作。各项目的代码、论文、数据和许可证归原作者及其维护者所有，本仓库仅作学习导航与交叉引用；致谢名单不代表与这些项目存在官方合作或背书关系。
