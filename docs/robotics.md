@@ -358,6 +358,119 @@ flowchart LR
 
 对 sim-to-real 实验，单独记录 domain randomization 改变了什么，以及哪些误差由真实硬件引入。
 
+### 7.1 手眼标定到底在求什么
+
+手眼标定（hand-eye calibration）要估计的是相机与机器人之间的刚性外参。先固定记号：
+
+- $T^A_B$ 表示“坐标系 $B$ 在坐标系 $A$ 中的位姿”；
+- $B$ 是机器人基座，$E$ 是末端，$C$ 是相机，$T$ 是标定板；
+- 每个 $T$ 都是 $4\times4$ 的齐次变换，旋转部分属于 $SO(3)$。
+
+#### Eye-in-hand：相机装在末端
+
+相机随末端运动，未知量通常是相机在末端中的固定变换 $T^E_C$。标定板固定在基座附近，未知 $T^B_T$。第 $i$ 个姿态满足：
+
+$$
+T^B_{E,i}\,T^E_C\,T^C_{T,i}=T^B_T.
+$$
+
+用两组姿态相消掉标定板位置，可得到经典的 $AX=XB$：
+
+$$
+A_{ij}X=XB_{ij},\qquad
+A_{ij}=(T^B_{E,j})^{-1}T^B_{E,i},\quad
+X=T^E_C,\quad
+B_{ij}=T^C_{T,j}(T^C_{T,i})^{-1}.
+$$
+
+这里 $T^B_{E,i}$ 来自机器人关节状态和正运动学/TF，$T^C_{T,i}$ 来自相机检测标定板。不同库可能使用相反的相对运动方向，因此接入求解器前必须核对它要求的是 $T^A_B$ 还是 $T^B_A$，不能只把矩阵名称照抄过去。
+
+#### Eye-to-hand：相机固定在基座或外部支架
+
+相机不随末端运动，未知量通常是 $T^B_C$；标定板固定在末端，未知量是 $T^E_T$。每个姿态满足：
+
+$$
+T^B_C\,T^C_{T,i}=T^B_{E,i}\,T^E_T.
+$$
+
+这类问题常写成 robot-world/hand-eye 的 $AX=YB$ 形式。实际使用 MoveIt Calibration 或其他库时，先在界面/配置中选对 `eye-in-hand` 或 `eye-to-hand`，再确认 `sensor frame`、`object frame`、`end-effector frame` 和 `robot base frame` 四个名字。
+
+### 7.2 一条采样记录包含什么
+
+不要只保存“图片 + 最终矩阵”。第 $i$ 条样本至少应保存下面的**同一时刻配对数据**：
+
+| 字段 | 记号/形状 | 来源 | 用途 |
+| --- | --- | --- | --- |
+| 图像 | $I_i$，RGB 图像 | 相机 `image_raw` | 复查检测是否正确 |
+| 相机内参 | $K$、畸变 $d$ | `sensor_msgs/CameraInfo` | 从像素/标记解算 $T^C_{T,i}$；内参应先单独标定 |
+| 标定板位姿 | $T^C_{T,i}$ | ArUco/棋盘格/AprilTag 检测 | 手眼方程中的视觉观测 |
+| 机器人关节状态 | $q_i$、时间戳 | `/joint_states` 或驱动 | 通过 FK 得到 $T^B_{E,i}$ |
+| 末端位姿 | $T^B_{E,i}$ | TF 查询或 FK | 手眼方程中的机器人观测 |
+| 帧名 | `base_frame`、`ee_frame`、`camera_frame`、`target_frame` | 配置 | 防止矩阵方向和 TF 查询方向混淆 |
+| 时间信息 | $t_i^{img}$、$t_i^{q}$、$t_i^{tf}$ | 消息 header/TF | 检查图像与机器人姿态是否错配 |
+| 检测质量 | 重投影误差、角点数、置信度 | 检测器 | 删除误检和模糊样本 |
+
+同一条样本中的图像、CameraInfo 和机器人姿态必须尽量接近同一时刻；机器人还在运动时，不能拿旧的关节状态配最新图像。若相机或 TF 有明显延迟，应记录延迟并统一按时间戳查询，而不是简单取“当前最新值”。
+
+### 7.3 采样姿态怎么设计
+
+建议先用固定、平整、尺寸已知的 ArUco/棋盘格板，再采集 15–30 个稳定姿态；5 个样本只是很多求解器的最低计算门槛，不是可靠精度的建议值。
+
+每次采样前：
+
+1. 停止机器人或等速度低于阈值；
+2. 确认标定板完整可见、没有反光和运动模糊；
+3. 等相机帧和 TF 更新时间稳定后再同时记录图像、CameraInfo、$q_i$ 和 $T^B_{E,i}$；
+4. 改变末端位置，并同时改变姿态；至少使用两个不同旋转轴，避免所有姿态只绕同一根轴变化；
+5. 覆盖相机视场的近、中、远区域和不同方位，但不要把机器人推到关节限位、奇异位形或危险接触位置。
+
+只平移不旋转、只绕一个轴旋转、姿态变化很小，都会让方程病态：即使求解器返回一个 $4\times4$ 矩阵，结果也可能对噪声极其敏感。采样时同步保存关节状态，之后可以复用同一组姿态做重算和对比。
+
+### 7.4 求解后怎么判断结果可信
+
+解算器输出的矩阵不能直接当成“标定完成”。对 eye-in-hand，可对每条样本重建：
+
+$$
+\widehat{T}^{B}_{T,i}=T^B_{E,i}\,\widehat{T}^{E}_{C}\,T^C_{T,i}.
+$$
+
+若估计的标定板在基座中应保持静止，就比较不同 $i$ 的 $\widehat{T}^{B}_{T,i}$。两次估计的平移差可写成
+
+$$
+e^p_{ij}=\left\|\widehat p^B_{T,i}-\widehat p^B_{T,j}\right\|_2,
+$$
+
+旋转差可写成
+
+$$
+e^R_{ij}=\cos^{-1}\!\left(\frac{\operatorname{tr}(R_{ij})-1}{2}\right),
+$$
+
+其中 $R_{ij}=(\widehat R^B_{T,j})^{-1}\widehat R^B_{T,i}$，实现时先把 $\frac{\operatorname{tr}(R_{ij})-1}{2}$ 截断到 $[-1,1]$，再取反余弦。报告平移误差（mm）、旋转误差（deg）、每个样本的重投影误差和是否剔除了异常点；不要只报告一个未经定义的“accuracy”。
+
+至少做三种验证：
+
+- **留出验证**：用部分姿态求解，用未参与求解的姿态检查误差；
+- **图像验证**：用估计外参把标定板投影回图像，检查角点/坐标轴是否贴合；
+- **任务验证**：把相机检测到的点变换到 `base_link`，让末端移动到几个已知位置，观察系统性偏差是否随工作空间变化。
+
+若误差随位置或姿态系统性变化，优先怀疑内参、板尺寸、TF 方向、时间同步、机器人零位或末端工具坐标，而不是先换求解器。
+
+### 7.5 ROS 2 Humble 的现成实现和发布
+
+- 官方参考：[MoveIt 2 Tutorials 的 Hand-Eye Calibration 页面](https://github.com/moveit/moveit2_tutorials/tree/humble/doc/examples/hand_eye_calibration)；页面说明了 eye-in-hand/eye-to-hand、ArUco 目标、姿态配对和 `AX=XB` 求解流程，但该页面仍带有旧版迁移标记，构建前要按当前 MoveIt 2 Humble 文档核对包名和依赖。
+- 求解器仓库：[moveit/moveit_calibration](https://github.com/moveit/moveit_calibration)；它是 MoveIt 维护的手眼标定工具入口。
+- 社区 Humble 项目：[hhanoo/hand-eye_calibration](https://github.com/hhanoo/hand-eye_calibration/tree/humble)；README 明确面向 ROS 2 Humble，并提供 PyQt5 GUI、ArUco、AX=YB、DQ RANSAC 和 Tsai-Lenz，但支持的机器人和相机应以其当前 README 为准。
+
+得到最终外参后，通常通过静态 TF 发布。例如 eye-in-hand 的 `base_link -> camera_link` 不应由手眼标定结果直接发布这条边；应发布机器人链中的 `ee_link -> camera_link`：
+
+```bash
+ros2 run tf2_ros static_transform_publisher \
+  <tx> <ty> <tz> <qx> <qy> <qz> <qw> <frame_id> <child_frame_id>
+```
+
+发布前确认 `ee_link` 已由机器人 URDF/`robot_state_publisher` 发布，且没有另一个节点同时发布 `ee_link -> camera_link`。如果使用的是 `camera_optical_frame`，要把相机驱动定义的 `camera_link -> camera_optical_frame` 一并接入并检查 REP 103 轴约定。发布后用 `view_frames`、`tf2_echo` 和 RViz 2 验证，不要只看 launch 是否成功。
+
 ## 8. 与当前仓库主线的衔接
 
 | 研究路线 | 机器人学接口 | 首先验证什么 |

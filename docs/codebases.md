@@ -21,6 +21,8 @@ ROS 2 Humble 的最小机器人学工程建议组合使用以下官方仓库，�
 | ROS 2 geometry2 | TF2 Python 广播、监听、等待变换和 frame dump 示例 | [GitHub](https://github.com/ros2/geometry2/tree/humble/examples_tf2_py) |
 | MoveIt Resources | Panda、Fanuc、PR2 等 URDF 和 MoveIt 配置资源 | [GitHub](https://github.com/moveit/moveit_resources/tree/ros2) |
 | ros2_control_demos | `ros2_control` 和控制器的 RRBot 等示例；不是 MoveIt 教程本身 | [GitHub](https://github.com/ros-controls/ros2_control_demos/tree/humble) |
+| MoveIt Calibration | MoveIt 维护的手眼标定工具入口，支持 eye-in-hand 与 eye-to-hand 的标定流程 | [GitHub](https://github.com/moveit/moveit_calibration) |
+| hand-eye_calibration | ROS 2 Humble 社区实现，带 PyQt5 GUI、ArUco 和多种求解器；硬件支持以项目 README 为准 | [GitHub](https://github.com/hhanoo/hand-eye_calibration/tree/humble) |
 
 StarVLA 与 RLinf 的直接组合示例：
 

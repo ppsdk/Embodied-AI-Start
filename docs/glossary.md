@@ -15,7 +15,7 @@
 | Task Space | Task / Cartesian Space | 以末端位置、姿态或力描述动作的空间，与 joint space 相对。 |
 | Proprioception | Proprioceptive Sensing | 关节位置、速度、力矩等机器人自身状态观测。 |
 | Impedance Control | Impedance Control | 通过虚拟刚度和阻尼调节位置误差到力/运动的关系。 |
-| Hand-eye Calibration | Hand-eye Calibration | 估计相机、末端和机器人基座之间的外参关系。 |
+| Hand-eye Calibration | Hand-eye Calibration | 通过多组机器人末端位姿与标定板观测，估计相机、末端和机器人基座之间的刚性外参；分为 eye-in-hand 与 eye-to-hand。 |
 | Policy | Policy | 从观测/状态到动作分布的映射 $\pi(a\mid s)$。 |
 | Return $G_t$ | Discounted Return | 从时刻 $t$ 开始的折扣累计奖励，是价值函数要估计的长期目标。 |
 | $V^\pi(s)$ | State-Value Function | 从状态 $s$ 出发并遵循策略 $\pi$ 时的期望累计回报。 |
