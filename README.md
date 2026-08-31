@@ -8,6 +8,7 @@
 | ---------------------------------------- | ---------------------------------------------------------------------------------------- |
 | 先建立全局概念                           | [知识图谱](docs/knowledge-map.md)                                                           |
 | 补齐机器人学基础                         | [机器人学知识](docs/robotics.md)                                                            |
+| 安装 ROS 2、OpenCV 与机器人依赖           | [机器人学基础安装与命令](docs/robotics.md)                                                  |
 | 学 MuJoCo 和 Isaac Sim 仿真              | [MuJoCo 仿真教程](docs/mujoco-tutorial.md) · [Isaac Sim 仿真教程](docs/isaac-sim-tutorial.md) |
 | 用 XPolicyLab 连接 RoboDojo               | [XPolicyLab 教程](docs/xpolicylab-tutorial.md)                                             |
 | 学 Transformer、Diffusion、Flow Matching | [模型基础](docs/model-basics.md)                                                            |
@@ -87,7 +88,7 @@ flowchart TD
 
 ### 机器人学基础
 
-模型和策略负责提出任务级的状态、未来或动作意图，机器人学与控制层负责坐标变换、IK、轨迹插值、阻抗/力控、碰撞与急停。开始跑模型前，先阅读 [机器人学基础](docs/robotics.md)，确认 observation、action、frame、单位和控制频率。
+模型和策略负责提出任务级的状态、未来或动作意图，机器人学与控制层负责坐标变换、IK、轨迹插值、阻抗/力控、碰撞与急停。[机器人学基础](docs/robotics.md) 现在也包含 ROS 2 通信与 QoS、OpenCV/`cv_bridge` 安装、`ros2_control`、`rosbag2` 和手眼标定。开始跑模型前，先确认 observation、action、frame、单位和控制频率；安装问题可参考[鱼香 ROS 社区论坛](https://fishros.org.cn/forum/)。
 
 ### 论文主线
 
