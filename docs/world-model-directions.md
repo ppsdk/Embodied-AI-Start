@@ -1,5 +1,7 @@
 # WM 其他方向：从表示到交互闭环
 
+WM 的表示可以先按四条主线理解：像素/视频直接预测未来画面，全局 latent/JEPA 预测可用于判断和规划的未来特征，对象中心 latent（如 LPWM、SlotFormer）预测粒子和交互，3D/4D（如 GWM、OccWorld）预测带空间坐标的 Gaussian、occupancy 或点云场景。除此之外，还要看时间模型和条件接口：离散自回归（IRIS）、像素 diffusion（DIAMOND）、语言条件（Dynalang）、显式 scene flow（FlowDreamer）、视觉-触觉预测（ViTacWorld）、层级逻辑-视觉预测（H-WM）、策略评测环境（WorldEval/WorldGym）以及真实机器人在线学习（DayDreamer）都属于 WM 的重要方向。具体的张量、数据字段、训练目标和闭环检查见[知识图谱](knowledge-map.md)和[模型基础](model-basics.md)。
+
 现有 WM 主线已经覆盖像素/视频、全局 latent、对象中心 latent、3D Gaussian 和 4D occupancy。还需要再看一条正交问题：**数据从哪里来，模型怎样接入动作，预测结果怎样进入规划或评测**。下面的论文按这个问题整理，不把“能生成视频”直接等同于“能控制机器人”。
 
 ## 一张表先定位

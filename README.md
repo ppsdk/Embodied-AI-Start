@@ -10,7 +10,7 @@
 | 补齐机器人学基础                         | [机器人学知识](docs/robotics.md)                                                            |
 | 安装 ROS 2、OpenCV 与机器人依赖           | [机器人学基础安装与命令](docs/robotics.md)                                                  |
 | 学 MuJoCo 和 Isaac Sim 仿真              | [MuJoCo 仿真教程](docs/mujoco-tutorial.md) · [Isaac Sim 仿真教程](docs/isaac-sim-tutorial.md) |
-| 用 XPolicyLab 连接 RoboDojo               | [XPolicyLab 教程](docs/xpolicylab-tutorial.md)                                             |
+| 了解 WM 表示、时间模型与交互闭环         | [WM 专门文档](docs/world-model-directions.md)                                              |
 | 学 Transformer、Diffusion、Flow Matching | [模型基础](docs/model-basics.md)                                                            |
 | 学 V、Q、A、经典 RL、GRPO 与 SAPO        | [强化学习基础](docs/reinforcement-learning.md)                                              |
 | 按顺序读论文                             | [论文清单](docs/papers.md)                                                                  |
@@ -74,7 +74,7 @@ flowchart TD
 2. **offline / online** 描述数据是否在训练时继续与环境交互；**model-free / model-based** 描述决策时是否显式使用动力学模型。WM、MBRL、WAM 的边界见[知识图谱](docs/knowledge-map.md)。
 3. **预训练、动作监督微调、WM 预训练和 RL/MBRL 后训练** 可以按研究问题组合。
 
-WM 的表示可以先按四条主线理解：像素/视频直接预测未来画面，全局 latent/JEPA 预测可用于判断和规划的未来特征，对象中心 latent（如 LPWM、SlotFormer）预测粒子和交互，3D/4D（如 GWM、OccWorld）预测带空间坐标的 Gaussian、occupancy 或点云场景。除此之外，还要看时间模型和条件接口：离散自回归（IRIS）、像素 diffusion（DIAMOND）、语言条件（Dynalang）、显式 scene flow（FlowDreamer）、视觉-触觉预测（ViTacWorld）、层级逻辑-视觉预测（H-WM）、策略评测环境（WorldEval/WorldGym）以及真实机器人在线学习（DayDreamer）都属于 WM 的重要方向。具体的张量、数据字段、训练目标和闭环检查见[知识图谱](docs/knowledge-map.md)、[WM 其他方向](docs/world-model-directions.md)和[模型基础](docs/model-basics.md)。
+WM 的表示、时间模型和交互闭环见 [WM 专门文档](docs/world-model-directions.md)；完整的张量、数据字段、训练目标和边界见[知识图谱](docs/knowledge-map.md)与[模型基础](docs/model-basics.md)。
 
 ## 相关资源
 
@@ -95,7 +95,7 @@ WM 的表示可以先按四条主线理解：像素/视频直接预测未来画�
 
 ### 论文主线
 
-下表是稳定主线；截至 2026-08-31 的近期预印本和它们各自解决的问题见[论文清单](docs/papers.md)的“近两年新增工作”部分。预印本的版本、代码和实验结果要以论文页面为准。
+
 
 | 方向                  | 先读                                                                                                                                                                                                                                 | 重点问题                                             |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------- |
@@ -214,6 +214,5 @@ VLA、WM 和 RL/MBRL 是并行研究路线，不要求先完成其中一条才�
 - [OpenMOSS/Awesome-WAM](https://github.com/OpenMOSS/Awesome-WAM)：World Action Model 资源索引。
 - [Embodied Meta-LLM Leaderboard](https://ppsdk.github.io/embodied-meta-leaderboard/)：跨论文 benchmark 和协议追踪的索引思路。
 - [RoboDojo](https://robodojo-benchmark.com/)：统一仿真与真实世界的通用机器人操作评测。
-- [XPolicyLab](https://github.com/XPolicyLab/XPolicyLab)：机器人策略适配、服务化部署与跨 benchmark 评测接口。
 
 同时感谢本仓库所链接的 OpenVLA、OpenPI、StarVLA、FastWAM、RLinf、V-JEPA 2、Diffusion Policy、TD-MPC2、DreamerV3、RoboTwin、RoboCasa、RoboDojo、XPolicyLab、LIBERO、CALVIN、ManiSkill、MuJoCo、Isaac Sim、ROS 2、MoveIt 2 与 [bimanual-vla](https://github.com/SUNNYsyy2005/bimanual-vla) 等项目的开源工作。各项目的代码、论文、数据和许可证归原作者及其维护者所有，本仓库仅作学习导航与交叉引用；致谢名单不代表与这些项目存在官方合作或背书关系。
