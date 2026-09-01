@@ -12,11 +12,11 @@
 
 ```mermaid
 flowchart LR
-    MUJOCO[MuJoCo\n轻量动力学 / 控制原型] --> TRANS[transition\n观测、动作、奖励、终止]
-    ISAAC[Isaac Sim\nUSD / PhysX / 传感器 / GPU] --> TRANS
-    TRANS --> RL[RL：PPO / SAC / DQN]
-    TRANS --> MBRL[MBRL：dynamics / rollout / MPC]
-    ISAAC --> LAB[Isaac Lab\n并行环境与机器人学习层]
+    MUJOCO["MuJoCo<br/>轻量动力学 / 控制原型"] --> TRANS["transition<br/>观测、动作、奖励、终止"]
+    ISAAC["Isaac Sim<br/>USD / PhysX / 传感器 / GPU"] --> TRANS
+    TRANS --> RL["RL：PPO / SAC / DQN"]
+    TRANS --> MBRL["MBRL：dynamics / rollout / MPC"]
+    ISAAC --> LAB["Isaac Lab<br/>并行环境与机器人学习层"]
     LAB --> RL
 ```
 
