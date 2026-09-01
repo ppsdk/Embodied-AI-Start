@@ -1,18 +1,9 @@
----
-hide:
-  - navigation
----
-
-<div class="hero" markdown>
-
 # 具身智能学习地图
 
 从机器人基础出发，逐步走到 VLA、World Model、RL/MBRL 和 WAM。
 
 [开始阅读](roadmap.md){ .md-button .md-button--primary }
 [查看代码仓](codebases.md){ .md-button }
-
-</div>
 
 ![具身智能学习框架图](assets/framework.png)
 
