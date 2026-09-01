@@ -2,8 +2,8 @@
 
 > 📊 根据研究问题选择任务、数据和评测协议，避免只比较一段视频。
 
-**预计阅读**：15 min  
-**前置知识**：至少了解 VLA、WM、RL/MBRL 的基本任务形式
+**预计阅读**：15 min<br>
+**前置知识**：至少了解 VLA、WM、RL/MBRL 的基本任务形式<br>
 **下一步**：[论文清单](papers.md) · [代码仓](codebases.md) · [强化学习基础](reinforcement-learning.md)
 
 **本文路线**：研究问题 → benchmark 入口 → 协议与指标 → 本仓库实践边界

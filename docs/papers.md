@@ -2,8 +2,8 @@
 
 > 📚 按问题和方法阅读论文，先建立主线，再补充相邻方向。
 
-**预计阅读**：20 min  
-**前置知识**：模型基础、机器人学基础和 RL 基础  
+**预计阅读**：20 min<br>
+**前置知识**：模型基础、机器人学基础和 RL 基础<br>
 **下一步**：[知识图谱](knowledge-map.md) · [WM 专题](world-model-directions.md) · [Benchmark 指南](benchmarks.md)
 
 **本文路线**：模型基础 → VLA → WM/WAM → MBRL → Offline/Online RL → 评测

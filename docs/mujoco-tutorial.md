@@ -2,8 +2,8 @@
 
 > 🧪 用 MuJoCo 和 Gymnasium 跑通一个基础的动力学与 RL 实验。
 
-**预计阅读**：20 min  
-**前置知识**：Python、虚拟环境和基本 RL 概念  
+**预计阅读**：20 min<br>
+**前置知识**：Python、虚拟环境和基本 RL 概念<br>
 **下一步**：[强化学习基础](reinforcement-learning.md) · [机器人学基础](robotics.md)
 
 **本文路线**：安装 → MJCF → 仿真循环 → 状态与传感器 → Gymnasium → 自行实验

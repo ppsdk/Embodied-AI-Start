@@ -2,8 +2,8 @@
 
 > 🤖 从坐标、运动学和 ROS 2 通信开始，把仿真策略接到真实机械臂。
 
-**预计阅读**：30 min
-**前置知识**：Python、Linux 命令行、线性代数基础
+**预计阅读**：30 min<br>
+**前置知识**：Python、Linux 命令行、线性代数基础<br>
 **下一步**：[MuJoCo 教程](mujoco-tutorial.md) · [Isaac Sim 教程](isaac-sim-tutorial.md) · [强化学习基础](reinforcement-learning.md)
 
 **本文路线**：坐标与位姿 → TF → ROS 2 通信 → 控制与规划 → 标定 → 仿真/真机闭环

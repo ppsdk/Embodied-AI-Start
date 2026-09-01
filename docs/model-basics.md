@@ -2,8 +2,8 @@
 
 > 🧠 先掌握序列建模和生成模型，再进入 VLA、WM、RL/MBRL 与 WAM 专题。
 
-**预计阅读**：25 min  
-**前置知识**：Python、深度学习、张量和概率基础  
+**预计阅读**：25 min<br>
+**前置知识**：Python、深度学习、张量和概率基础<br>
 **下一步**：[VLA 专题](vla.md) · [WM 专题](world-model-directions.md) · [WAM 专题](wam.md) · [RL / MBRL 专题](mbrl.md)
 
 **本文路线**：统一记号 → Transformer → Diffusion → Flow Matching → 动作输出

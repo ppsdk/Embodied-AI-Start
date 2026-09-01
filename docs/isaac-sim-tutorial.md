@@ -2,8 +2,8 @@
 
 > 🧪 了解 USD、PhysX、传感器和 GPU 并行仿真，再进入 Isaac Lab。
 
-**预计阅读**：20 min  
-**前置知识**：Python、基本机器人学和 RL transition  
+**预计阅读**：20 min<br>
+**前置知识**：Python、基本机器人学和 RL transition<br>
 **下一步**：[强化学习基础](reinforcement-learning.md) · [代码仓](codebases.md)
 
 **本文路线**：安装 → URDF/USD → Python 生命周期 → 状态与传感器 → RL transition → Isaac Lab

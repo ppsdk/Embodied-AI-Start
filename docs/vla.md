@@ -2,6 +2,8 @@
 
 > VLA（Vision-Language-Action）把视觉、语言和机器人状态放进同一个策略输入，输出可执行动作。
 
+**预计阅读**：20 min<br>
+**前置知识**：模型基础、机器人状态与动作格式<br>
 **下一步**：[模型基础](model-basics.md) · [机器人学基础](robotics.md) · [论文清单](papers.md)
 
 VLA 的核心是在当前本体和控制约定下学习策略：

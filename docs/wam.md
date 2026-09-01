@@ -2,6 +2,8 @@
 
 > WAM（World Action Model）把“动作会造成什么”和“下一步该怎么动”放进同一个紧密闭环。
 
+**预计阅读**：20 min<br>
+**前置知识**：VLA、World Model 和机器人动作格式<br>
 **下一步**：[WM 专题](world-model-directions.md) · [VLA 专题](vla.md) · [论文清单](papers.md)
 
 WAM 不是新的空间表示，而是一种模型组织方式。它可以使用像素、视频 latent、对象粒子、scene flow 或 3D/4D 场景，但必须说明未来预测如何影响动作。

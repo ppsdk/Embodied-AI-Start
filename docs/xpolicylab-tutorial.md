@@ -2,8 +2,8 @@
 
 > 🛠️ 从 debug 评测开始，把策略接入 RoboDojo，再扩展到仿真和服务化运行。
 
-**预计阅读**：15 min
-**前置知识**：Python、Git、策略的 observation/action 定义
+**预计阅读**：15 min<br>
+**前置知识**：Python、Git、策略的 observation/action 定义<br>
 **下一步**：[Benchmark 指南](benchmarks.md) · [强化学习基础](reinforcement-learning.md) · [代码仓](codebases.md)
 
 **本文路线**：官方入口 → 安装 → 数据 → debug 评测 → 适配器 → 仿真/服务

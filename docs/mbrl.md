@@ -2,6 +2,8 @@
 
 > MBRL（Model-based Reinforcement Learning）学习或使用动力学/奖励模型，在模型中想象未来，再用于规划、价值估计或策略更新。
 
+**预计阅读**：15 min<br>
+**前置知识**：强化学习基础、价值函数和动力学模型<br>
 **下一步**：[强化学习基础](reinforcement-learning.md) · [WM 专题](world-model-directions.md) · [MuJoCo 教程](mujoco-tutorial.md)
 
 MBRL 的关键不是模型名字，而是模型是否进入决策闭环。一个只预测视频、只做表征学习或只输出评估分数的系统，不能仅凭这些组件称为 MBRL。

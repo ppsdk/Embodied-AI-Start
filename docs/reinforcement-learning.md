@@ -2,8 +2,8 @@
 
 > 🎮 从单步转移和数据来源出发，理解 RL、MBRL 以及策略后训练。
 
-**预计阅读**：35 min
-**前置知识**：Python、概率、神经网络和基本机器人控制
+**预计阅读**：35 min<br>
+**前置知识**：Python、概率、神经网络和基本机器人控制<br>
 **下一步**：[MuJoCo 教程](mujoco-tutorial.md) · [机器人学基础](robotics.md) · [Benchmark 指南](benchmarks.md)
 
 **本文路线**：MDP → 价值函数 → 数据与训练范式 → 经典算法 → GRPO/SAPO → 机器人闭环
