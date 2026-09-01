@@ -22,12 +22,12 @@ WM 与 WAM 的关系也要分开：WM 是 **consequence prediction**；World Act
 
 ## 2. WM用什么表示未来
 
-| 表示 | 预测对象 | 长处 | 常见风险 | 代表方向 |
-| --- | --- | --- | --- | --- |
-| 像素/视频 | RGB、RGB-D、video token 或 video latent | 直观、可视化强，容易利用视频预训练 | 看起来合理但动作不一致；接触和长程一致性差 | IRASim、DIAMOND、WorldGym、World4RL |
-| 全局 latent / JEPA | 对控制有用的压缩状态 `z[t]` | 计算省，适合 MPC、搜索和策略辅助训练 | 可解释性弱，需验证 latent 是否保留物理变量 | Dreamer、V-JEPA 2、PSG-JEPA、Fast-WAM |
-| 对象中心 / 粒子 | `M` 个对象 slot、粒子或部件状态 | 对象持久性、交互和组合泛化更清楚 | slot 身份交换、遮挡和关系漂移 | LPWM、SlotFormer、FOCUS |
-| 3D/4D 几何 | 点云、occupancy、SDF、Gaussian、scene flow | 可查询自由空间、碰撞、可达性和多视角关系 | 深度/坐标代价高，动态更新和实时性困难 | GWM、PointWorld、TesserAct、OccWorld、3DFlowAction |
+| 表示               | 预测对象                                   | 长处                                     | 常见风险                                   | 代表方向                                           |
+| ------------------ | ------------------------------------------ | ---------------------------------------- | ------------------------------------------ | -------------------------------------------------- |
+| 像素/视频          | RGB、RGB-D、video token 或 video latent    | 直观、可视化强，容易利用视频预训练       | 看起来合理但动作不一致；接触和长程一致性差 | IRASim、DIAMOND、WorldGym、World4RL                |
+| 全局 latent / JEPA | 对控制有用的压缩状态 `z[t]`              | 计算省，适合 MPC、搜索和策略辅助训练     | 可解释性弱，需验证 latent 是否保留物理变量 | Dreamer、V-JEPA 2、PSG-JEPA、Fast-WAM              |
+| 对象中心 / 粒子    | `M` 个对象 slot、粒子或部件状态          | 对象持久性、交互和组合泛化更清楚         | slot 身份交换、遮挡和关系漂移              | LPWM、SlotFormer、FOCUS                            |
+| 3D/4D 几何         | 点云、occupancy、SDF、Gaussian、scene flow | 可查询自由空间、碰撞、可达性和多视角关系 | 深度/坐标代价高，动态更新和实时性困难      | GWM、PointWorld、TesserAct、OccWorld、3DFlowAction |
 
 这四条线不是互斥架构。一个系统可以用视频 encoder 得到 object slots，再预测 3D flow；也可以用 latent dynamics 做规划、用视频 decoder 只做可视化检查。
 
@@ -76,15 +76,15 @@ p(x[t+1:t+H] | x[t], a[t:t+H-1], l)
  obs[t+1:t+H], reward[t:t+H-1], done, task, timestamps}
 ```
 
-| 字段 | 需要说明 |
-| --- | --- |
-| 观测 | 单/多视角 RGB、深度、点云、触觉、力/力矩、关节状态和语言；历史窗口 `K`、分辨率、频率 |
-| 动作 | 关节位置/速度/力矩、末端位姿、夹爪、action chunk 或 latent action；坐标系和控制周期 |
-| 未来目标 | 下一帧、未来 `H` 帧、latent、slot、flow、occupancy、接触、reward、终止或风险 |
-| 时间对齐 | 相机与控制器时间戳、执行延迟、帧堆叠、动作是指令值还是实际执行值 |
-| 轨迹质量 | expert、成功、失败、恢复、碰撞、截断；失败原因和终止位置 |
-| 任务条件 | 语言指令、目标图像、子目标、场景 ID、机器人本体 ID |
-| 坐标与本体 | 相机/世界/末端坐标变换，URDF、关节限制、控制器和标定信息 |
+| 字段       | 需要说明                                                                               |
+| ---------- | -------------------------------------------------------------------------------------- |
+| 观测       | 单/多视角 RGB、深度、点云、触觉、力/力矩、关节状态和语言；历史窗口 `K`、分辨率、频率 |
+| 动作       | 关节位置/速度/力矩、末端位姿、夹爪、action chunk 或 latent action；坐标系和控制周期    |
+| 未来目标   | 下一帧、未来 `H` 帧、latent、slot、flow、occupancy、接触、reward、终止或风险         |
+| 时间对齐   | 相机与控制器时间戳、执行延迟、帧堆叠、动作是指令值还是实际执行值                       |
+| 轨迹质量   | expert、成功、失败、恢复、碰撞、截断；失败原因和终止位置                               |
+| 任务条件   | 语言指令、目标图像、子目标、场景 ID、机器人本体 ID                                     |
+| 坐标与本体 | 相机/世界/末端坐标变换，URDF、关节限制、控制器和标定信息                               |
 
 关键区别是 **commanded action** 与 **executed action**：真实机器人有延迟、限幅和控制误差，最好记录实际状态变化，否则模型学到的可能只是命令而非后果。
 
@@ -103,17 +103,17 @@ p(x[t+1:t+H] | x[t], a[t:t+H-1], l)
 
 ## 6. 代表性工作放在哪些位置
 
-| 方向 | 核心机制 | 代表工作 |
-| --- | --- | --- |
-| 真实机器人在线 WM | 在真实交互中更新 latent dynamics，并在模型内想象 | [DayDreamer](https://arxiv.org/abs/2206.14176) |
-| 对象槽位动力学 | 先分解 slot，再预测对象属性和关系 | [SlotFormer](https://arxiv.org/abs/2210.05861)、[FOCUS](https://arxiv.org/abs/2307.02427) |
-| 动作条件视频 | 在视频生成 block 中注入逐帧动作 | [IRASim](https://arxiv.org/abs/2406.14540)、[DIAMOND](https://arxiv.org/abs/2405.12399) |
-| 语言条件 WM | 预测语言相关状态、子目标或未来视觉 | [Dynalang](https://arxiv.org/abs/2210.03822)、[H-WM](https://arxiv.org/abs/2602.11291) |
-| 3D/4D WM | 预测点、occupancy、Gaussian、flow 或 4D 场景 | GWM、PointWorld、TesserAct、OccWorld |
-| 触觉与物理 | 联合预测视觉、触觉、接触和力 | ViTacWorld、PIN-WM、PhysWorld |
-| WM 做策略评测 | 用 WM rollout 比较策略或候选动作 | [WorldEval](https://arxiv.org/abs/2505.19017)、[WorldGym](https://arxiv.org/abs/2506.00613) |
-| 失败感知 | 将坏动作作为 consequence/risk 监督 | FACT、WorldEcho |
-| 结构化 latent | 用 JEPA、DINO 或粒子状态替代像素重建 | V-JEPA 2、PSG-JEPA、LPWM |
+| 方向              | 核心机制                                         | 代表工作                                                                              |
+| ----------------- | ------------------------------------------------ | ------------------------------------------------------------------------------------- |
+| 真实机器人在线 WM | 在真实交互中更新 latent dynamics，并在模型内想象 | [DayDreamer](https://arxiv.org/abs/2206.14176)                                           |
+| 对象槽位动力学    | 先分解 slot，再预测对象属性和关系                | [SlotFormer](https://arxiv.org/abs/2210.05861)、[FOCUS](https://arxiv.org/abs/2307.02427)   |
+| 动作条件视频      | 在视频生成 block 中注入逐帧动作                  | [IRASim](https://arxiv.org/abs/2406.14540)、[DIAMOND](https://arxiv.org/abs/2405.12399)     |
+| 语言条件 WM       | 预测语言相关状态、子目标或未来视觉               | [Dynalang](https://arxiv.org/abs/2210.03822)、[H-WM](https://arxiv.org/abs/2602.11291)      |
+| 3D/4D WM          | 预测点、occupancy、Gaussian、flow 或 4D 场景     | GWM、PointWorld、TesserAct、OccWorld                                                  |
+| 触觉与物理        | 联合预测视觉、触觉、接触和力                     | ViTacWorld、PIN-WM、PhysWorld                                                         |
+| WM 做策略评测     | 用 WM rollout 比较策略或候选动作                 | [WorldEval](https://arxiv.org/abs/2505.19017)、[WorldGym](https://arxiv.org/abs/2506.00613) |
+| 失败感知          | 将坏动作作为 consequence/risk 监督               | FACT、WorldEcho                                                                       |
+| 结构化 latent     | 用 JEPA、DINO 或粒子状态替代像素重建             | V-JEPA 2、PSG-JEPA、LPWM                                                              |
 
 ## 7. 最近工作补了哪些问题
 
@@ -129,7 +129,42 @@ WorldTrace 将长期视频 WM 的记忆拆成 `recent window + summary slots`，
 
 ### 7.3 失败动作也要学
 
-FACT 的训练划分很值得借鉴：成功轨迹可用于 imitation，失败动作仍用于学习“这样做会造成什么”。评估时应加入 action swap、off-expert action、失败类型覆盖和风险校准，而不仅是 expert rollout 的视频相似度。
+FACT 的做法是把“动作该不该执行”和“执行后会发生什么”拆开学。对一条样本，记当前观测为 `o[t]`，语言条件为 `l`，动作块为 `a[t:t+H-1]`，真实未来视频或状态为 `y[t+1:t+H]`，进度/价值目标为 `v`。
+
+```text
+成功轨迹：
+    (o[t], l, a[t:t+H-1], y[t+1:t+H], v)
+    -> action imitation loss
+    -> future prediction loss
+    -> value / progress loss
+
+失败轨迹：
+    (o[t], l, a_fail[t:t+H-1], y_fail[t+1:t+H], v_fail)
+    -> 不把 a_fail 当作 imitation target
+    -> 仍用 y_fail 学失败后果
+    -> 用 v_fail 学低进度、失败或风险
+```
+
+因此，失败动作不是被简单丢弃，而是只关闭动作模仿分支，保留它对 world/value 分支的监督。概念上可以写成带掩码的目标：
+
+```text
+L = m_success * lambda_a * L_action
+  + lambda_f * L_future(o[t], l, a, y)
+  + lambda_v * L_value(o[t], l, a, v)
+```
+
+其中 `m_success=1` 表示成功动作可以作为行为目标，`m_success=0` 表示失败动作不参与 `L_action`；`L_future` 和 `L_value` 对成功、失败样本都计算。这样模型同时学到两件事：成功时“应该怎样动”，失败时“这样动会导致什么”。
+
+推理时先由动作分支生成候选动作 `a^(n)`，再把每个候选动作送入未来/价值分支：
+
+```text
+a^(n) ~ policy(o[t], l)
+ŷ^(n), v^(n) = world_value(o[t], l, a^(n))
+n* = argmax_n score(ŷ^(n), v^(n))
+execute a^(n*)
+```
+
+`score` 可以结合预测进度、成功概率、风险或未来状态与目标的距离。关键是评分分支必须看到候选动作，而不是只根据当前观测给一个与动作无关的分数。评估时应加入 action swap、off-expert action、失败类型覆盖和风险校准，检查模型能否把错误动作的未来与成功动作区分开，而不仅是比较 expert rollout 的视频相似度。
 
 ### 7.4 WAM落地时的运行时问题
 
@@ -150,7 +185,7 @@ Harness VLA/HarnessWAM 表明，局部 predictive policy 还需要场景 belief�
 
 World-model 内成功率不能替代真实机器人测试；生成质量提升也不能自动推出控制收益。对 learned simulator 和 evaluator，还应报告其与真实环境的策略排名相关性、候选数—延迟曲线和失效类型。
 
-## 9. 读论文时按这条链检查
+## 9. 读论文
 
 ```text
 状态是否保留任务相关、对象和物理变量？
