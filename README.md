@@ -1,6 +1,10 @@
 <h1><img src="image/README/1788255651453.png" alt="" width="64" align="absmiddle"> Embodied AI Starter Map | 具身智能入门</h1>
 
-具身智能学习地图，面向想从机器人基础走到 VLA、World Model、RL/MBRL 和 WAM 的读者。内容从坐标系、运动学、动力学、ROS 2、仿真和控制接口开始，逐步连接到视觉语言动作策略、动作生成、世界模型、模型辅助强化学习和世界动作模型。每条路线都配有论文、开源代码、benchmark 与实践入口，并把 observation、action、时间对齐、闭环评测和真机部署放在同一条链路里。你可以把它当作阅读索引，也可以按教程从 MuJoCo、Isaac Sim 或 ROS 2 Humble 开始动手。
+具身智能学习地图，面向想从机器人基础走到 VLA、World Model、RL/MBRL 和 WAM 的读者。
+
+内容从坐标系、运动学、动力学、ROS 2、仿真和控制接口开始，逐步连接到视觉语言动作策略、动作生成、世界模型、模型辅助强化学习和世界动作模型。每条路线都配有论文、开源代码、benchmark 与实践入口，并把 observation、action、时间对齐、闭环评测和真机部署放在同一条链路里。
+
+可以把它当作阅读索引，也可以按教程从 MuJoCo、Isaac Sim 或 ROS 2 Humble 开始动手。
 
 <p align="center">
   <img src="image/README/1%20(2).png" alt="具身智能学习框架图" width="100%">
@@ -95,7 +99,7 @@ flowchart LR
 - [学习路线](docs/roadmap.md)：按章节组织的阅读和实践顺序。
 - [术语表](docs/glossary.md)：缩写、相近概念和容易混淆的边界。
 
-### 仿真与实践
+### 🧪 仿真与实践
 
 - [MuJoCo + Gymnasium 教程](docs/mujoco-tutorial.md)：从 MJCF、仿真循环、状态和传感器到 Gymnasium 环境。
 - [Isaac Sim 教程](docs/isaac-sim-tutorial.md)：URDF 导入、USD 场景、Articulation、传感器、无头运行和 Isaac Lab。
@@ -104,7 +108,7 @@ flowchart LR
 
 ROS 2、OpenCV 和机器人依赖安装可参考[鱼香 ROS 社区论坛](https://fishros.org.cn/forum/)。机器人章节统一以 Ubuntu 22.04 + ROS 2 Humble 为基线。
 
-## 从仿真到真机
+### 🤖 从仿真到真机
 
 - [Piper ROS Humble 实践](docs/robotics.md#13-piper-ros-humble从仿真到真实机械臂)：从仿真、驱动、关节状态到真实机械臂接入。
 - [机器人学基础](docs/robotics.md)：TF、RViz 2、MoveIt 2、动力学、手眼标定、`ros2_control` 和 `rosbag2`。
