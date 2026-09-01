@@ -20,7 +20,7 @@
 如果你还没有明确方向，按这个顺序读即可：
 
 ```mermaid
-flowchart TD
+flowchart LR
     K["知识图谱"] --> R["机器人学基础"]
     R --> M["模型基础"]
     M --> RL["RL 基础"]
@@ -71,7 +71,10 @@ flowchart LR
 
 ### 研究方向
 
+- [VLA 与动作策略](docs/papers.md#s1vla-与动作策略)：视觉、语言和机器人状态到动作，关注动作接口、泛化和推理延迟。
+- [RL 与 MBRL](docs/reinforcement-learning.md)：从 DQN、PPO、SAC、IQL 到 GRPO/SAPO，关注数据来源、价值学习、探索和策略后训练。
 - [WM 专题](docs/world-model-directions.md)：按 pixel、latent、对象中心、运动场、物理状态、3D/4D 和长期记忆整理世界模型，并说明数据字段、训练目标、动作接口和闭环评价。
+- [WAM 与未来动作联合建模](docs/papers.md#s1wam世界与动作联合建模)：关注未来表征怎样进入动作生成，以及训练期监督、测试期想象和异步执行。
 - [论文清单](docs/papers.md)：按 VLA、WM、WAM、MBRL、RL、数据和 benchmark 分级阅读。
 - [代码仓与工具](docs/codebases.md)：官方代码、仿真器、数据集、训练框架和实践入口。
 - [Benchmark 指南](docs/benchmarks.md)：LIBERO、CALVIN、ManiSkill、Meta-World、RoboDojo、RoboTwin、RoboCasa、DMControl 等的用途和比较边界。
