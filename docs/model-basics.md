@@ -1,5 +1,14 @@
 # 模型基础：Transformer、Diffusion 与 Flow Matching
 
+> 🧠 先掌握序列建模和生成模型，再理解 VLA、WM 与 WAM 的动作接口。
+
+**适合读者**：准备阅读 VLA、World Model 或动作生成论文的读者  
+**预计阅读**：25 min  
+**前置知识**：Python、深度学习、张量和概率基础  
+**下一步**：[VLA 与动作策略](papers.md#s1vla-与动作策略) · [WM 专题](world-model-directions.md) · [强化学习基础](reinforcement-learning.md)
+
+**本文路线**：统一记号 → Transformer → Diffusion → Flow Matching → VLA/WM/WAM 接口
+
 输入是什么，张量怎样流动，训练时预测什么，部署时怎样得到动作或未来。公式是常见实现的简化写法，具体项目可能换 token 化方式、条件注入位置或采样器。
 
 ## 0. 统一记号

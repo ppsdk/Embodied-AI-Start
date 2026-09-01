@@ -1,5 +1,14 @@
 # 机器人学基础：从坐标系到真机闭环
 
+> 🤖 从坐标、运动学和 ROS 2 接口开始，把仿真策略接到真实机械臂。
+
+**适合读者**：需要补齐机器人基础或准备上真机的读者  
+**预计阅读**：30 min  
+**前置知识**：Python、Linux 命令行、线性代数基础  
+**下一步**：[MuJoCo 教程](mujoco-tutorial.md) · [Isaac Sim 教程](isaac-sim-tutorial.md) · [强化学习基础](reinforcement-learning.md)
+
+**本文路线**：坐标与位姿 → TF → ROS 2 通信 → 控制与规划 → 标定 → 仿真/真机闭环
+
 VLA、World Model、MBRL、WAM 和 RL 最终都要驱动真实机器人。机器人学这一层负责把模型输出变成**坐标明确、满足约束、可以执行和可以排错**的运动。本章以 Ubuntu 22.04、ROS 2 Humble 和 MoveIt 2 Humble 为基线，串起几何表示、TF、RViz 2、运动规划、控制、手眼标定和部署。
 
 ## 1. 先建立一条完整链路

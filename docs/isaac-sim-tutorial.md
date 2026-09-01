@@ -1,5 +1,14 @@
 # Isaac Sim 仿真教程
 
+> 🧪 了解 USD、PhysX、传感器和 GPU 并行仿真，再进入 Isaac Lab。
+
+**适合读者**：需要复杂场景、传感器或大规模并行训练的读者  
+**预计阅读**：20 min  
+**前置知识**：Python、基本机器人学和 RL transition  
+**下一步**：[强化学习基础](reinforcement-learning.md) · [代码仓](codebases.md)
+
+**本文路线**：安装 → URDF/USD → Python 生命周期 → 状态与传感器 → RL transition → Isaac Lab
+
 Isaac Sim 适合复杂场景、相机/激光传感器和 GPU 物理。通常先将 URDF 导入 Isaac Sim，再在 USD 场景里继续编辑、加传感器和跑物理。Isaac Lab 是建在 Isaac Sim 之上的机器人学习框架，负责并行环境和训练；它不是另一个物理引擎。
 
 官方入口：

@@ -1,5 +1,14 @@
 # MuJoCo 仿真教程
 
+> 🧪 用 MuJoCo 和 Gymnasium 跑通一个最小的动力学与 RL 实验。
+
+**适合读者**：想快速验证控制、采样和 RL 算法的读者  
+**预计阅读**：20 min  
+**前置知识**：Python、虚拟环境和基本 RL 概念  
+**下一步**：[强化学习基础](reinforcement-learning.md) · [机器人学基础](robotics.md)
+
+**本文路线**：安装 → MJCF → 仿真循环 → 状态与传感器 → Gymnasium → 自行实验
+
 MuJoCo 是一个轻量的机器人仿真器，适合先跑通动力学、接触和 RL 循环。机器人资产常从 URDF 开始，但 MuJoCo 真正运行的是 MJCF。本文只带你完成一条最短路径：安装、加载模型、推进仿真、读取状态，最后接上 Gymnasium。
 
 官方入口：

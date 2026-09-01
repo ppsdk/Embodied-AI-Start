@@ -1,5 +1,14 @@
 # 强化学习基础：从 V、Q、A 到经典算法、GRPO 与 SAPO
 
+> 🎮 从单步转移和数据来源出发，理解 RL、MBRL 以及策略后训练。
+
+**适合读者**：想跑 RL 实验、做机器人控制或阅读 RL 后训练论文的读者  
+**预计阅读**：35 min  
+**前置知识**：Python、概率、神经网络和基本机器人接口  
+**下一步**：[MuJoCo 教程](mujoco-tutorial.md) · [机器人学基础](robotics.md) · [Benchmark 指南](benchmarks.md)
+
+**本文路线**：MDP → 价值函数 → 数据与训练范式 → 经典算法 → GRPO/SAPO → 机器人闭环
+
 这一页是 RL 的总入口。不要先背算法名字，先对每个算法问五件事：数据从哪里来？学的是 V、Q 还是策略？目标值怎么做出来？价值信息怎样改策略？它怎样处理估计误差和数据偏移？
 
 本文覆盖 DQN、DDPG、TD3、TD3+BC、SAC、PPO、IQL、GRPO 和 SAPO。前七个主要用于经典控制或 offline RL，GRPO/SAPO 主要放在语言模型和 VLA 的后训练里讲。想看它们和世界模型的关系，先看[知识图谱](knowledge-map.md)；想找代码，看[代码仓与工具](codebases.md)；想按顺序读论文，看[论文清单](papers.md)。

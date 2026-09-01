@@ -1,5 +1,14 @@
 # XPolicyLab 教程：把策略接到 RoboDojo
 
+> 🛠️ 从 debug 评测开始，把策略接入 RoboDojo，再扩展到仿真和服务化运行。
+
+**适合读者**：需要接入 RoboDojo/XPolicyLab 或检查策略接口的读者  
+**预计阅读**：15 min  
+**前置知识**：Python、Git、策略的 observation/action 定义  
+**下一步**：[Benchmark 指南](benchmarks.md) · [强化学习基础](reinforcement-learning.md) · [代码仓](codebases.md)
+
+**本文路线**：官方入口 → 安装 → 数据 → debug 评测 → 适配器 → 仿真/服务
+
 [XPolicyLab](https://github.com/XPolicyLab/XPolicyLab) 是机器人策略和评测环境之间的一层适配器。策略模型保留自己的依赖、checkpoint 和推理代码；XPolicyLab 负责把观测送给模型、把动作交给环境，并用同一套接口连接 RoboDojo、RoboTwin 或真实机器人。
 
 ```text
