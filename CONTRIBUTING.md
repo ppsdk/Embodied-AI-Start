@@ -14,7 +14,7 @@
 提交资源时请提供：
 
 1. **名称与类别**：paper / code / dataset / benchmark / tutorial。
-2. **官方入口**：优先作者主页、arXiv、出版社或官方组织仓库。
+2. **资源入口**：作者主页、arXiv、出版社或组织仓库。
 3. **一句话价值**：初学者应从中学到什么。
 4. **证据状态**：是否有代码、checkpoint、数据、复现实验。
 5. **范围匹配**：机器人操作、VLA、JEPA/视频/3D WM、MBRL/WAM、RL 或直接相关基础设施；暂不收录 locomotion、VLN/纯导航资源。
