@@ -1,6 +1,6 @@
 # 机器人学基础：从坐标系到真机闭环
 
-> 🤖 从坐标、运动学和 ROS 2 接口开始，把仿真策略接到真实机械臂。
+> 🤖 从坐标、运动学和 ROS 2 通信开始，把仿真策略接到真实机械臂。
 
 **预计阅读**：30 min
 **前置知识**：Python、Linux 命令行、线性代数基础
@@ -60,7 +60,7 @@ VLA、World Model、MBRL、WAM 和 RL 最终都要驱动真实机器人。机器
 
 ### 1.2 ROS 2 与 OpenCV 依赖安装
 
-本节以 Ubuntu 22.04 + ROS 2 Humble 为准。先加载 ROS 2 软件源环境，再安装 ROS 图像接口和 OpenCV：
+本节以 Ubuntu 22.04 + ROS 2 Humble 为准。先加载 ROS 2 软件源环境，再安装 ROS 图像消息和 OpenCV：
 
 ```bash
 source /opt/ros/humble/setup.bash
@@ -146,7 +146,7 @@ ros2 run piper_mujoco piper_mujoco_ctrl.py
 ros2 run piper_mujoco piper_no_gripper_mujoco_ctrl.py
 ```
 
-仿真启动后，另开终端检查接口：
+仿真启动后，另开终端检查话题、服务和节点：
 
 ```bash
 source /opt/ros/humble/setup.bash
@@ -176,7 +176,7 @@ ros2 launch piper_gazebo piper_no_gripper_gazebo.launch.py
 ros2 launch piper_no_gripper_moveit piper_moveit.launch.py
 ```
 
-具体参数和当前文件布局以 [`src/piper_moveit/README.md`](https://github.com/agilexrobotics/piper_ros/blob/humble/src/piper_moveit/README.md) 及 [`src/piper_sim/README.md`](https://github.com/agilexrobotics/piper_ros/blob/humble/src/piper_sim/README.md) 为准。规划成功只说明规划场景和控制器接口可用，不等于真实机械臂已经安全执行。
+具体参数和当前文件布局以 [`src/piper_moveit/README.md`](https://github.com/agilexrobotics/piper_ros/blob/humble/src/piper_moveit/README.md) 及 [`src/piper_sim/README.md`](https://github.com/agilexrobotics/piper_ros/blob/humble/src/piper_sim/README.md) 为准。规划成功只说明规划场景和控制器连接可用，不等于真实机械臂已经安全执行。
 
 接入真机时，先安装并检查 CAN 工具。USB-CAN 的硬件端口编码必须替换成自己机器上 `find_all_can_port.sh` 输出的值：
 
@@ -192,7 +192,7 @@ bash can_activate.sh can0 1000000
 ip -details link show can0
 ```
 
-确认 CAN 接口后，再启动单臂驱动。`auto_enable:=false` 用于把“上电”和“使能”分成两个可检查步骤：
+确认 CAN 通信后，再启动单臂驱动。`auto_enable:=false` 用于把“上电”和“使能”分成两个可检查步骤：
 
 ```bash
 ros2 run piper piper_single_ctrl \
@@ -430,9 +430,9 @@ ros2 run tf2_ros tf2_echo base_link tool0
 
 ### 3.3 ROS 2 通信与 QoS
 
-ROS 2 中有三种常用通信接口：
+ROS 2 中有三种常用通信方式：
 
-| 接口    | 方向和特点                                       | 典型用途                              |
+| 通信方式 | 方向和特点                                       | 典型用途                              |
 | ------- | ------------------------------------------------ | ------------------------------------- |
 | topic   | 发布者向零个或多个订阅者持续发送消息，不等待响应 | 图像、`/joint_states`、TF、传感器流 |
 | service | 一次请求对应一次响应，适合短操作                 | 触发校准、读取配置、复位状态          |
@@ -455,7 +455,7 @@ ros2 action list -t
 ros2 action info /joint_trajectory_controller/follow_joint_trajectory
 ```
 
-### 3.3.1 环境、包和接口
+### 3.3.1 环境、包和消息定义
 
 每个新终端先加载 ROS 2 和工作空间：
 
@@ -466,7 +466,7 @@ printenv | grep -E 'ROS_|AMENT_PREFIX_PATH'
 ros2 doctor --report
 ```
 
-查找包、可执行文件和消息接口：
+查找包、可执行文件和消息定义：
 
 ```bash
 ros2 pkg list
@@ -510,7 +510,7 @@ ros2 service call /my_node/set_logger_level rcl_interfaces/srv/SetLoggerLevel \
   "{logger_name: 'my_node', level: 'DEBUG'}"
 ```
 
-生命周期节点通常按 `unconfigured -> inactive -> active` 运行；只有在节点实现了 lifecycle 接口时，`ros2 lifecycle` 命令才适用。
+生命周期节点通常按 `unconfigured -> inactive -> active` 运行；只有在节点实现了 lifecycle 机制时，`ros2 lifecycle` 命令才适用。
 
 ### 3.3.3 Topic、Service 和 Action 的补充命令
 
@@ -525,7 +525,7 @@ ros2 action send_goal /fibonacci example_interfaces/action/Fibonacci \
   "{order: 5}"
 ```
 
-`ros2 topic pub -r 10` 会持续发布，按 `Ctrl+C` 停止；给真实机器人发送命令前必须确认 topic、单位、frame 和安全限幅。`action send_goal` 适合验证 action 是否可用，轨迹 action 的 goal 字段必须以具体接口定义为准。
+`ros2 topic pub -r 10` 会持续发布，按 `Ctrl+C` 停止；给真实机器人发送命令前必须确认 topic、单位、frame 和安全限幅。`action send_goal` 适合验证 action 是否可用，轨迹 action 的 goal 字段必须以具体消息定义为准。
 
 ### 3.3.4 工作空间构建
 
@@ -539,7 +539,7 @@ colcon test --event-handlers console_direct+
 source install/setup.bash
 ```
 
-`--symlink-install` 便于 Python 和资源文件修改后直接生效；C++ 代码、接口定义或依赖变化后仍应重新构建。构建失败时先看首个失败包，不要只看最后一行的汇总错误。
+`--symlink-install` 便于 Python 和资源文件修改后直接生效；C++ 代码、消息定义或依赖变化后仍应重新构建。构建失败时先看首个失败包，不要只看最后一行的汇总错误。
 
 ### 3.3.5 ROS 2 守护进程和网络排查
 
@@ -551,7 +551,7 @@ ros2 multicast receive
 ros2 multicast send
 ```
 
-同一 ROS_DOMAIN_ID 和可互通的 DDS 网络是节点发现的前提。多机通信时还要检查 `ROS_DOMAIN_ID`、网络接口、防火墙和 DDS 实现；单机上“节点互相看不到”时可先重启 daemon，但 daemon 重启不能修复真正的 DDS 网络或 QoS 不兼容。
+同一 ROS_DOMAIN_ID 和可互通的 DDS 网络是节点发现的前提。多机通信时还要检查 `ROS_DOMAIN_ID`、网络设备、防火墙和 DDS 实现；单机上“节点互相看不到”时可先重启 daemon，但 daemon 重启不能修复真正的 DDS 网络或 QoS 不兼容。
 
 QoS（Quality of Service）决定消息如何传输。最容易遇到的是可靠性不兼容：传感器通常使用 `best_effort`，而调试订阅默认可能是 `reliable`，两者不匹配时看不到数据。常用选项包括：
 
@@ -573,7 +573,7 @@ ros2 topic echo /camera/image_raw --qos-reliability best_effort --qos-history ke
 
 ### 3.4 `rclpy` 查询示例
 
-`rclpy` 是 ROS 2 的 Python 客户端库，负责节点生命周期、参数、通信接口和回调调度；TF 数据缓存和查询由 `tf2_ros.Buffer` 负责。
+`rclpy` 是 ROS 2 的 Python 客户端库，负责节点生命周期、参数、通信机制和回调调度；TF 数据缓存和查询由 `tf2_ros.Buffer` 负责。
 
 | API                               | 作用                                              |
 | --------------------------------- | ------------------------------------------------- |
@@ -715,14 +715,14 @@ source ~/ros2_ws/install/setup.bash
 `ros2_control` 把硬件驱动和控制器分开：
 
 ```text
-硬件接口（state/command interfaces）
+硬件连接（state/command interfaces）
     -> controller_manager
     -> joint_state_broadcaster
     -> joint_trajectory_controller
     -> MoveIt 2 或 action client
 ```
 
-硬件通常提供 `position`、`velocity`、`effort` 等 state/command interface。`joint_state_broadcaster` 发布关节状态；`joint_trajectory_controller` 接收带时间戳的关节轨迹，常通过 `FollowJointTrajectory` action 对外提供接口。控制器名称、关节顺序和接口组合必须以机器人配置为准。
+硬件通常提供 `position`、`velocity`、`effort` 等 state/command interface。`joint_state_broadcaster` 发布关节状态；`joint_trajectory_controller` 接收带时间戳的关节轨迹，常通过 `FollowJointTrajectory` action 对外提供调用入口。控制器名称、关节顺序和 state/command 组合必须以机器人配置为准。
 
 常用命令：
 
@@ -736,7 +736,7 @@ ros2 action info /joint_trajectory_controller/follow_joint_trajectory
 ros2 topic echo /joint_states --once
 ```
 
-实际切换前确认控制器名称存在；`joint_state_broadcaster` 通常应保持 active，示例中的 deactivate 只用于说明命令格式，不应机械照抄。规划成功但执行失败时，依次检查控制器是否 active、轨迹的 joint name/顺序是否一致、接口类型是否匹配、action 是否可用，以及硬件是否报告 fault。
+实际切换前确认控制器名称存在；`joint_state_broadcaster` 通常应保持 active，示例中的 deactivate 只用于说明命令格式，不应机械照抄。规划成功但执行失败时，依次检查控制器是否 active、轨迹的 joint name/顺序是否一致、state/command 类型是否匹配、action 是否可用，以及硬件是否报告 fault。
 
 ### 5.5 C++ 规划逻辑
 
@@ -761,9 +761,9 @@ move_group.clearPoseTargets();
 
 Planning Scene 是机器人状态和碰撞世界的快照，包括静态/动态障碍物、附着物体和允许碰撞矩阵（ACM）。抓取物体后，要把它从世界碰撞集合移到附着集合，否则规划器会把手里的物体当成外部障碍物。
 
-最小检查：先只加载机器人，再加入盒子，检查 RViz 与 Planning Scene 的位置一致性；让末端接近盒子，确认碰撞会阻止危险轨迹；附着盒子后重新规划，确认允许碰撞对正确。
+基础检查：先只加载机器人，再加入盒子，检查 RViz 与 Planning Scene 的位置一致性；让末端接近盒子，确认碰撞会阻止危险轨迹；附着盒子后重新规划，确认允许碰撞对正确。
 
-### 5.7 与 VLA/RL 的接口边界
+### 5.7 与 VLA/RL 的连接边界
 
 ```text
 VLA / RL 输出 task-space goal 或 delta pose
@@ -926,7 +926,7 @@ ros2 param set /my_node use_sim_time true
 
 带图像的 bag 可能很大，可以只记录压缩图像或缩短采样窗口。复现实验时固定 bag 名称、代码版本、参数文件、frame、时间基准和随机种子。回放只重现消息，不会自动重现电机动力学、网络延迟或硬件安全状态。
 
-## 9. 部署前检查和仓库主线接口
+## 9. 部署前检查和仓库主线连接
 
 部署前逐项确认：
 
@@ -936,12 +936,12 @@ ros2 param set /my_node use_sim_time true
 - 规划成功、控制器接受、轨迹执行和任务成功分别记录；
 - 仿真和真机的相机内参、尺度、动作归一化、频率和延迟有对应关系。
 
-| 仓库主线 | 机器人学接口                                           | 首先验证什么                      |
+| 仓库主线 | 机器人学连接                                           | 首先验证什么                      |
 | -------- | ------------------------------------------------------ | --------------------------------- |
 | VLA      | 视觉/语言/本体状态 -> task-space 或 joint action chunk | frame、单位、IK 可达性、控制频率  |
 | WM/WAM   | 状态/图像 + action -> 未来表征或 action chunk          | 动作敏感性、闭环收益、长时程漂移  |
 | MBRL     | 学习动力学/奖励 -> imagined rollout、MPC 或价值更新    | 模型偏差、样本效率和规划成本      |
 | RL       | observation、action、reward、termination               | reward 是否对应真实任务和安全约束 |
-| 双臂真机 | 两臂状态、相对位姿、同步动作、碰撞约束                 | 标定、同步、控制接口和急停流程    |
+| 双臂真机 | 两臂状态、相对位姿、同步动作、碰撞约束                 | 标定、同步、控制连接和急停流程    |
 
-机器人学的目标不是把所有问题都交给策略，而是提供一层可解释的几何、约束和执行接口：策略负责“想做什么”，TF 负责“在哪个坐标系”，MoveIt 2 负责“能否规划”，控制器负责“如何稳定执行”，安全层负责“什么时候必须停下”。
+机器人学的目标不是把所有问题都交给策略，而是提供一层可解释的几何、约束和执行流程：策略负责“想做什么”，TF 负责“在哪个坐标系”，MoveIt 2 负责“能否规划”，控制器负责“如何稳定执行”，安全层负责“什么时候必须停下”。

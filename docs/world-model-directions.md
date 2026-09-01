@@ -3,12 +3,12 @@
 > 🌍 按像素、latent、对象中心和 3D/4D 等路线理解世界模型，并连接到 WAM。
 
 **预计阅读**：25 min
-**前置知识**：模型基础、机器人观测与动作接口
+**前置知识**：模型基础、机器人观测与动作格式
 **下一步**：[模型基础](model-basics.md) · [强化学习基础](reinforcement-learning.md) · [代码仓](codebases.md)
 
 **本文路线**：表示 → 动作条件预测 → 数据字段 → 训练目标 → 闭环评测 → 代表工作
 
-World Model（WM，世界模型）要回答的不是“能不能生成一段像真的视频”，而是：**给定当前状态、机器人动作和任务条件，世界接下来会怎样变化**。最小形式为：
+World Model（WM，世界模型）要回答的不是“能不能生成一段像真的视频”，而是：**给定当前状态、机器人动作和任务条件，世界接下来会怎样变化**。基本形式为：
 
 ```text
 p(x[t+1:t+H] | x[t], a[t:t+H-1], l)
@@ -121,7 +121,7 @@ p(x[t+1:t+H] | x[t], a[t:t+H-1], l)
 
 ### 7.1 latent能不能支撑控制
 
-V-JEPA 2、PSG-JEPA 和相关 JEPA-WM 说明，latent prediction 的关键不只是 loss 下降，还要验证：物理状态能否从 latent 中被识别；不同动作是否造成可分离的 latent 转移；规划得到的动作是否提升真实成功率。LPWM 的 Encoder 可以提供对象/粒子感知前端，但只有 Encoder 不能替代预测 dynamics、动作接口和 rollout。
+V-JEPA 2、PSG-JEPA 和相关 JEPA-WM 说明，latent prediction 的关键不只是 loss 下降，还要验证：物理状态能否从 latent 中被识别；不同动作是否造成可分离的 latent 转移；规划得到的动作是否提升真实成功率。LPWM 的 Encoder 可以提供对象/粒子感知前端，但只有 Encoder 不能替代预测 dynamics、动作格式和 rollout。
 
 ### 7.2 流式生成和长期记忆
 

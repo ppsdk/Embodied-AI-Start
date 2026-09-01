@@ -6,7 +6,7 @@
 **前置知识**：Python、基础深度学习  
 **下一步**：[机器人学基础](robotics.md) · [模型基础](model-basics.md)
 
-**本文路线**：基础接口 → 模型与数据 → RL/MBRL → VLA → WM/WAM → 综合实践
+**本文路线**：基础概念与控制 → 模型与数据 → RL/MBRL → VLA → WM/WAM → 综合实践
 
 不用严格从第 1 章读到第 8 章。先读共同基础，再按自己的研究问题选择路线；遇到不懂的概念，回来查对应章节即可。
 
@@ -14,7 +14,7 @@
 
 | 章节    | 主题                                | 路线      |
 | ------- | ----------------------------------- | --------- |
-| 第 1 章 | MDP、机器人学与控制接口             | 共同基础  |
+| 第 1 章 | MDP、机器人学与控制                 | 共同基础  |
 | 第 2 章 | 模型基础、动作策略与 benchmark 协议 | 共同基础  |
 | 第 3 章 | Model-free RL：Online 与 Offline    | RL/MBRL   |
 | 第 4 章 | Model-based RL（MBRL）              | RL/MBRL   |
@@ -43,7 +43,7 @@ flowchart TD
     A --> E
 ```
 
-## 第 1 章｜MDP、机器人学与控制接口
+## 第 1 章｜MDP、机器人学与控制
 
 ### 项目链接
 
@@ -59,14 +59,14 @@ flowchart TD
 - [XPolicyLab 教程](xpolicylab-tutorial.md)：用统一的策略适配器、websocket 服务和 debug 后端连接 RoboDojo。
 - [ROS 2 Humble 文档](https://docs.ros.org/en/humble/)：节点、topic、TF/tf2 和工具链；本仓库机器人学章节统一以 Ubuntu 22.04 + ROS 2 Humble 为基线。
 - [MoveIt 2 Humble 文档](https://moveit.picknik.ai/humble/index.html)：URDF/SRDF、Planning Scene、规划与轨迹执行。
-- [机器人学基础](robotics.md)：将 TF、`rclpy`、RViz 2、MoveIt 2 和控制接口串成一个可排查的闭环。
+- [机器人学基础](robotics.md)：将 TF、`rclpy`、RViz 2、MoveIt 2 和控制流程串成一个可排查的闭环。
 
 ## 第 2 章｜模型基础、动作策略与 benchmark
 
 ### 项目链接
 
 - [模型基础](model-basics.md)：Transformer、diffusion、flow matching 与 DiT。
-- [Transformers](https://github.com/huggingface/transformers)：Transformer backbone 与多模态模型接口。
+- [Transformers](https://github.com/huggingface/transformers)：Transformer backbone 与多模态模型调用方式。
 - [Diffusers](https://github.com/huggingface/diffusers)：diffusion、scheduler 和 DiT 工具链。
 - [Flow Matching](https://github.com/facebookresearch/flow_matching)：probability path、velocity field 和 ODE 采样。
 - [DiT](https://github.com/facebookresearch/DiT)：Transformer diffusion backbone。
@@ -84,7 +84,7 @@ flowchart TD
 - [Gymnasium](https://github.com/Farama-Foundation/Gymnasium)：统一环境 API。
 - [Stable-Baselines3](https://github.com/DLR-RM/stable-baselines3)：PPO、SAC、DQN 等实现。
 - [CleanRL](https://github.com/vwxyzjn/cleanrl)：PPO、SAC、DQN 等单文件实现。
-- [d3rlpy](https://github.com/takuseno/d3rlpy)：IQL、CQL 等 offline RL 实现与数据接口。
+- [d3rlpy](https://github.com/takuseno/d3rlpy)：IQL、CQL 等 offline RL 实现与数据处理。
 - [Implicit Q-Learning](https://github.com/ikostrikov/implicit_q_learning)：IQL 参考实现。
 - [Minari](https://github.com/Farama-Foundation/Minari)：离线轨迹数据 API。
 
@@ -136,7 +136,7 @@ flowchart TD
 - [IRASim](https://arxiv.org/abs/2406.14540) 和 [FlowDreamer](https://arxiv.org/abs/2505.10075)：细粒度动作-帧对齐与显式 3D scene flow。
 - [ViTacWorld](https://vitacworld.github.io/)：视觉-触觉动作条件 WM。
 - [WorldEval](https://worldeval.github.io/) 和 [WorldGym](https://arxiv.org/abs/2506.00613)：用 WM 做策略 rollout 和部署前评测。
-- [WM 其他方向](world-model-directions.md)：统一记录输入、动作、预测目标、时间跨度、决策接口和证据。
+- [WM 其他方向](world-model-directions.md)：统一记录输入、动作、预测目标、时间跨度、决策用法和证据。
 
 ## 第 7 章｜WAM 与 Fast-WAM
 

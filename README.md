@@ -4,7 +4,7 @@
 
 具身智能学习地图，面向想从机器人基础走到 VLA、World Model、RL/MBRL 和 WAM 的读者。
 
-内容从坐标系、运动学、动力学、ROS 2、仿真和控制接口开始，逐步连接到视觉语言动作策略、动作生成、世界模型、模型辅助强化学习和世界动作模型。每条路线都配有论文、开源代码、benchmark 与实践入口，并把 observation、action、时间对齐、闭环评测和真机部署放在同一条链路里。
+内容从坐标系、运动学、动力学、ROS 2、仿真和控制流程开始，逐步连接到视觉语言动作策略、动作生成、世界模型、模型辅助强化学习和世界动作模型。每条路线都配有论文、开源代码、benchmark 与实践入口，并把 observation、action、时间对齐、闭环评测和真机部署放在同一条链路里。
 
 可以把它当作阅读索引，也可以按教程从 MuJoCo、Isaac Sim 或 ROS 2 Humble 开始动手。
 
@@ -92,9 +92,9 @@ flowchart LR
 
 ### 🌍 研究方向
 
-- [VLA 与动作策略](docs/vla.md)：视觉、语言和机器人状态到动作，关注动作接口、训练流程、泛化和推理延迟。
+- [VLA 与动作策略](docs/vla.md)：视觉、语言和机器人状态到动作，关注动作格式、训练流程、泛化和推理延迟。
 - [RL 与 MBRL](docs/mbrl.md)：说明模型如何进入 rollout、规划和策略更新；算法细节见[强化学习基础](docs/reinforcement-learning.md)。
-- [WM 专题](docs/world-model-directions.md)：按 pixel、latent、对象中心、运动场、物理状态、3D/4D 和长期记忆整理世界模型，并说明数据字段、训练目标、动作接口和闭环评价。
+- [WM 专题](docs/world-model-directions.md)：按 pixel、latent、对象中心、运动场、物理状态、3D/4D 和长期记忆整理世界模型，并说明数据字段、训练目标、动作条件和闭环评价。
 - [WAM 与未来动作联合建模](docs/wam.md)：关注未来表征怎样进入动作生成，以及训练期监督、测试期想象和异步执行。
 - [论文清单](docs/papers.md)：按 VLA、WM、WAM、MBRL、RL、数据和 benchmark 分级阅读。
 - [代码仓与工具](docs/codebases.md)：官方代码、仿真器、数据集、训练框架和实践入口。

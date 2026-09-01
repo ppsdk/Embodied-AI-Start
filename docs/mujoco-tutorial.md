@@ -1,6 +1,6 @@
 # MuJoCo 仿真教程
 
-> 🧪 用 MuJoCo 和 Gymnasium 跑通一个最小的动力学与 RL 实验。
+> 🧪 用 MuJoCo 和 Gymnasium 跑通一个基础的动力学与 RL 实验。
 
 **预计阅读**：20 min  
 **前置知识**：Python、虚拟环境和基本 RL 概念  
@@ -29,7 +29,7 @@ python -m pip install mujoco
 python -c "import mujoco; print(mujoco.__version__)"
 ~~~
 
-需要标准 RL 接口时再安装：
+需要标准 RL 环境格式时再安装：
 
 ~~~bash
 python -m pip install "gymnasium[mujoco]" stable-baselines3
@@ -105,7 +105,7 @@ MJCF 是 MuJoCo 使用的 XML 模型格式。下面的模型有一个铰链关�
 
 model.nq、model.nv 和 model.nu 分别是广义位置、广义速度和执行器的维度。它们不一定相等，不能凭经验 reshape。
 
-## 4. 最小仿真循环
+## 4. 仿真循环
 
 保存为 simulate.py：
 
@@ -202,7 +202,7 @@ env.close()
 
 ## 8. 建议的自行实验
 
-完成最小循环后，每次只改一个变量：
+完成基础循环后，每次只改一个变量：
 
 1. 改 gravity 或杆的密度，观察位置和速度变化。
 2. 改执行器增益，比较控制误差和稳定时间。

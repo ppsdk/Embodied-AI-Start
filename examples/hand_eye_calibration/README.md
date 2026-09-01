@@ -1,6 +1,6 @@
 # 手眼标定代码示例（ROS 2 Humble）
 
-这个目录给出一个 eye-in-hand 的最小闭环：ROS 2 节点同步图像和 `CameraInfo`，按图像时间戳查询末端 TF，检测 ArUco，并把配对样本写入 CSV；离线脚本读取 CSV，调用 OpenCV `calibrateHandEye` 求出相机到末端的 `T^E_C`。
+这个目录给出一个 eye-in-hand 的基础闭环：ROS 2 节点同步图像和 `CameraInfo`，按图像时间戳查询末端 TF，检测 ArUco，并把配对样本写入 CSV；离线脚本读取 CSV，调用 OpenCV `calibrateHandEye` 求出相机到末端的 `T^E_C`。
 
 ## 坐标和 CSV 约定
 

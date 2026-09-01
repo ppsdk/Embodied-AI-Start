@@ -35,7 +35,7 @@
 | 4 | Diffusion Policy | 机器人动作生成、action chunk 与多峰行为的代表作 | [arXiv](https://arxiv.org/abs/2303.04137) · [Code](https://github.com/real-stanford/diffusion_policy) |
 | 5 | π0: A Vision-Language-Action Flow Model for General Robot Control | 理解 VLM backbone、flow matching action expert 与通用策略 | [arXiv](https://arxiv.org/abs/2410.24164) · [Project](https://www.pi.website/blog/pi0) |
 | 6 | π0.5: A Vision-Language-Action Model with Open-World Generalization | 异构协同训练、高层语义与开放世界长时程泛化 | [arXiv](https://arxiv.org/abs/2504.16054) · [Project](https://www.pi.website/blog/pi05) · [Code](https://github.com/Physical-Intelligence/openpi) |
-| 7 | V-JEPA 2: Self-Supervised Video Models Enable Understanding, Prediction and Planning | 现代 JEPA 世界表征、物理理解与预测接口 | [arXiv](https://arxiv.org/abs/2506.09985) · [Code](https://github.com/facebookresearch/vjepa2) |
+| 7 | V-JEPA 2: Self-Supervised Video Models Enable Understanding, Prediction and Planning | 现代 JEPA 世界表征、物理理解与预测能力 | [arXiv](https://arxiv.org/abs/2506.09985) · [Code](https://github.com/facebookresearch/vjepa2) |
 | 8 | World Action Models: The Next Frontier in Embodied AI | 用级联式/联合式框架建立 WAM 的系统分类 | [arXiv](https://arxiv.org/abs/2605.12090) · [Resources](https://github.com/OpenMOSS/Awesome-WAM) |
 | 9 | Fast-WAM: Do World Action Models Need Test-time Future Imagination? | 区分训练期视频建模收益和测试期显式想象成本 | [arXiv](https://arxiv.org/abs/2603.16666) · [Project](https://yuantianyuan01.github.io/FastWAM/) · [Code](https://github.com/yuantianyuan01/FastWAM) |
 | 10 | StarVLA: A Lego-like Codebase for Vision-Language-Action Model Developing | 把 VLA 研究拆为可替换 backbone、action head、训练与部署模块 | [arXiv](https://arxiv.org/abs/2604.05014) · [Code](https://github.com/starVLA/starVLA) |
@@ -114,7 +114,7 @@
 | Bird's Eye View Based Pretrained World model for Visual Navigation（2023） | 在 BEV 表征上预训练导航世界模型，说明移动机器人 WM 可以预测地图/视角演化，而不只生成第一视角视频 | [arXiv](https://arxiv.org/abs/2310.18847) |
 | A Comprehensive Survey on World Models for Embodied AI | 从表征、时间建模、空间建模和决策用途区分 WM 路线 | [arXiv](https://arxiv.org/abs/2510.16732) |
 
-这里的 WM 是广义环境表征/预测/生成范式；JEPA、视频、物理模拟和 3D/4D 路线不要求自带 planner 或 actor-critic。Occupancy、驾驶、游戏和动态重建论文常来自不同领域，阅读时要核对动作接口、坐标系和任务类型。只有加入动作条件与决策收益证据，才应进一步主张其控制价值。
+这里的 WM 是广义环境表征/预测/生成范式；JEPA、视频、物理模拟和 3D/4D 路线不要求自带 planner 或 actor-critic。Occupancy、驾驶、游戏和动态重建论文常来自不同领域，阅读时要核对动作格式、坐标系和任务类型。只有加入动作条件与决策收益证据，才应进一步主张其控制价值。
 
 ## S1｜WAM：世界与动作联合建模
 

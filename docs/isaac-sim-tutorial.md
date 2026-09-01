@@ -17,7 +17,7 @@ Isaac Sim 适合复杂场景、相机/激光传感器和 GPU 物理。通常先�
 - [Isaac Lab 文档](https://isaac-sim.github.io/IsaacLab/)
 - [Isaac Lab GitHub](https://github.com/isaac-sim/IsaacLab)
 
-本文只讲最小流程：导入机器人、看懂场景对象、读写关节状态、推进仿真，再接 Isaac Lab。Isaac Sim 的版本、驱动和 Python API 变化很快，具体安装命令以你使用的版本文档为准。
+本文只讲基础流程：导入机器人、看懂场景对象、读写关节状态、推进仿真，再接 Isaac Lab。Isaac Sim 的版本、驱动和 Python API 变化很快，具体安装命令以你使用的版本文档为准。
 
 ## 1. 运行方式和安装
 
@@ -52,7 +52,7 @@ URDF 不是完整的 USD 场景文件，也不会自动包含你的房间、灯�
 
 先在 GUI 中打开空场景，创建地面和光源，再加入一个机器人资产。确认 Prim 路径、关节名称、单位（通常是米和弧度）及碰撞几何。
 
-## 4. 最小 Python 生命周期
+## 4. 核心 Python 生命周期
 
 不同版本的模块路径可能变化，下面只展示结构：
 
@@ -85,7 +85,7 @@ simulation_app.close()
 
 ## 5. 状态、动作和传感器
 
-常见关节接口的语义如下（具体函数名随版本变化）：
+常见关节控制量的语义如下（具体函数名随版本变化）：
 
 ~~~python
 q = robot.get_joint_positions()       # [num_joints]

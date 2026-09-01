@@ -6,7 +6,7 @@
 **前置知识**：Python、深度学习、张量和概率基础  
 **下一步**：[VLA 专题](vla.md) · [WM 专题](world-model-directions.md) · [WAM 专题](wam.md) · [RL / MBRL 专题](mbrl.md)
 
-**本文路线**：统一记号 → Transformer → Diffusion → Flow Matching → 动作输出接口
+**本文路线**：统一记号 → Transformer → Diffusion → Flow Matching → 动作输出
 
 输入是什么，张量怎样流动，训练时预测什么，部署时怎样得到动作或未来。公式是常见实现的简化写法，具体项目可能换 token 化方式、条件注入位置或采样器。
 
@@ -72,13 +72,7 @@ Mask 是信息流约束，不是训练目标本身。使用 Transformer 不代�
 
 ### 1.4 常见输出头与目标
 
-1. **Next-token / action-token head**：对每个位置输出词表或动作码本 logits，用交叉熵训练：
-
-   $$
-   \mathcal{L}_{AR}=-\sum_i\log p_\theta(y_i\mid y_{<i},C).
-   $$
-
-   连续动作先量化为离散 bin/token；推理时自回归采样或贪心解码。
+1. **Next-token / action-token head**：对每个位置输出词表或动作码本 logits，用交叉熵训练：$\mathcal{L}_{\mathrm{AR}}=-\sum_i\log p_\theta(y_i\mid y_{<i},C)$。连续动作先量化为离散 bin/token；推理时自回归采样或贪心解码。
 2. **连续回归 head**：直接回归动作变量，用 L1、L2、Huber 或高斯负对数似然拟合。简单但在多峰行为上可能产生平均动作。
 3. **Diffusion head**：Transformer 提取条件 $C$，另一个网络接收带噪动作 $x_t$ 并预测去噪目标。
 4. **Flow-matching head**：Transformer 提取条件 $C$，网络接收路径上的动作 $x_t$ 和时间 $t$，预测速度场 $v_\theta(x_t,t,C)$。
@@ -172,7 +166,7 @@ return x
 
 | 输出机制        | 训练目标                           | 推理方式        | 优点                           | 主要代价/风险                           | 典型位置                               |
 | --------------- | ---------------------------------- | --------------- | ------------------------------ | --------------------------------------- | -------------------------------------- |
-| 离散 next-token | token 交叉熵                       | 自回归解码      | 复用语言模型、接口清晰         | 量化误差、序列延迟、动作粒度受 bin 影响 | 离散 action-token VLA                  |
+| 离散 next-token | token 交叉熵                       | 自回归解码      | 复用语言模型、动作定义清晰     | 量化误差、序列延迟、动作粒度受 bin 影响 | 离散 action-token VLA                  |
 | 连续回归        | L1/L2/Huber/NLL                    | 一次前向        | 快、实现简单                   | 多峰分布可能平均化，长时程相关性弱      | VLA action head、低延迟控制            |
 | Diffusion       | 预测$\epsilon/x_0/v$ 的去噪 loss | 多步反向去噪    | 多模态动作、平滑 action chunk  | 采样延迟、scheduler/SNR 敏感            | Diffusion Policy、部分 VLA action head |
 | Flow matching   | 速度场回归                         | ODE solver 积分 | 连续路径、可用少步 solver/蒸馏 | path/solver 选择、速度场误差            | π0 类 flow action expert              |

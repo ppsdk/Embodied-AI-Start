@@ -76,7 +76,7 @@
 | IRIS | Transformers are Sample-Efficient World Models | 离散 VAE 与自回归 Transformer 组成的世界模型；预测离散观测 token，并在模型内进行 RL rollout。 |
 | DIAMOND | DIffusion As a Model Of eNvironment Dreams | 像素 diffusion 世界模型；通过反复去噪生成环境未来，可作为交互式神经模拟器。 |
 | Dynalang | Dynamic Language Agent | 将描述环境规律的语言与视觉历史一起用于未来表征预测和 imagined rollout。 |
-| GNS | Graph Network-based Simulator | 用粒子图和 message passing 学习物理动力学的模拟器；本身不包含视觉或机器人动作接口。 |
+| GNS | Graph Network-based Simulator | 用粒子图和 message passing 学习物理动力学的模拟器；本身不包含视觉或机器人动作模块。 |
 | Latent Action | Latent Action | 从无动作标签的视频中推断的隐变量动作；需要额外校准，不能直接当成机器人关节或末端动作。 |
 | Digital Twin WM | Digital Twin World Model | 将显式场景、物理参数和模拟器组合成可反事实执行的环境副本。 |
 | Autonomous Play | Autonomous Play | 机器人通过自发探索收集交互、成功、失败和接触数据，用于训练或校准世界模型。 |
@@ -118,7 +118,7 @@
 | Model Bias | Model Bias | 学习模型与真实环境不一致导致的系统性决策误差。 |
 | Sim-to-Real | Simulation-to-Reality | 将仿真中训练的策略迁移到真实机器人。 |
 | Teleoperation | Teleoperation | 人类远程控制机器人，用于完成任务或采集示范。 |
-| Embodiment | Embodiment | 机器人的物理形态、自由度、传感器与动作接口。 |
+| Embodiment | Embodiment | 机器人的物理形态、自由度、传感器与动作能力。 |
 | Generalist Policy | Generalist Robot Policy | 试图覆盖多任务、多场景乃至多本体的通用机器人策略。 |
 | Post-training | Post-training | 在预训练模型基础上进行监督微调、偏好优化或 RL 等后续训练。 |
 | Rollout | Rollout | 策略在环境或模型中从起点执行得到的一段轨迹。 |
@@ -128,20 +128,20 @@
 | Physics step | Physics Step | 仿真器推进一次物理积分的时间步；可与渲染和策略步不同。 |
 | Decimation | Action Decimation | 一个策略动作保持的物理步数，常写为 policy_dt / physics_dt。 |
 | TF / tf2 | Transform Library | ROS 2 Humble 中带时间戳的坐标变换树与查询库；用于在 frame 之间转换位姿、点和向量。 |
-| rclpy | ROS 2 Python Client Library | ROS 2 Humble 的 Python 客户端库；提供 `Node`、参数、定时器、通信接口和 executor 调度，常用于编写 TF/传感器/控制节点。 |
-| Topic | ROS 2 Topic | ROS 2 中持续发布消息的一对多通信接口，常用于图像、关节状态、TF 和传感器数据。 |
-| Service | ROS 2 Service | ROS 2 中一次请求对应一次响应的短操作接口，适合复位、查询和触发操作。 |
-| Action | ROS 2 Action | ROS 2 中带反馈、可取消和最终结果的长任务接口，常用于轨迹执行和导航。 |
+| rclpy | ROS 2 Python Client Library | ROS 2 Humble 的 Python 客户端库；提供 `Node`、参数、定时器、通信机制和 executor 调度，常用于编写 TF/传感器/控制节点。 |
+| Topic | ROS 2 Topic | ROS 2 中持续发布消息的一对多通信通道，常用于图像、关节状态、TF 和传感器数据。 |
+| Service | ROS 2 Service | ROS 2 中一次请求对应一次响应的短操作机制，适合复位、查询和触发操作。 |
+| Action | ROS 2 Action | ROS 2 中带反馈、可取消和最终结果的长任务机制，常用于轨迹执行和导航。 |
 | QoS | Quality of Service | ROS 2 消息传输策略，包括 reliability、durability、history、depth、deadline 和 lifespan；发布者与订阅者的关键 QoS 必须兼容。 |
 | OpenCV | Open Source Computer Vision Library | 计算机视觉库；ROS 2 中通常通过 `cv_bridge` 在 `sensor_msgs/Image` 与 `cv::Mat`/`numpy.ndarray` 之间转换。 |
 | cv_bridge | ROS OpenCV Bridge | ROS 2 图像消息与 OpenCV 图像之间的转换包，需与当前 ROS 2 发行版和 Python/C++ 环境匹配。 |
-| image_transport | ROS Image Transport | ROS 2 图像传输接口，统一处理 raw、compressed 等图像传输插件。 |
+| image_transport | ROS Image Transport | ROS 2 图像传输机制，统一处理 raw、compressed 等图像传输插件。 |
 | RViz 2 | ROS 2 Visualization Tool | ROS 2 Humble 的三维可视化与交互工具；订阅 topic 并通过 TF 显示机器人、传感器和 MoveIt 2 规划场景，本身不负责仿真或底层控制。 |
 | Planning Frame | Planning Frame | MoveIt 2 Humble 规划所使用的参考坐标系，目标位姿必须明确表达在哪个 frame 中。 |
 | Planning Scene | Planning Scene | MoveIt 2 Humble 保存机器人状态、障碍物、附着物体和碰撞规则的场景快照。 |
 | SRDF | Semantic Robot Description Format | 在 URDF 之上描述 MoveIt 2 Humble 语义信息的文件格式，例如 planning group、末端执行器和禁碰对。 |
-| ros2_control | ROS 2 Control | ROS 2 Humble 的硬件接口与控制器框架，MoveIt 2 通常通过轨迹控制器执行规划结果。 |
-| controller_manager | ros2_control Controller Manager | 管理硬件接口和控制器加载、配置、激活与切换的 ros2_control 节点。 |
+| ros2_control | ROS 2 Control | ROS 2 Humble 的硬件连接与控制器框架，MoveIt 2 通常通过轨迹控制器执行规划结果。 |
+| controller_manager | ros2_control Controller Manager | 管理硬件连接和控制器加载、配置、激活与切换的 ros2_control 节点。 |
 | rosbag2 | ROS 2 Bag | ROS 2 的消息记录与回放工具，用于复查时间同步、TF、传感器和控制器反馈；回放不等于重现真实硬件动力学。 |
 | Success Rate | Task Success Rate | 多次评测中满足成功判定的比例；需同时报告任务、初始条件和 seed。 |
 

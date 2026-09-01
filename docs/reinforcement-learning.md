@@ -3,7 +3,7 @@
 > 🎮 从单步转移和数据来源出发，理解 RL、MBRL 以及策略后训练。
 
 **预计阅读**：35 min
-**前置知识**：Python、概率、神经网络和基本机器人接口
+**前置知识**：Python、概率、神经网络和基本机器人控制
 **下一步**：[MuJoCo 教程](mujoco-tutorial.md) · [机器人学基础](robotics.md) · [Benchmark 指南](benchmarks.md)
 
 **本文路线**：MDP → 价值函数 → 数据与训练范式 → 经典算法 → GRPO/SAPO → 机器人闭环
@@ -163,7 +163,7 @@ Q(s0,a0) ≈ 0 + 0.9 × 0.9 = 0.81
 
 ### 4.1 单步转移与 replay/offline batch
 
-DQN、DDPG、TD3、TD3+BC、SAC 和 IQL 的最小完整转移记录为
+DQN、DDPG、TD3、TD3+BC、SAC 和 IQL 的完整转移记录为
 
 $$
 z_t=(s_t,a_t,r_t,s_{t+1},d_t,b_t).
@@ -201,25 +201,8 @@ $$
 
 计算 GAE 后再派生 Advantage $\hat A_t$、价值目标 $\hat V_t$ 和有效位置掩码 $M_t$，通常展平为 $[TN,\ldots]$ 后切 minibatch。各符号定义如下：
 
-- $\ell_t^{\mathrm{old}}$：采样动作 $a_t$ 时，行为策略对该动作给出的对数概率（连续动作时为对数概率密度）
-
-  $$
-  \ell_t^{\mathrm{old}}:=\log\pi_{\theta_{\mathrm{old}}}(a_t\mid s_t).
-  $$
-
-  离散动作从 categorical 分布取对应动作的 log-prob；连续动作通常把各动作维度求和，并包含 `tanh` 等动作变换的密度修正。更新 Actor 时当前策略计算 $\ell_t^\theta:=\log\pi_\theta(a_t\mid s_t)$，于是
-  $$
-  \rho_t(\theta)=\exp\!\left(\ell_t^\theta-\ell_t^{\mathrm{old}}\right).
-  $$
-
-  即 PPO clip 使用的新旧策略概率比。
-- $v_t^{\mathrm{old}}$：采样时 Value Critic 对当前状态未来折扣回报的预测
-
-  $$
-  v_t^{\mathrm{old}}:=V_{\psi_{\mathrm{old}}}(s_t).
-  $$
-
-  相应地，$v_{t+1}^{\mathrm{old}}:=V_{\psi_{\mathrm{old}}}(s_{t+1})$。二者都不是 $r_t$ 或真实 return；它们用于 TD residual、GAE 和可选的 value clipping。
+- $\ell_t^{\mathrm{old}}$：采样动作 $a_t$ 时，行为策略对该动作给出的对数概率（连续动作时为对数概率密度），即 $\ell_t^{\mathrm{old}}:=\log\pi_{\theta_{\mathrm{old}}}(a_t\mid s_t)$。离散动作从 categorical 分布取对应动作的 log-prob；连续动作通常把各动作维度求和，并包含 `tanh` 等动作变换的密度修正。更新 Actor 时当前策略计算 $\ell_t^\theta:=\log\pi_\theta(a_t\mid s_t)$，于是 $\rho_t(\theta)=\exp\!\left(\ell_t^\theta-\ell_t^{\mathrm{old}}\right)$，即 PPO clip 使用的新旧策略概率比。
+- $v_t^{\mathrm{old}}$：采样时 Value Critic 对当前状态未来折扣回报的预测，即 $v_t^{\mathrm{old}}:=V_{\psi_{\mathrm{old}}}(s_t)$。相应地，$v_{t+1}^{\mathrm{old}}:=V_{\psi_{\mathrm{old}}}(s_{t+1})$。二者都不是 $r_t$ 或真实 return；它们用于 TD residual、GAE 和可选的 value clipping。
 - $\hat A_t$：由奖励、$v_t^{\mathrm{old}}$ 与 bootstrap mask 计算的 GAE。
 - $\hat V_t:=\hat A_t+v_t^{\mathrm{old}}$：Value Critic 的回归目标。
 - $M_t\in\{0,1\}$：有效位置掩码；padding 或无效时间步取 0。

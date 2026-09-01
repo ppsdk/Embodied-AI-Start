@@ -8,7 +8,7 @@
 
 **本文路线**：官方入口 → 安装 → 数据 → debug 评测 → 适配器 → 仿真/服务
 
-[XPolicyLab](https://github.com/XPolicyLab/XPolicyLab) 是机器人策略和评测环境之间的一层适配器。策略模型保留自己的依赖、checkpoint 和推理代码；XPolicyLab 负责把观测送给模型、把动作交给环境，并用同一套接口连接 RoboDojo、RoboTwin 或真实机器人。
+[XPolicyLab](https://github.com/XPolicyLab/XPolicyLab) 是机器人策略和评测环境之间的一层适配器。策略模型保留自己的依赖、checkpoint 和推理代码；XPolicyLab 负责把观测送给模型、把动作交给环境，并用同一套连接方式接入 RoboDojo、RoboTwin 或真实机器人。
 
 ```text
 策略侧：模型、checkpoint、预处理、推理服务
@@ -26,7 +26,7 @@
 
 本文以 Linux shell 为例。策略的 Python、CUDA、模型权重和 Isaac Sim 版本必须以对应策略 README 及 RoboDojo 当前文档为准；不同策略不能共用一套环境假设。
 
-## 2. 安装最小环境
+## 2. 安装基础环境
 
 ```bash
 mkdir -p xpolicylab-demo
@@ -61,7 +61,7 @@ xpolicylab-demo/
 └── XPolicyLab/
 ```
 
-完整导出还包括 `hdf5`、`lerobot_v3.0`、`lerobot_v2.1` 和 `real`。先用 demo 验证数据读取、模型加载和接口连通，再考虑下载完整数据。
+完整导出还包括 `hdf5`、`lerobot_v3.0`、`lerobot_v2.1` 和 `real`。先用 demo 验证数据读取、模型加载和连接是否正常，再考虑下载完整数据。
 
 ## 4. 先做 debug 评测
 
@@ -91,9 +91,9 @@ bash eval.sh RoboDojo stack_bowls demo arx_x5 joint 0 0 0 base base
 
 这里的 `base` 只是 demo 的占位环境名；真实策略应换成该策略 README 要求的环境。
 
-## 5. 适配器的核心接口
+## 5. 适配器的核心约定
 
-每个策略放在 `policy/<POLICY>/` 下。核心接口是 `model.py` 中的 `Model` 类：
+每个策略放在 `policy/<POLICY>/` 下。核心约定是 `model.py` 中的 `Model` 类：
 
 | 方法                                    | 作用                                               |
 | --------------------------------------- | -------------------------------------------------- |
@@ -176,7 +176,7 @@ bash setup_eval_env_client.sh \
 
 ## 9. 接入自己的策略
 
-复制最小模板：
+复制基础模板：
 
 ```bash
 bash scripts/create_policy.sh MY_POLICY
@@ -185,7 +185,7 @@ bash scripts/create_policy.sh MY_POLICY
 然后依次完成：
 
 1. 在 `README.md` 写清楚安装、checkpoint、训练和评测命令。
-2. 实现 `model.py` 的 `Model` 接口，先让 `EVAL_ENV_TYPE=debug` 通过。
+2. 实现 `model.py` 的 `Model` 类约定，先让 `EVAL_ENV_TYPE=debug` 通过。
 3. 在 `deploy.yml` 固定协议、端口、checkpoint 和运行时默认值。
 4. 需要数据转换或训练时，再补 `process_data.sh` 和 `train.sh`。
 5. 运行静态检查：
