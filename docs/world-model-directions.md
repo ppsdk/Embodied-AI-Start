@@ -2,7 +2,6 @@
 
 > 🌍 按像素、latent、对象中心和 3D/4D 等路线理解世界模型，并连接到 WAM。
 
-**适合读者**：想研究未来预测、生成、规划或 WAM 的读者  
 **预计阅读**：25 min  
 **前置知识**：模型基础、机器人观测与动作接口  
 **下一步**：[模型基础](model-basics.md) · [强化学习基础](reinforcement-learning.md) · [代码仓](codebases.md)

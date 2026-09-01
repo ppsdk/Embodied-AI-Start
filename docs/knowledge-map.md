@@ -2,7 +2,6 @@
 
 > 🧭 从机器人基础出发，理解 VLA、WM、RL/MBRL 和 WAM 的关系。
 
-**适合读者**：想建立整体框架的入门者和研究者  
 **预计阅读**：20 min  
 **前置知识**：Python、基础深度学习和基本机器人概念  
 **下一步**：[机器人学基础](robotics.md) · [模型基础](model-basics.md) · [强化学习基础](reinforcement-learning.md)

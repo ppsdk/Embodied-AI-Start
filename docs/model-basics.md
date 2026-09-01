@@ -2,7 +2,6 @@
 
 > 🧠 先掌握序列建模和生成模型，再理解 VLA、WM 与 WAM 的动作接口。
 
-**适合读者**：准备阅读 VLA、World Model 或动作生成论文的读者  
 **预计阅读**：25 min  
 **前置知识**：Python、深度学习、张量和概率基础  
 **下一步**：[VLA 与动作策略](papers.md) · [WM 专题](world-model-directions.md) · [强化学习基础](reinforcement-learning.md)

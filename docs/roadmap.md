@@ -2,7 +2,6 @@
 
 > 🧭 按章节从机器人基础走到 VLA、World Model、RL/MBRL 和 WAM。
 
-**适合读者**：希望按顺序学习并动手实践的读者  
 **预计阅读**：15 min  
 **前置知识**：Python、基础深度学习  
 **下一步**：[机器人学基础](robotics.md) · [模型基础](model-basics.md)

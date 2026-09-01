@@ -2,7 +2,6 @@
 
 > 🧪 用 MuJoCo 和 Gymnasium 跑通一个最小的动力学与 RL 实验。
 
-**适合读者**：想快速验证控制、采样和 RL 算法的读者  
 **预计阅读**：20 min  
 **前置知识**：Python、虚拟环境和基本 RL 概念  
 **下一步**：[强化学习基础](reinforcement-learning.md) · [机器人学基础](robotics.md)

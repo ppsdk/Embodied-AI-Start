@@ -2,7 +2,6 @@
 
 > 🛠️ 从 debug 评测开始，把策略接入 RoboDojo，再扩展到仿真和服务化运行。
 
-**适合读者**：需要接入 RoboDojo/XPolicyLab 或检查策略接口的读者  
 **预计阅读**：15 min  
 **前置知识**：Python、Git、策略的 observation/action 定义  
 **下一步**：[Benchmark 指南](benchmarks.md) · [强化学习基础](reinforcement-learning.md) · [代码仓](codebases.md)

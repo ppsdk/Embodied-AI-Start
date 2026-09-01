@@ -2,7 +2,6 @@
 
 > 🧪 了解 USD、PhysX、传感器和 GPU 并行仿真，再进入 Isaac Lab。
 
-**适合读者**：需要复杂场景、传感器或大规模并行训练的读者  
 **预计阅读**：20 min  
 **前置知识**：Python、基本机器人学和 RL transition  
 **下一步**：[强化学习基础](reinforcement-learning.md) · [代码仓](codebases.md)

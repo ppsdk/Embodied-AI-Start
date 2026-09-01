@@ -35,6 +35,6 @@ flowchart LR
 
 ## 站点内容
 
-左侧导航按 Start Here、Foundations、Research、Resources 和 Practice 分组。每篇长文档开头都有适合读者、前置知识、预计阅读时间和本文路线，右侧目录可直接跳转。
+左侧导航按 Start Here、Foundations、Research、Resources 和 Practice 分组。每篇长文档开头都有前置知识、预计阅读时间和本文路线，右侧目录可直接跳转。
 
 ROS 2、OpenCV 和机器人依赖安装可参考[鱼香 ROS 社区论坛](https://fishros.org.cn/forum/)。机器人章节以 Ubuntu 22.04 + ROS 2 Humble 为基线。

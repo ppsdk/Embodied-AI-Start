@@ -2,7 +2,6 @@
 
 > 📚 按问题和方法阅读论文，先建立主线，再补充相邻方向。
 
-**适合读者**：准备系统读论文、找基线或确定研究方向的读者  
 **预计阅读**：20 min  
 **前置知识**：模型基础、机器人学基础和 RL 基础  
 **下一步**：[知识图谱](knowledge-map.md) · [WM 专题](world-model-directions.md) · [Benchmark 指南](benchmarks.md)

@@ -2,7 +2,6 @@
 
 > 🛠️ 按研究路线查找可运行代码、数据集、仿真环境和基准实现。
 
-**适合读者**：准备复现论文或搭建第一个实验的人  
 **预计阅读**：15 min  
 **前置知识**：Git、Python 环境和基础命令行  
 **下一步**：[学习路线](roadmap.md) · [MuJoCo 教程](mujoco-tutorial.md) · [Isaac Sim 教程](isaac-sim-tutorial.md)

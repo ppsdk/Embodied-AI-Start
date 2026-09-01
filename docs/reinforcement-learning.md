@@ -2,26 +2,25 @@
 
 > 🎮 从单步转移和数据来源出发，理解 RL、MBRL 以及策略后训练。
 
-**适合读者**：想跑 RL 实验、做机器人控制或阅读 RL 后训练论文的读者  
-**预计阅读**：35 min  
-**前置知识**：Python、概率、神经网络和基本机器人接口  
+**预计阅读**：35 min
+**前置知识**：Python、概率、神经网络和基本机器人接口
 **下一步**：[MuJoCo 教程](mujoco-tutorial.md) · [机器人学基础](robotics.md) · [Benchmark 指南](benchmarks.md)
 
 **本文路线**：MDP → 价值函数 → 数据与训练范式 → 经典算法 → GRPO/SAPO → 机器人闭环
 
-这一页是 RL 的总入口。不要先背算法名字，先对每个算法问五件事：数据从哪里来？学的是 V、Q 还是策略？目标值怎么做出来？价值信息怎样改策略？它怎样处理估计误差和数据偏移？
+数据从哪里来？学的是 V、Q 还是策略？目标值怎么做出来？价值信息怎样改策略？它怎样处理估计误差和数据偏移？
 
 本文覆盖 DQN、DDPG、TD3、TD3+BC、SAC、PPO、IQL、GRPO 和 SAPO。前七个主要用于经典控制或 offline RL，GRPO/SAPO 主要放在语言模型和 VLA 的后训练里讲。想看它们和世界模型的关系，先看[知识图谱](knowledge-map.md)；想找代码，看[代码仓与工具](codebases.md)；想按顺序读论文，看[论文清单](papers.md)。
 
 ## 0. 统一阅读框架
 
-| 层次 | 要回答的问题 | 关键对象 |
-| --- | --- | --- |
-| 任务 | 智能体看见什么、能做什么、奖励什么？ | observation、action、reward、termination |
-| 数据 | 训练时是否继续与环境交互？数据由哪个策略产生？ | online/offline、on-policy/off-policy |
-| 估计 | 没有人工价值标签时，怎样估计长期回报？ | return、Monte Carlo、TD、Bellman bootstrap |
-| 策略 | 价值信息怎样转化为动作或参数更新？ | `argmax`、policy gradient、weighted BC、group-relative update |
-| 稳定性 | 如何缓解高估、目标漂移或分布外动作？ | replay、target network、double critic、行为约束 |
+| 层次   | 要回答的问题                                   | 关键对象                                                        |
+| ------ | ---------------------------------------------- | --------------------------------------------------------------- |
+| 任务   | 智能体看见什么、能做什么、奖励什么？           | observation、action、reward、termination                        |
+| 数据   | 训练时是否继续与环境交互？数据由哪个策略产生？ | online/offline、on-policy/off-policy                            |
+| 估计   | 没有人工价值标签时，怎样估计长期回报？         | return、Monte Carlo、TD、Bellman bootstrap                      |
+| 策略   | 价值信息怎样转化为动作或参数更新？             | `argmax`、policy gradient、weighted BC、group-relative update |
+| 稳定性 | 如何缓解高估、目标漂移或分布外动作？           | replay、target network、double critic、行为约束                 |
 
 一条实用的阅读顺序是：先理解 MDP、return 和 V/Q/A，再理解 TD 与训练范式，最后比较具体算法的价值目标和策略改进规则。
 
@@ -41,13 +40,13 @@
 
 一个 Markov Decision Process（MDP）通常写作 $(S,A,P,R,\gamma)$：
 
-| 符号 | 含义 | 具身任务中需要明确的内容 |
-| --- | --- | --- |
-| $S$ | 状态空间 | 图像、本体状态、力觉、历史窗口是否足以支持决策 |
-| $A$ | 动作空间 | 关节位置/速度/力矩，或末端位姿增量与夹爪命令 |
+| 符号              | 含义     | 具身任务中需要明确的内容                       |
+| ----------------- | -------- | ---------------------------------------------- |
+| $S$             | 状态空间 | 图像、本体状态、力觉、历史窗口是否足以支持决策 |
+| $A$             | 动作空间 | 关节位置/速度/力矩，或末端位姿增量与夹爪命令   |
 | $P(s'\mid s,a)$ | 状态转移 | 机器人动力学、接触、控制器和环境共同造成的演化 |
-| $R(s,a,s')$ | 奖励函数 | 成功、进度、碰撞、能耗、平滑性与安全代价 |
-| $\gamma$ | 折扣因子 | 未来回报相对当前回报的重要程度 |
+| $R(s,a,s')$     | 奖励函数 | 成功、进度、碰撞、能耗、平滑性与安全代价       |
+| $\gamma$        | 折扣因子 | 未来回报相对当前回报的重要程度                 |
 
 真实状态通常不可完全观测，此时策略实际接收的是 observation $o_t$，可能需要历史、RNN 或 belief state。工程文档仍应明确区分环境内部 state 和策略输入 observation。
 
@@ -101,12 +100,12 @@ $$
 
 ### 2.2 同一符号在不同算法中的语义
 
-| 场景 | 价值对象 | 语义 |
-| --- | --- | --- |
-| 策略评估 | $V^\pi,Q^\pi$ | 评价固定策略 $\pi$ 的预期回报 |
-| 最优控制 | $V^*,Q^*$ | 评价最优行为能达到的回报；DQN 接近这一语义 |
-| 最大熵 RL | soft $V$, soft $Q$ | 回报中同时考虑策略熵；SAC 使用这一语义 |
-| IQL | expectile $V$ | 数据动作 $Q$ 的非对称回归基准，不是普通均值 $V^\pi$ |
+| 场景      | 价值对象              | 语义                                                   |
+| --------- | --------------------- | ------------------------------------------------------ |
+| 策略评估  | $V^\pi,Q^\pi$       | 评价固定策略$\pi$ 的预期回报                         |
+| 最优控制  | $V^*,Q^*$           | 评价最优行为能达到的回报；DQN 接近这一语义             |
+| 最大熵 RL | soft$V$, soft $Q$ | 回报中同时考虑策略熵；SAC 使用这一语义                 |
+| IQL       | expectile$V$        | 数据动作$Q$ 的非对称回归基准，不是普通均值 $V^\pi$ |
 
 “没有独立网络”不等于数学对象不存在。例如 PPO 不训练任意动作可查询的 $Q$ 网络，但 $Q^\pi=V^\pi+A^\pi$ 仍成立。
 
@@ -145,13 +144,13 @@ Q(s0,a0) ≈ 0 + 0.9 × 0.9 = 0.81
 
 ## 4. 理解算法前必须区分的训练范式
 
-| 维度 | 类别 | 典型算法或含义 |
-| --- | --- | --- |
-| 动作空间 | 离散 / 连续 | DQN 主要用于离散；TD3、SAC 常用于连续；PPO 可覆盖两者 |
-| 策略数据关系 | on-policy / off-policy | PPO 近似 on-policy；DQN、TD3、SAC 用 replay，属于 off-policy |
-| 交互方式 | online / offline | online 持续收集新数据；TD3+BC、IQL 主要学习固定数据集 |
-| 策略形式 | 隐式 / 确定性 / 随机 | DQN 隐式；DDPG/TD3 确定性；SAC/PPO 通常随机 |
-| 是否建模环境 | model-free / model-based | 是否显式用动力学/奖励模型做 rollout、规划或策略优化 |
+| 维度         | 类别                     | 典型算法或含义                                               |
+| ------------ | ------------------------ | ------------------------------------------------------------ |
+| 动作空间     | 离散 / 连续              | DQN 主要用于离散；TD3、SAC 常用于连续；PPO 可覆盖两者        |
+| 策略数据关系 | on-policy / off-policy   | PPO 近似 on-policy；DQN、TD3、SAC 用 replay，属于 off-policy |
+| 交互方式     | online / offline         | online 持续收集新数据；TD3+BC、IQL 主要学习固定数据集        |
+| 策略形式     | 隐式 / 确定性 / 随机     | DQN 隐式；DDPG/TD3 确定性；SAC/PPO 通常随机                  |
+| 是否建模环境 | model-free / model-based | 是否显式用动力学/奖励模型做 rollout、规划或策略优化          |
 
 `on-policy/off-policy` 描述更新数据和目标策略的关系，`online/offline` 描述训练时能否继续交互，`model-free/model-based` 描述是否显式利用环境模型。三者不是同一条分类轴。
 
@@ -172,14 +171,14 @@ $$
 
 从数据源采样 $B$ 条转移得到 minibatch $\mathcal B=\{z_{t_i}\}_{i=1}^{B}$，公式中的六个单步变量分别沿 batch 维堆叠如下：
 
-| 单步符号 | 批量符号 | 含义与典型形状 |
-| --- | --- | --- |
-| $s_t$ | $\mathbf S$ | 当前状态/观测，形状为 $[B,*S]$ 或由多个 $[B,\ldots]$ 张量组成的字典 |
-| $a_t$ | $\mathbf A$ | 动作；DQN 的 $\mathbf A$ 为离散索引 $[B]$，连续控制为浮点张量 $[B,A]$ |
-| $r_t$ | $\mathbf R$ | 标量奖励 $[B,1]$；第 $h$ 个奖励分项记为 $r_t^{(h)}$，批量形式为 $\mathbf R^{(h)}$ |
-| $s_{t+1}$ | $\mathbf S'$ | 下一状态/观测，形状与 $\mathbf S$ 对应；自动 reset 时必须取 reset 前的最终观测 |
-| $d_t$ | $\mathbf d$ | bootstrap 终止标记 $[B,1]$；任务真正终止时为 1，否则为 0 |
-| $b_t$ | $\mathbf b$ | 轨迹边界标记 $[B,1]$；发生 reset 时为 1，时间上限处通常满足 $b_t=1,d_t=0$ |
+| 单步符号    | 批量符号       | 含义与典型形状                                                                           |
+| ----------- | -------------- | ---------------------------------------------------------------------------------------- |
+| $s_t$     | $\mathbf S$  | 当前状态/观测，形状为$[B,*S]$ 或由多个 $[B,\ldots]$ 张量组成的字典                   |
+| $a_t$     | $\mathbf A$  | 动作；DQN 的$\mathbf A$ 为离散索引 $[B]$，连续控制为浮点张量 $[B,A]$               |
+| $r_t$     | $\mathbf R$  | 标量奖励$[B,1]$；第 $h$ 个奖励分项记为 $r_t^{(h)}$，批量形式为 $\mathbf R^{(h)}$ |
+| $s_{t+1}$ | $\mathbf S'$ | 下一状态/观测，形状与$\mathbf S$ 对应；自动 reset 时必须取 reset 前的最终观测          |
+| $d_t$     | $\mathbf d$  | bootstrap 终止标记$[B,1]$；任务真正终止时为 1，否则为 0                                |
+| $b_t$     | $\mathbf b$  | 轨迹边界标记$[B,1]$；发生 reset 时为 1，时间上限处通常满足 $b_t=1,d_t=0$             |
 
 训练时再由 $d_t$ 派生 Bellman bootstrap mask $m_t:=1-d_t$，批量形式为 $\mathbf m:=1-\mathbf d$；$m_t$ 不属于 $z_t$ 的原始环境字段。可选元数据包括 episode 标识 $e_t$、任务标识 $u_t$ 和安全代价 $c_t$；时间步已经由下标 $t$ 表示。它们仅用于分组、审计或明确定义的约束目标。
 
@@ -203,18 +202,23 @@ $$
 计算 GAE 后再派生 Advantage $\hat A_t$、价值目标 $\hat V_t$ 和有效位置掩码 $M_t$，通常展平为 $[TN,\ldots]$ 后切 minibatch。各符号定义如下：
 
 - $\ell_t^{\mathrm{old}}$：采样动作 $a_t$ 时，行为策略对该动作给出的对数概率（连续动作时为对数概率密度）
+
   $$
   \ell_t^{\mathrm{old}}:=\log\pi_{\theta_{\mathrm{old}}}(a_t\mid s_t).
   $$
+
   离散动作从 categorical 分布取对应动作的 log-prob；连续动作通常把各动作维度求和，并包含 `tanh` 等动作变换的密度修正。更新 Actor 时当前策略计算 $\ell_t^\theta:=\log\pi_\theta(a_t\mid s_t)$，于是
   $$
   \rho_t(\theta)=\exp\!\left(\ell_t^\theta-\ell_t^{\mathrm{old}}\right).
   $$
+
   即 PPO clip 使用的新旧策略概率比。
 - $v_t^{\mathrm{old}}$：采样时 Value Critic 对当前状态未来折扣回报的预测
+
   $$
   v_t^{\mathrm{old}}:=V_{\psi_{\mathrm{old}}}(s_t).
   $$
+
   相应地，$v_{t+1}^{\mathrm{old}}:=V_{\psi_{\mathrm{old}}}(s_{t+1})$。二者都不是 $r_t$ 或真实 return；它们用于 TD residual、GAE 和可选的 value clipping。
 - $\hat A_t$：由奖励、$v_t^{\mathrm{old}}$ 与 bootstrap mask 计算的 GAE。
 - $\hat V_t:=\hat A_t+v_t^{\mathrm{old}}$：Value Critic 的回归目标。
@@ -226,18 +230,18 @@ $$
 
 第 $j$ 个条件下的第 $i$ 个样本补齐到长度 $L$，形成 $[B_q,G,L]$ 张量：
 
-| 符号 | 典型批量形状 | 含义 |
-| --- | --- | --- |
-| $q_j$ | $[B_q,\ldots]$ | 第 $j$ 个 prompt、任务指令或绑定了初始观测的条件 |
-| $y_{j,i,t}$ | $[B_q,G,L]$ | 第 $i$ 个输出在位置 $t$ 的 token、action token 或 action chunk |
-| $L_{j,i}$ | $[B_q,G]$ | 样本的有效长度 |
-| $M_{j,i,t}\in\{0,1\}$ | $[B_q,G,L]$ | 响应/动作有效位置掩码；prompt、padding 或无效动作取 0 |
-| $R_{j,i}$ | $[B_q,G]$ | 样本总奖励；第 $h$ 个奖励分项记为 $R_{j,i}^{(h)}$ |
-| $\ell_{j,i,t}^{\mathrm{old}}:=\log\pi_{\theta_{\mathrm{old}}}(y_{j,i,t}\mid q_j,y_{j,i,<t})$ | $[B_q,G,L]$ | 生成策略对已采样位置的 log-prob |
-| $\ell_{j,i,t}^{\theta}:=\log\pi_\theta(y_{j,i,t}\mid q_j,y_{j,i,<t})$ | $[B_q,G,L]$ | 当前策略训练时重算的 log-prob |
-| $\ell_{j,i,t}^{\mathrm{ref}}:=\log\pi_{\mathrm{ref}}(y_{j,i,t}\mid q_j,y_{j,i,<t})$ | $[B_q,G,L]$ | 启用参考策略 KL 时的参考 log-prob |
-| $\rho_{j,i,t}=\exp(\ell_{j,i,t}^{\theta}-\ell_{j,i,t}^{\mathrm{old}})$ | $[B_q,G,L]$ | token/动作级新旧策略概率比 |
-| $\hat A_{j,i,t}$ | $[B_q,G,L]$ | 位置级 Advantage；仅有 outcome reward 时由组内奖励得到 $\hat A_{j,i}$，再令所有有效位置共享 $\hat A_{j,i,t}=\hat A_{j,i}$ |
+| 符号                                                                                           | 典型批量形状     | 含义                                                                                                                         |
+| ---------------------------------------------------------------------------------------------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| $q_j$                                                                                        | $[B_q,\ldots]$ | 第$j$ 个 prompt、任务指令或绑定了初始观测的条件                                                                            |
+| $y_{j,i,t}$                                                                                  | $[B_q,G,L]$    | 第$i$ 个输出在位置 $t$ 的 token、action token 或 action chunk                                                            |
+| $L_{j,i}$                                                                                    | $[B_q,G]$      | 样本的有效长度                                                                                                               |
+| $M_{j,i,t}\in\{0,1\}$                                                                        | $[B_q,G,L]$    | 响应/动作有效位置掩码；prompt、padding 或无效动作取 0                                                                        |
+| $R_{j,i}$                                                                                    | $[B_q,G]$      | 样本总奖励；第$h$ 个奖励分项记为 $R_{j,i}^{(h)}$                                                                         |
+| $\ell_{j,i,t}^{\mathrm{old}}:=\log\pi_{\theta_{\mathrm{old}}}(y_{j,i,t}\mid q_j,y_{j,i,<t})$ | $[B_q,G,L]$    | 生成策略对已采样位置的 log-prob                                                                                              |
+| $\ell_{j,i,t}^{\theta}:=\log\pi_\theta(y_{j,i,t}\mid q_j,y_{j,i,<t})$                        | $[B_q,G,L]$    | 当前策略训练时重算的 log-prob                                                                                                |
+| $\ell_{j,i,t}^{\mathrm{ref}}:=\log\pi_{\mathrm{ref}}(y_{j,i,t}\mid q_j,y_{j,i,<t})$          | $[B_q,G,L]$    | 启用参考策略 KL 时的参考 log-prob                                                                                            |
+| $\rho_{j,i,t}=\exp(\ell_{j,i,t}^{\theta}-\ell_{j,i,t}^{\mathrm{old}})$                       | $[B_q,G,L]$    | token/动作级新旧策略概率比                                                                                                   |
+| $\hat A_{j,i,t}$                                                                             | $[B_q,G,L]$    | 位置级 Advantage；仅有 outcome reward 时由组内奖励得到$\hat A_{j,i}$，再令所有有效位置共享 $\hat A_{j,i,t}=\hat A_{j,i}$ |
 
 其中 $q_j$ 本身就是组标识。安全代价可记为 $C_{j,i}$，失败类别与终止原因作为审计元数据。对 VLA，必须明确 $q_j$ 绑定的指令、观测与初始条件，并定义 $y_{j,i,t}$ 对应 action token、action chunk 还是连续动作密度。
 
@@ -400,11 +404,11 @@ PPO 的 **loss 计算单位是单个时间位置 $t$**，但该位置的 $\hat A
 
 这里有三个不能混淆的长度：
 
-| 符号 | 含义 | 能否调整 |
-| --- | --- | --- |
-| $\Delta t$ | 环境/控制时间步长，例如每 50 ms 输出一次动作 | 不能随意改；改变它会改变动力学、控制频率、奖励尺度和折扣语义 |
-| $T$ | 每个并行环境在一次 PPO 更新前收集的 rollout 长度 | 可以作为超参数调整，不要求等于 episode 长度 |
-| $B_{\mathrm{mb}}$ | 将 $NT$ 个有效位置展平后，每个优化 minibatch 的大小 | 可以调整，但应与 $NT$、优化 epoch 数和显存共同设计 |
+| 符号                | 含义                                                 | 能否调整                                                     |
+| ------------------- | ---------------------------------------------------- | ------------------------------------------------------------ |
+| $\Delta t$        | 环境/控制时间步长，例如每 50 ms 输出一次动作         | 不能随意改；改变它会改变动力学、控制频率、奖励尺度和折扣语义 |
+| $T$               | 每个并行环境在一次 PPO 更新前收集的 rollout 长度     | 可以作为超参数调整，不要求等于 episode 长度                  |
+| $B_{\mathrm{mb}}$ | 将$NT$ 个有效位置展平后，每个优化 minibatch 的大小 | 可以调整，但应与$NT$、优化 epoch 数和显存共同设计          |
 
 因此，“timestep 可以自由设定”需要分情况：索引 $t$ 只是序列位置；rollout 长度 $T$ 可以调；物理时间步长 $\Delta t$ 不能在不重新定义环境的情况下任意改变。对 VLA/action chunk，策略的一次决策还可能连续执行 $H$ 个底层控制步，此时应先定义策略步长 $\Delta t_{\pi}=H\Delta t_{\mathrm{ctrl}}$，并按策略步而不是底层控制步计算动作概率与 PPO ratio。
 
@@ -628,48 +632,47 @@ SAPO 原始结果针对语言/多模态生成模型。迁移到 VLA 时，需要
 
 ### 6.1 价值量与策略形式
 
-| 算法 | $Q$ | $V$ | $A$ | Policy | 主要数据方式 |
-| --- | --- | --- | --- | --- | --- |
-| DQN | 单 $Q$ | $\max Q$ 隐式得到 | 不显式 | `argmax Q` / $\epsilon_{\mathrm{g}}$-greedy | online, off-policy |
-| DDPG | 单 $Q$ | $Q(s,\mu(s))$ 隐式得到 | 不显式 | 确定性 Actor | online, off-policy |
-| TD3 | 双 $Q$ | 由 Actor 和 $\min Q$ 隐式得到 | 不显式 | 确定性 Actor | online, off-policy |
-| TD3+BC | 双 $Q$ | 同 TD3 | 不显式 | 确定性 Actor + BC | offline |
-| SAC | 双 soft $Q$ | 由 $Q-\alpha\log\pi$ 隐式得到 | 不显式 | 随机 Actor | online, off-policy |
-| PPO | 无独立 $Q$ 网络 | 显式 $V$ Critic | 用 GAE 计算 | 随机 Actor | online, on-policy |
-| IQL | 双 $Q$ | expectile $V$ | $Q-V$ | Advantage-weighted BC | offline |
-| GRPO | 无 $Q$ 网络 | 无 Value Critic；组均值作 baseline | 组内归一化奖励 | 序列策略 / VLA 策略 | grouped policy rollout |
-| SAPO | 无 $Q$ 网络 | 论文设定无 Value Critic | 组/批归一化奖励 | 序列策略 / VLA 策略 | grouped policy rollout |
+| 算法   | $Q$            | $V$                              | $A$           | Policy                                          | 主要数据方式           |
+| ------ | ---------------- | ---------------------------------- | --------------- | ----------------------------------------------- | ---------------------- |
+| DQN    | 单$Q$          | $\max Q$ 隐式得到                | 不显式          | `argmax Q` / $\epsilon_{\mathrm{g}}$-greedy | online, off-policy     |
+| DDPG   | 单$Q$          | $Q(s,\mu(s))$ 隐式得到           | 不显式          | 确定性 Actor                                    | online, off-policy     |
+| TD3    | 双$Q$          | 由 Actor 和$\min Q$ 隐式得到     | 不显式          | 确定性 Actor                                    | online, off-policy     |
+| TD3+BC | 双$Q$          | 同 TD3                             | 不显式          | 确定性 Actor + BC                               | offline                |
+| SAC    | 双 soft$Q$     | 由$Q-\alpha\log\pi$ 隐式得到     | 不显式          | 随机 Actor                                      | online, off-policy     |
+| PPO    | 无独立$Q$ 网络 | 显式$V$ Critic                   | 用 GAE 计算     | 随机 Actor                                      | online, on-policy      |
+| IQL    | 双$Q$          | expectile$V$                     | $Q-V$         | Advantage-weighted BC                           | offline                |
+| GRPO   | 无$Q$ 网络     | 无 Value Critic；组均值作 baseline | 组内归一化奖励  | 序列策略 / VLA 策略                             | grouped policy rollout |
+| SAPO   | 无$Q$ 网络     | 论文设定无 Value Critic            | 组/批归一化奖励 | 序列策略 / VLA 策略                             | grouped policy rollout |
 
 ### 6.2 下一状态价值与策略改进
 
-| 算法 | 核心 target / 估计 | 价值如何改变策略 |
-| --- | --- | --- |
-| DQN | $r+\gamma m\max_{a'}Q_{\bar\theta}(s',a')$ | 直接选最高 $Q$ 的离散动作 |
-| DDPG | $r+\gamma mQ_{\bar\theta}(s',\mu_{\bar\phi}(s'))$ | Actor 沿 $Q$ 梯度更新 |
-| TD3 | $r+\gamma m\min_iQ_{\bar\theta_i}(s',\tilde a')$ | 延迟最大化 $Q_{\theta_1}(s,\mu_\phi(s))$ |
-| TD3+BC | Critic 基本沿用 TD3 | $Q$ 最大化与动作 MSE 共同约束 |
-| SAC | $r+\gamma m(\min_iQ_{\bar\theta_i}-\alpha\log\pi_\phi)$ | 同时提高 soft $Q$ 并保持熵 |
-| PPO | rollout + $v_t^{\mathrm{old}}$ → $\delta_t$ → $\hat A_t$ | 按 $\hat A_t$ 调整概率并裁剪 $\rho_t$ |
-| IQL | $r+\gamma mV_\psi(s')$ | $\exp(\beta A)$ 加权模仿数据动作 |
-| GRPO | $R_{j,1:G}$ → $\hat A_{j,i,t}$ | 裁剪 $\rho_{j,i,t}$ + $D_{j,i,t}^{\mathrm{KL}}$ |
-| SAPO | $\hat A_{j,i,t}$ + $\rho_{j,i,t}$ | $f_{j,i,t}(\rho)$ 软门控 + 正负非对称温度 |
+| 算法   | 核心 target / 估计                                              | 价值如何改变策略                                   |
+| ------ | --------------------------------------------------------------- | -------------------------------------------------- |
+| DQN    | $r+\gamma m\max_{a'}Q_{\bar\theta}(s',a')$                    | 直接选最高$Q$ 的离散动作                         |
+| DDPG   | $r+\gamma mQ_{\bar\theta}(s',\mu_{\bar\phi}(s'))$             | Actor 沿$Q$ 梯度更新                             |
+| TD3    | $r+\gamma m\min_iQ_{\bar\theta_i}(s',\tilde a')$              | 延迟最大化$Q_{\theta_1}(s,\mu_\phi(s))$          |
+| TD3+BC | Critic 基本沿用 TD3                                             | $Q$ 最大化与动作 MSE 共同约束                    |
+| SAC    | $r+\gamma m(\min_iQ_{\bar\theta_i}-\alpha\log\pi_\phi)$       | 同时提高 soft$Q$ 并保持熵                        |
+| PPO    | rollout +$v_t^{\mathrm{old}}$ → $\delta_t$ → $\hat A_t$ | 按$\hat A_t$ 调整概率并裁剪 $\rho_t$           |
+| IQL    | $r+\gamma mV_\psi(s')$                                        | $\exp(\beta A)$ 加权模仿数据动作                 |
+| GRPO   | $R_{j,1:G}$ → $\hat A_{j,i,t}$                             | 裁剪$\rho_{j,i,t}$ + $D_{j,i,t}^{\mathrm{KL}}$ |
+| SAPO   | $\hat A_{j,i,t}$ + $\rho_{j,i,t}$                           | $f_{j,i,t}(\rho)$ 软门控 + 正负非对称温度        |
 
 ### 6.3 任务选型
 
-| 条件 | 优先考虑 | 说明 |
-| --- | --- | --- |
-| 离散动作且允许持续交互 | DQN / Double DQN | 结构清晰，可直接输出全部动作价值 |
-| 连续动作、确定性控制基线 | TD3 | 通常比 DDPG 稳定 |
-| 连续动作、重视探索与样本复用 | SAC | 随机最大熵策略，off-policy |
-| 并行仿真采样充足、需要通用策略梯度 | PPO | 实现成熟，支持离散和连续动作 |
-| 固定连续控制数据集、需要简洁基线 | TD3+BC | 直接加入行为约束 |
-| 固定数据集、希望筛选高价值行为 | IQL | expectile $V$ + Advantage-weighted BC |
-| LLM/VLA 后训练，可对同一条件多次采样且有可靠评分 | GRPO | 无独立 Critic，用组内相对奖励更新策略 |
-| LLM/VLM/VLA 成组后训练，token ratio 方差较高或硬裁剪损失信号 | SAPO | 用连续软门控平滑抑制 off-policy 更新 |
-| 教学或算法消融 | DDPG | 适合理解确定性 Actor-Critic，不一定是最强基线 |
+| 条件                                                         | 优先考虑         | 说明                                          |
+| ------------------------------------------------------------ | ---------------- | --------------------------------------------- |
+| 离散动作且允许持续交互                                       | DQN / Double DQN | 结构清晰，可直接输出全部动作价值              |
+| 连续动作、确定性控制基线                                     | TD3              | 通常比 DDPG 稳定                              |
+| 连续动作、重视探索与样本复用                                 | SAC              | 随机最大熵策略，off-policy                    |
+| 并行仿真采样充足、需要通用策略梯度                           | PPO              | 实现成熟，支持离散和连续动作                  |
+| 固定连续控制数据集、需要简洁基线                             | TD3+BC           | 直接加入行为约束                              |
+| 固定数据集、希望筛选高价值行为                               | IQL              | expectile$V$ + Advantage-weighted BC        |
+| LLM/VLA 后训练，可对同一条件多次采样且有可靠评分             | GRPO             | 无独立 Critic，用组内相对奖励更新策略         |
+| LLM/VLM/VLA 成组后训练，token ratio 方差较高或硬裁剪损失信号 | SAPO             | 用连续软门控平滑抑制 off-policy 更新          |
+| 教学或算法消融                                               | DDPG             | 适合理解确定性 Actor-Critic，不一定是最强基线 |
 
 算法名称不能代替实验设计。具身任务至少还要根据动作空间、奖励可得性、交互预算、数据覆盖、控制延迟、安全约束和真机风险做选择。
-
 
 ## 7. 记忆图
 

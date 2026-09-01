@@ -2,7 +2,6 @@
 
 > 🤖 从坐标、运动学和 ROS 2 接口开始，把仿真策略接到真实机械臂。
 
-**适合读者**：需要补齐机器人基础或准备上真机的读者  
 **预计阅读**：30 min  
 **前置知识**：Python、Linux 命令行、线性代数基础  
 **下一步**：[MuJoCo 教程](mujoco-tutorial.md) · [Isaac Sim 教程](isaac-sim-tutorial.md) · [强化学习基础](reinforcement-learning.md)
