@@ -202,7 +202,131 @@ flowchart LR
 - **WAM**：把未来表征/视频和动作生成联合或级联；需要明确未来生成是在训练期辅助，还是测试期也显式 rollout。
 - **MBRL**：只有当学习到的模型被用于 dynamics/reward rollout、MPC、value 或 policy optimization 时，才写成 MBRL。一个 diffusion/video/3D 生成器本身不构成 MBRL。
 
-### 5.1 World Model 的四类表征
+### 5.1 VLA：从视觉和语言得到动作
+
+VLA（Vision-Language-Action）通常把图像、语言和机器人状态送入同一个条件模型，再由动作头输出控制量。最小数据流可以写成：
+
+```text
+image history       -> vision encoder  -> visual tokens
+language instruction -> text encoder   -> language tokens
+robot state          -> state projector -> state tokens
+                                      -> multimodal Transformer
+                                      -> action head
+                                      -> action chunk [B,H,A]
+```
+
+这里的 `H` 是一次预测的动作步数，`A` 是每步动作维度。动作可以是关节位置、关节速度、末端位姿增量、夹爪状态，也可以是离散 action token。工程上要额外记录动作坐标系、单位、控制频率、归一化统计和实际执行延迟。
+
+#### VLA 的输入和输出
+
+给定历史窗口 `K`，常见输入可写成：
+
+```text
+O[t-K+1:t] : [B,K,V,H_img,W_img,C]   # V 个相机视角
+L          : [B,L_txt]              # 语言 token
+S[t]       : [B,D_state]            # 可选关节/末端状态
+```
+
+视觉和语言 token 通常先投影到同一维度 `D`，拼接后得到 `X in R^(B x L x D)`。动作头有三种常见形式：
+
+| 动作头 | 输出 | 训练目标 | 适用场景 |
+| --- | --- | --- | --- |
+| 离散 action token | `[B,L_a,V_a]` | token 交叉熵 | 复用自回归语言模型，动作粒度由码本决定 |
+| 连续回归 | `[B,H,A]` | L1、L2、Huber 或 NLL | 低延迟控制，结构简单 |
+| diffusion/flow | 带噪动作或速度场 `[B,H,A]` | 去噪 loss 或 flow matching loss | 多峰动作和平滑 action chunk |
+
+VLA 的“语言”可以只用于任务条件，也可以与视觉 token 深度融合。读代码时要确认语言 token 是否参与 action head，而不是看到模型有语言输入就默认它学到了语言条件控制。
+
+#### VLA 的训练和推理
+
+常见训练分三步：
+
+1. 视觉/语言 backbone 预训练，学习通用表征。
+2. 用机器人示范 `(observation, instruction, action)` 做行为克隆或 flow/diffusion action training。
+3. 可选地用 RL、偏好优化或失败数据做后训练。
+
+推理时通常只执行动作块的前 `S` 步，重新观察后再预测：
+
+```text
+observe O[t-K+1:t], state[t], instruction
+predict action chunk a[t:t+H-1]
+execute a[t:t+S-1]
+repeat
+```
+
+`S` 是 stride，不一定等于 `H`。如果 `S < H`，这就是 receding-horizon 执行；报告成功率时应同时报告 `H`、`S`、控制频率和端到端延迟。
+
+### 5.2 WAM：让未来预测约束动作
+
+WAM（World Action Model）不是单独的一种 backbone，而是把世界预测和动作生成放进同一个训练或推理闭环。它至少要回答两个问题：预测什么未来，以及这个未来怎样改变动作。
+
+一个通用的联合写法是：
+
+```text
+z[t] = E(o[t-K+1:t])
+future = F_world(z[t], a[t:t+H-1], language)
+action = F_action(z[t], future, language)
+```
+
+其中 `future` 可以是未来视频、latent、对象粒子、flow、occupancy、触觉或接触状态。关键不是系统中出现了一个 future head，而是 future 分支是否对动作生成提供可检查的约束。
+
+#### 两种基本架构
+
+**级联 WAM** 先预测未来，再由动作模块读取未来：
+
+```text
+observation + language -> world predictor -> future representation
+future representation + observation -> action head -> action chunk
+```
+
+它容易拆开调试，也能把冻结的 WM 接到已有 VLA；缺点是前一阶段的预测误差会传到动作模块，且动作可能只把 future 当作旁路特征。
+
+**联合 WAM** 让动作和未来在同一 Transformer 或 DiT 中共同建模：
+
+```text
+observation + language + action/future tokens
+                       -> shared backbone
+                       -> action head + future head
+```
+
+联合模型可以用动作预测约束 future，也可以用 future prediction 约束 action。实现时要写清楚 attention mask，尤其是动作 token 是否能偷看真实未来，以及训练时的 teacher forcing 是否造成部署信息泄漏。
+
+#### WAM 的一个训练目标
+
+设真实未来表示为 `y[t+1:t+H]`，动作块为 `a[t:t+H-1]`，则可用：
+
+```text
+L_WAM = lambda_a L_action
+      + lambda_f L_future
+      + lambda_c L_coupling
+      + lambda_r L_reward/value
+```
+
+其中：
+
+- `L_action`：动作回归、action-token、diffusion 或 flow matching loss。
+- `L_future`：像素、latent、slot、flow、occupancy 或触觉预测 loss。
+- `L_coupling`：检查生成动作对应的未来是否比替代动作更接近真实后果，例如 inverse dynamics、action consistency 或 ranking loss。
+- `L_reward/value`：可选的成功、进度、终止和风险预测。
+
+失败轨迹不能简单丢掉。失败动作不适合作为 imitation target，但它造成的未来、碰撞、滑移或任务倒退可以作为 consequence 和 risk supervision。若训练集只有成功示范，WAM 很容易在错误动作下仍预测成功。
+
+#### WAM 的运行时检查
+
+读 WAM 论文或代码时，至少确认以下几点：
+
+| 问题 | 要查什么 |
+| --- | --- |
+| 未来表示 | 未来视频、latent、粒子、3D/4D、触觉还是 value？形状和时间跨度是多少？ |
+| 动作接口 | 关节、末端 `SE(3)`、夹爪、action chunk 还是 latent action？是否能落到控制器？ |
+| 未来的用途 | 训练期辅助 loss、测试期 rollout、候选动作排序还是 MPC？ |
+| 时间关系 | chunk 内是否双向，chunk 间是否因果？动作请求到真正接管之间有多少延迟？ |
+| 反事实证据 | 同一初始状态输入不同动作时，未来是否按动作改变？是否覆盖失败动作？ |
+| 部署代价 | denoising/ODE 步数、KV cache、control Hz、显存和真实机器人延迟。 |
+
+训练期使用 future supervision、推理期不再生成 future 的方法，仍可称为带 world supervision 的 policy；但不能把它描述成测试时显式想象的 WAM。相反，只有视频生成而不输出动作或不影响动作选择的模型，仍是 WM 或视频生成器。
+
+### 5.3 World Model 的四类表征
 
 世界模型的“输入是图像，输出是未来”还不够具体。实现时要先写清楚预测空间：是在像素空间预测帧，在 latent 空间预测特征，还是在带坐标的 3D/4D 空间预测场景。统一记号如下：
 
@@ -414,6 +538,10 @@ GNS 是动力学模拟器，不是视觉 WM；接入机器人还需要图像/RGB
 - [Scalable Diffusion Models with Transformers (DiT)](https://arxiv.org/abs/2212.09748)：Transformer 作为扩散生成 backbone 的代表。
 - [Diffusion Policy](https://arxiv.org/abs/2303.04137)：连续机器人动作 chunk 的 diffusion policy。
 - [π0](https://arxiv.org/abs/2410.24164)：VLM 条件下的 flow-based action expert。
+- [RT-2](https://arxiv.org/abs/2307.15818)：将视觉语言模型迁移到机器人动作 token 预测，适合理解 VLA 的基本接口。
+- [OpenVLA](https://arxiv.org/abs/2406.09246)：开源视觉语言动作模型，适合对照视觉 token、语言条件和连续动作解码。
+- [World Action Models survey](https://arxiv.org/abs/2605.12090)：从未来表征、动作耦合和运行时角度整理 WAM。
+- [Fast-WAM](https://arxiv.org/abs/2603.16666)：观察训练期 world supervision 如何与推理期高效动作生成结合。
 - [GWM: Towards Scalable Gaussian World Models for Robotic Manipulation](https://arxiv.org/abs/2508.17600)：动作条件的 3D Gaussian 未来状态预测与 neural simulator。
 - [Latent Particle World Models](https://arxiv.org/abs/2603.04553)：对象中心粒子、latent action 和自监督随机动力学。
 - [OccWorld](https://arxiv.org/abs/2311.16038)：3D occupancy token 与时空 Transformer 的世界演化预测。
