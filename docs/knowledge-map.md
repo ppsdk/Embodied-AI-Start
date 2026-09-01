@@ -4,9 +4,9 @@
 
 **下一步**：[机器人学基础](robotics.md) · [模型基础](model-basics.md) · [强化学习基础](reinforcement-learning.md)
 
-本页只回答三个基本问题：机器人看到了什么、要输出什么、各类模型分别解决哪一段问题。具体公式、算法流程和论文放在独立专题页。
+机器人看到了什么、要输出什么、各类模型分别解决哪一段问题。具体公式、算法流程和论文放在独立专题页。
 
-## 1. 一次完整的具身闭环
+## 1. 完整的具身闭环
 
 ```mermaid
 flowchart LR
@@ -28,14 +28,14 @@ flowchart LR
 
 ## 2. 基本对象
 
-| 对象 | 它解决什么问题 | 常见输出 | 不要把它误认为 |
-| --- | --- | --- | --- |
-| **VLM** | 理解图像、文字和任务语义 | 文本、视觉特征或中间表示 | 已经能控制机器人的策略 |
-| **VLA** | 从视觉、语言和状态直接生成动作 | 单步动作或 action chunk | 必然包含未来预测的 WM |
-| **WM** | 给定当前状态和动作，预测未来世界 | 未来 latent、视频、对象状态或 3D/4D 场景 | 只做静态 3D 重建的编码器 |
-| **RL** | 用奖励定义“什么行为更好”并改进策略 | value、Q、policy 或动作 | 一种固定的数据收集方式 |
-| **MBRL** | 把动力学/奖励模型用于 rollout、规划或策略更新 | imagined rollout、MPC 或 model-based actor-critic | 所有使用 WM 的系统 |
-| **WAM** | 把未来世界建模与动作生成联合或紧密耦合 | 未来表征与动作的联合输出 | WM 的第五种空间表示 |
+| 对象           | 它解决什么问题                                | 常见输出                                          | 不要把它误认为           |
+| -------------- | --------------------------------------------- | ------------------------------------------------- | ------------------------ |
+| **VLM**  | 理解图像、文字和任务语义                      | 文本、视觉特征或中间表示                          | 已经能控制机器人的策略   |
+| **VLA**  | 从视觉、语言和状态直接生成动作                | 单步动作或 action chunk                           | 必然包含未来预测的 WM    |
+| **WM**   | 给定当前状态和动作，预测未来世界              | 未来 latent、视频、对象状态或 3D/4D 场景          | 只做静态 3D 重建的编码器 |
+| **RL**   | 用奖励定义“什么行为更好”并改进策略          | value、Q、policy 或动作                           | 一种固定的数据收集方式   |
+| **MBRL** | 把动力学/奖励模型用于 rollout、规划或策略更新 | imagined rollout、MPC 或 model-based actor-critic | 所有使用 WM 的系统       |
+| **WAM**  | 把未来世界建模与动作生成联合或紧密耦合        | 未来表征与动作的联合输出                          | WM 的第五种空间表示      |
 
 VLA、WM 和 WAM 是模型范式；RL 是学习目标与更新方式；MBRL 是“模型如何参与决策”的用法。它们可以组合，但不在同一分类层级。
 
@@ -71,27 +71,27 @@ VLA 通常把上下文映射到动作；WAM 还要让“动作导致的未来”
 
 ```mermaid
 flowchart TD
-    RL[RL] --> DATA{数据从哪里来}
-    RL --> MODEL{决策时用不用模型}
-    DATA --> ON[Online：继续与环境交互]
-    DATA --> OFF[Offline：固定数据集]
-    MODEL --> MF[Model-free：不显式用动力学规划]
-    MODEL --> MB[Model-based：用动力学/奖励模型规划或更新]
+    RL["RL"] --> DATA{"数据从哪里来"}
+    RL --> MODEL{"决策时用不用模型"}
+    DATA --> ON["Online：继续与环境交互"]
+    DATA --> OFF["Offline：固定数据集"]
+    MODEL --> MF["Model-free：不显式用动力学规划"]
+    MODEL --> MB["Model-based：用动力学/奖励模型规划或更新"]
 ```
 
 因此 PPO 可以是 online model-free，DQN 通常是 online off-policy model-free，Dreamer 属于 online model-based；offline/online 描述数据来源，model-free/model-based 描述决策时是否使用模型。
 
 ## 4. 选择入口
 
-| 想解决的问题 | 直接进入 |
-| --- | --- |
-| 坐标、TF、MoveIt 2、控制和真机 | [机器人学基础](robotics.md) |
-| Transformer、Diffusion、Flow Matching 和动作头 | [模型基础](model-basics.md) |
-| 视觉语言到动作 | [VLA 专题](vla.md) |
-| 预测未来视频、latent 或 3D/4D 世界 | [WM 专题](world-model-directions.md) |
-| 未来表征与动作联合建模 | [WAM 专题](wam.md) |
-| 奖励、价值、策略更新和规划 | [RL / MBRL 专题](mbrl.md) · [强化学习基础](reinforcement-learning.md) |
-| 论文、代码和 benchmark | [论文清单](papers.md) · [代码仓](codebases.md) · [Benchmark 指南](benchmarks.md) |
+| 想解决的问题                                   | 直接进入                                                                  |
+| ---------------------------------------------- | ------------------------------------------------------------------------- |
+| 坐标、TF、MoveIt 2、控制和真机                 | [机器人学基础](robotics.md)                                                  |
+| Transformer、Diffusion、Flow Matching 和动作头 | [模型基础](model-basics.md)                                                  |
+| 视觉语言到动作                                 | [VLA 专题](vla.md)                                                           |
+| 预测未来视频、latent 或 3D/4D 世界             | [WM 专题](world-model-directions.md)                                         |
+| 未来表征与动作联合建模                         | [WAM 专题](wam.md)                                                           |
+| 奖励、价值、策略更新和规划                     | [RL / MBRL 专题](mbrl.md) · [强化学习基础](reinforcement-learning.md)          |
+| 论文、代码和 benchmark                         | [论文清单](papers.md) · [代码仓](codebases.md) · [Benchmark 指南](benchmarks.md) |
 
 ## 5. 最短学习路径
 

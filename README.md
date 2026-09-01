@@ -19,6 +19,7 @@
 | 🤖 Robotics    | 想先搞懂坐标、控制和真机       | [机器人学基础](docs/robotics.md)               |
 | 👁️ VLA        | 想研究视觉、语言和动作策略     | [VLA 专题](docs/vla.md)                        |
 | 🌍 World Model | 想做未来预测、生成或 WAM       | [WM 专题](docs/world-model-directions.md)      |
+| 🔗 WAM         | 想研究未来世界与动作联合建模   | [WAM 专题](docs/wam.md)                        |
 | 🎮 RL / MBRL   | 想做强化学习、规划和策略后训练 | [强化学习基础](docs/reinforcement-learning.md) |
 
 **更多目标** → [MuJoCo](docs/mujoco-tutorial.md) · [Isaac Sim](docs/isaac-sim-tutorial.md) · [XPolicyLab](docs/xpolicylab-tutorial.md) · [真机实践](docs/robotics.md) · [Benchmark](docs/benchmarks.md)

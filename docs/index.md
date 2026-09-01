@@ -14,6 +14,7 @@
 | 🤖 Robotics | 想先搞懂坐标、控制和真机闭环 | [机器人学基础](robotics.md) |
 | 👁️ VLA | 想研究视觉、语言和动作策略 | [VLA 专题](vla.md) |
 | 🌍 World Model | 想做未来预测、生成或 WAM | [WM 专题](world-model-directions.md) |
+| 🔗 WAM | 想研究未来世界与动作联合建模 | [WAM 专题](wam.md) |
 | 🎮 RL / MBRL | 想做强化学习、规划和策略后训练 | [RL / MBRL 专题](mbrl.md) |
 
 ## 学习顺序
