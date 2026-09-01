@@ -2,8 +2,8 @@
 
 > 🌍 按像素、latent、对象中心和 3D/4D 等路线理解世界模型，并连接到 WAM。
 
-**预计阅读**：25 min  
-**前置知识**：模型基础、机器人观测与动作接口  
+**预计阅读**：25 min
+**前置知识**：模型基础、机器人观测与动作接口
 **下一步**：[模型基础](model-basics.md) · [强化学习基础](reinforcement-learning.md) · [代码仓](codebases.md)
 
 **本文路线**：表示 → 动作条件预测 → 数据字段 → 训练目标 → 闭环评测 → 代表工作
@@ -26,7 +26,7 @@ p(x[t+1:t+H] | x[t], a[t:t+H-1], l)
 
 因此，纯视频生成器、静态 3D 重建器、只输出 value 的评估器，不能自动称为可控机器人 WM。它们可以是 WM 的组件，是否构成完整 WM 要看有没有动作条件、未来状态和闭环证据。
 
-WM 与 WAM 的关系也要分开：WM 是 **consequence prediction**；World Action Model（WAM）是把这种预测结构性接入动作生成后的 policy 范式。WAM 可以使用像素、latent、flow 或 3D 表示，WAM 不是第五种表示类型。
+WM 与 WAM 的关系也要分开：WM 是 **consequence prediction**；World Action Model（WAM）是把这种预测结构性接入动作生成后的 policy 范式。WAM 可以使用像素、latent、flow 或 3D 表示。
 
 ## 2. WM用什么表示未来
 
@@ -39,7 +39,7 @@ WM 与 WAM 的关系也要分开：WM 是 **consequence prediction**；World Act
 
 这四条线不是互斥架构。一个系统可以用视频 encoder 得到 object slots，再预测 3D flow；也可以用 latent dynamics 做规划、用视频 decoder 只做可视化检查。
 
-### 2.1 不止四种表示
+### 2.1 其余表示
 
 - **运动场/scene flow**：直接预测哪些区域向哪里移动，适合 pushing、rearrangement 和短程 servoing。
 - **物理状态**：接触、力、摩擦、支撑、碰撞、形变和材料属性，适合插入、装配和接触丰富任务。
@@ -73,8 +73,6 @@ p(x[t+1:t+H] | x[t], a[t:t+H-1], l)
 5. **在线自适应**：用新机器人上的上下文估计动力学、校正动作或检索成功经验。
 6. **合成数据引擎**：生成带动作、位姿、深度或触觉的训练片段，但必须验证可执行性。
 
-同一模型可有多个角色，但报告时要写清楚：预测结果是否进入动作生成、只在训练使用还是部署时也使用，以及闭环控制是否真正调用它。
-
 ## 4. 采样数据要记录哪些字段
 
 一条可用于动作条件 WM 的样本至少应能写成：
@@ -94,8 +92,6 @@ p(x[t+1:t+H] | x[t], a[t:t+H-1], l)
 | 任务条件   | 语言指令、目标图像、子目标、场景 ID、机器人本体 ID                                     |
 | 坐标与本体 | 相机/世界/末端坐标变换，URDF、关节限制、控制器和标定信息                               |
 
-关键区别是 **commanded action** 与 **executed action**：真实机器人有延迟、限幅和控制误差，最好记录实际状态变化，否则模型学到的可能只是命令而非后果。
-
 ## 5. 模型学什么，怎么验证
 
 常见目标包括：
@@ -106,8 +102,6 @@ p(x[t+1:t+H] | x[t], a[t:t+H-1], l)
 - object/flow/occupancy loss：保证几何和运动结构。
 - reward/progress/termination loss：支持规划和失败识别。
 - contact/force/physics consistency loss：抑制穿透、滑移和不可能接触。
-
-最低限度的闭环检查是反事实干预：固定同一个 `x[t]`，输入 expert、轻微偏离和明显错误的 `a`，比较预测未来是否有方向正确的差异。只报告视频质量不能证明动作因果性。
 
 ## 6. 代表性工作放在哪些位置
 
@@ -178,20 +172,19 @@ execute a^(n*)
 
 Fast-WAM、PILOT 和 WAM4D 关注训练期 world supervision 能否在推理时移除；BICPO-VLA 关注异步 action chunk 的 request-to-handoff gap：新 chunk 请求时旧 chunk 仍在执行，接管状态已经变化。评测应报告真实 control Hz、chunk stride、推理延迟、boundary jump 和成功率，而非只报 FLOPs。
 
-### 7.5 外部编排和跨本体部署
+### 7.5 外部agent和跨本体部署
 
-Harness VLA/HarnessWAM 表明，局部 predictive policy 还需要场景 belief、task graph、进度监测、验证和 recovery。Qwen-RobotManip 等跨本体工作进一步强调 representation、motion、behavior alignment，以及目标机器人上的标定、IK/FK、控制器和安全适配。跨本体 claim 必须同时报告模型迁移能力和部署工程投入。
+Harness VLA/HarnessWAM 表明，局部 predictive policy 还需要场景 belief、task graph、进度监测、验证和 recovery。Qwen-RobotManip 等跨本体工作进一步强调 representation、motion、behavior alignment，以及目标机器人上的标定、IK/FK、控制器和安全适配。
 
-## 8. WM到底该怎么评估
+## 8. WM该怎么评估
 
-建议把指标分成四层：
+可以分成四层：
 
 1. **表观层**：视频/latent 预测误差、多视角一致性、长期漂移。
 2. **结构层**：对象跟踪、flow/occupancy、接触、碰撞、支撑和物理状态识别。
 3. **因果层**：动作跟随、反事实区分、成功/失败后果覆盖、风险校准。
 4. **控制层**：MPC 或 policy 的真实成功率、长程完成率、OOD 泛化、延迟、控制频率和安全事件。
 
-World-model 内成功率不能替代真实机器人测试；生成质量提升也不能自动推出控制收益。对 learned simulator 和 evaluator，还应报告其与真实环境的策略排名相关性、候选数—延迟曲线和失效类型。
 
 ## 9. 读论文
 
@@ -211,6 +204,6 @@ future / transition / value 是否真正改变动作？
 跨任务、布局、视角和 embodiment 的收益是否超过适配成本？
 ```
 
-读一篇 WM 论文时，优先记录四件事：`输入字段`、`预测张量`、`动作如何进入模型`、`预测如何影响动作或评测`。如果只找到 encoder、视频样例或 value head，应准确称为结构化感知、生成模型或 evaluator，不要夸大为完整机器人 WM。
+读一篇 WM 论文时，优先记录四件事：`输入`、`预测张量`、`动作如何进入模型`、`预测如何影响动作或评测`。
 
 相关内容：[知识图谱](knowledge-map.md)、[模型基础](model-basics.md)、[论文索引](papers.md)、[代码库](codebases.md)。

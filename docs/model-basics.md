@@ -21,7 +21,7 @@
 | $A$         | 每步动作维度              | 关节、末端位姿 delta 或夹爪维度        |
 | $C$         | 条件上下文                | 图像、语言、机器人状态和历史           |
 
-常用张量约定：序列表征为 $X\in\mathbb{R}^{B\times L\times D}$，动作块为 $A_{1:H}\in\mathbb{R}^{B\times H\times A}$。`B`、`L`、`D`、`H`、`A` 必须在实现和实验表中明确，不能只写“输入一段图像、输出动作”。
+常用张量约定：序列表征为 $X \in \mathbb{R}^{B\times L\times D}$，动作块为 $A_{1:H}\in\mathbb{R}^{B\times H\times A}$。`B`、`L`、`D`、`H`、`A` 必须在实现和实验表中明确，不能只写“输入一段图像、输出动作”。
 
 ## 1. Transformer：序列建模骨架
 
@@ -121,7 +121,7 @@ for t = T ... 1:
 return x_0[0:H]  # action chunk or future latent
 ```
 
-在机器人策略中，$x$ 可以是未来 $H$ 步的关节/末端动作，而不是单个动作；执行一小段后重新观测和采样（receding horizon）。采样步数、action horizon、控制频率和端到端延迟应一并报告。
+在机器人策略中，$ x $ 可以是未来 $H$ 步的关节/末端动作，而不是单个动作；执行一小段后重新观测和采样（receding horizon）。采样步数、action horizon、控制频率和端到端延迟应一并报告。
 
 ### 2.4 为什么适合连续、多峰动作
 
