@@ -55,7 +55,7 @@ flowchart TD
 
 ### 核心对象
 
-| 对象 | 典型学习目标                                     | 决策接口                                             | 常见优势                       | 常见风险                                  |
+| 对象 | 学习目标                                         | 决策接口                                             | 常见优势                       | 常见风险                                  |
 | ---- | ------------------------------------------------ | ---------------------------------------------------- | ------------------------------ | ----------------------------------------- |
 | VLM  | 图文对齐、生成与理解                             | 通常不直接输出机器人动作                             | 语义知识和泛化强               | 缺少动作与物理接地                        |
 | VLA  | $\pi(a_t \mid o_{\le t}, l)$                   | 直接输出动作或动作块                                 | 端到端、部署路径短             | 容易成为反应式映射；时序/物理建模可能不足 |
@@ -218,19 +218,6 @@ $$
 
 实践时要把以下链路拆开检查：多视角/RGB-D → 初始 3D Gaussian 或点图 → 记录动作 $a_{t:t+H-1}$ → 预测 $\widehat S_{t+1:t+H}$ → 从目标相机渲染 → 比较深度/位姿/重投影和动作条件差异 → 再把模型交给策略或 MPC。GWM 的 3D 预测能力不能由静态 3DGS 或 VGGT 自动推出；后两者更适合作为 3D 重建/几何前端，是否构成 WM 要看有没有动作条件的时间预测。
 
-#### 4D occupancy：预测空间占据和自车运动
-
-Occupancy world model 不追踪少量目标框，而是在离散体素或稀疏体素上预测“哪里被什么占据”。令场景网格为 $V_t\in\{0,1,\ldots,C\}^{X\times Y\times Z}$，其中 0 表示空闲、其余类别表示占据语义；4D 预测可以写成
-
-$$
-\widehat V_{t+1:t+H},\widehat p_{t+1:t+H}
- =F_\theta(V_{t-L+1:t},p_{t-L+1:t},u_{t:t+H-1}),
-$$
-
-其中 $p_t$ 是自车或相机位姿，$u_t$ 可以是控制量、目标轨迹或未来位姿条件。OccWorld 用离散 scene token 和时空 Transformer 同时预测 occupancy 与 ego trajectory；DOME 把未来 occupancy 生成写成可控的 diffusion；PreWorld 用视觉输入和 2D/3D 监督进行 3D occupancy 与 4D forecasting；Delta-Triplane Transformers 则预测紧凑 triplane 的增量，避免每一步重建完整体素。它们主要验证场景演化、规划误差和长时程一致性，通常不是机械臂 action policy。
-
-这条路线的优点是几何和遮挡比 2D 框更完整，且可以直接接碰撞检查、轨迹规划或自动驾驶 planning；缺点是体素内存大、分辨率与速度互相制约，位姿误差会污染所有未来帧。阅读时要分清：预测未来 occupancy 是 WM，只有把预测结果用于 planner、MPC 或 policy update 才是 MBRL。
-
 #### 持续 3D latent 与动态重建
 
 另一类方法不要求每个时刻都生成完整 RGB，而是维护一个随时间更新的 3D latent。以 FR3D 为例，它把相机自运动和环境运动拆开，预测持久的 3D latent，再从未来视角重建动态场景。此时可写成
@@ -266,7 +253,7 @@ $$
 | 动作跟随与安全验证             | 用 off-expert action、SE(3) 轨迹和风险头检查模型是否真的执行给定动作           | [WorldEcho](https://arxiv.org/abs/2608.24885)、[Calibrated Predictive Safety](https://arxiv.org/abs/2608.17496) | 预测未来是否与动作、风险和安全约束一致？                         | 评测协议、校准集和真实机器人验证仍需统一                    |
 | 长期记忆 WM                    | 用全局记忆库、位姿索引或混合 attention 保留远期地点/状态，同时限制短期推理成本 | [ReWorld](https://arxiv.org/abs/2608.23565)                                                                  | 长时程回访时，模型能否恢复早期观测并保持交互一致？               | 记忆预算、检索错误和跨场景泛化会影响结果                    |
 | 真实机器人在线 WM              | 在真实机器人上边采集边更新 latent dynamics，并用 imagined rollout 降低试错成本 | [DayDreamer](https://arxiv.org/abs/2206.14176)                                                               | 不依赖仿真器时，模型是否仍能用少量真实交互学会站立、行走或操作？ | 安全、重置成本、传感器漂移和在线更新稳定性                  |
-| 对象槽位动力学                 | 将画面拆成对象 slot，再预测对象属性和关系随时间的变化                        | [SlotFormer](https://arxiv.org/abs/2210.05861)、[FOCUS](https://arxiv.org/abs/2307.02427)                       | 对象级结构是否改善长时程预测、探索和目标条件规划？               | slot 身份交换、遮挡和对象发现不稳定                         |
+| 对象槽位动力学                 | 将画面拆成对象 slot，再预测对象属性和关系随时间的变化                          | [SlotFormer](https://arxiv.org/abs/2210.05861)、[FOCUS](https://arxiv.org/abs/2307.02427)                       | 对象级结构是否改善长时程预测、探索和目标条件规划？               | slot 身份交换、遮挡和对象发现不稳定                         |
 | 细粒度接触视频 WM              | 在视频生成器内部按帧注入 action，刻画机械臂、物体和接触的精确对齐              | [IRASim](https://arxiv.org/abs/2406.14540)                                                                   | 改变动作时间戳后，接触位置和物体响应是否同步改变？               | 视频逼真度、动作跟随和真实动力学可能脱节                    |
 | 显式运动流 WM                  | 先预测 3D scene flow 或运动场，再用它生成未来 RGB-D/视频                       | [FlowDreamer](https://arxiv.org/abs/2505.10075)                                                              | 显式运动是否改善深度、语义一致性和视觉规划？                     | scene flow 误差会传到渲染，仍需动作闭环验证                 |
 | WM 作为策略评测环境            | 用 latent action 或 action-conditioned video rollout 在部署前筛选策略          | [WorldEval](https://arxiv.org/abs/2505.19017)、[WorldGym](https://arxiv.org/abs/2506.00613)                     | 模型内策略排名是否与真实机器人排名相关？                         | 评测代理可能偏爱某类动作，不能替代真实安全测试              |
