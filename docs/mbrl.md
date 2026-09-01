@@ -93,15 +93,4 @@ flowchart LR
 
 模型内成功率不能替代真实环境评测。真实机器人还要记录控制器、标定、碰撞和急停事件。
 
-## 6. 一个基础实验顺序
-
-```text
-1. 在 MuJoCo/Gymnasium 跑通 transition 和 replay buffer
-2. 训练单步 dynamics，检查状态与 reward 误差
-3. 比较 1、5、10 步 imagined rollout 的漂移
-4. 接入随机 shooting 或 MPC，只执行第一个动作
-5. 与 SAC/PPO 等 model-free 基线比较环境步数和成功率
-6. 再迁移到更复杂仿真或真机，并报告延迟与安全事件
-```
-
 常用实现入口：[TD-MPC2](https://github.com/nicklashansen/tdmpc2)、[DreamerV3](https://github.com/danijar/dreamerv3)、[MBPO](https://github.com/jannerm/mbpo)和[代码仓与工具](codebases.md)。
