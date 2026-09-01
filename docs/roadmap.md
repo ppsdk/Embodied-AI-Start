@@ -8,10 +8,10 @@
 | ------- | ----------------------------------- | --------- |
 | 第 1 章 | MDP、机器人学与控制接口             | 共同基础  |
 | 第 2 章 | 模型基础、动作策略与 benchmark 协议 | 共同基础  |
-| 第 3 章 | Model-free RL：Online 与 Offline     | RL/MBRL   |
+| 第 3 章 | Model-free RL：Online 与 Offline    | RL/MBRL   |
 | 第 4 章 | Model-based RL（MBRL）              | RL/MBRL   |
 | 第 5 章 | VLM → VLA                          | VLA       |
-| 第 6 章 | World Model：像素、latent 与 3D/4D    | WM        |
+| 第 6 章 | World Model：像素、latent 与 3D/4D  | WM        |
 | 第 7 章 | WAM 与 Fast-WAM                     | WAM/交叉  |
 | 第 8 章 | RL 后训练与综合项目                 | 交叉/可选 |
 
@@ -129,8 +129,6 @@ flowchart TD
 - [ViTacWorld](https://vitacworld.github.io/)：视觉-触觉动作条件 WM。
 - [WorldEval](https://worldeval.github.io/) 和 [WorldGym](https://arxiv.org/abs/2506.00613)：用 WM 做策略 rollout 和部署前评测。
 - [WM 其他方向](world-model-directions.md)：统一记录输入、动作、预测目标、时间跨度、决策接口和证据。
-
-学习时按下面顺序更容易定位问题：先读 IRIS/DIAMOND，理解离散自回归和像素 diffusion 如何做 imagined rollout；再读 Dynalang，理解语言如何作为环境规律条件；用 GNS 补上粒子图和物理模拟器；然后用 VGGT/3DGS、OccWorld 和 GWM/PhysMani 学 3D/4D 表示及真实动作接口；接着看 DayDreamer、SlotFormer、FOCUS、IRASim、FlowDreamer 和 ViTacWorld，补上真实在线学习、对象交互、接触对齐、显式运动和触觉；最后看 FR3D、3D-Belief、DreMa、DreamDojo、PlayWorld、WorldEval 和 WorldGym，补上自运动解耦、不确定性、数字孪生、人类视频迁移、自主探索和策略评测。没有动作条件或未来目标的 3D 重建项目，应标成几何前端，不要直接写成可用于 MBRL 的 WM。
 
 ## 第 7 章｜WAM 与 Fast-WAM
 

@@ -10,7 +10,7 @@
 | 跑一个 RL 示例           | [强化学习基础](docs/reinforcement-learning.md) | [MuJoCo 教程](docs/mujoco-tutorial.md)                            |
 | 学机器人坐标、TF 和规划  | [机器人学基础](docs/robotics.md)               | RViz 2、MoveIt 2、ros2_control                                 |
 | 跑 GPU 并行仿真          | [Isaac Sim 教程](docs/isaac-sim-tutorial.md)   | Isaac Lab、ManiSkill                                           |
-| 从仿真走到真实机械臂      | [机器人学基础](docs/robotics.md)               | 手眼标定、ros2_control、rosbag2 和 Piper 实践                   |
+| 从仿真走到真实机械臂     | [机器人学基础](docs/robotics.md)               | 手眼标定、ros2_control、rosbag2 和 Piper 实践                  |
 | 研究 VLA 或动作策略      | [模型基础](docs/model-basics.md)               | [论文清单](docs/papers.md) 和 OpenVLA/OpenPI                      |
 | 研究 World Model         | [WM 专题](docs/world-model-directions.md)      | pixel、latent、对象中心、3D/4D 和闭环验证                      |
 | 研究 WAM                 | [WM 专题](docs/world-model-directions.md)      | [WAM 代码入口](docs/codebases.md#5-world-model像素latent-与-3d4d) |
@@ -80,18 +80,6 @@ flowchart LR
 ROS 2、OpenCV 和机器人依赖安装可参考[鱼香 ROS 社区论坛](https://fishros.org.cn/forum/)。机器人章节统一以 Ubuntu 22.04 + ROS 2 Humble 为基线。
 
 ## 从仿真到真机
-
-真机不是把仿真脚本直接换成真实设备。先把动作接口、坐标系、控制频率和停止条件固定下来，再逐层接入硬件：
-
-1. **先跑通仿真**：在 MuJoCo、Isaac Sim、ManiSkill 或 RoboTwin 中确认 observation、action、reset 和终止逻辑。
-2. **准备 ROS 2 接口**：确认关节状态、控制命令、TF、相机 topic 和 QoS；用 RViz 2 检查机器人模型、坐标系和传感器数据。
-3. **接入控制器**：通过 `ros2_control` 或设备官方 ROS 2 驱动发送位置、速度或轨迹命令。先使用低速、低幅度和较大的关节限位。
-4. **完成标定**：记录相机内参、相机到机器人外参、末端工具坐标和关节零位。手眼标定的采样与求解见[示例](examples/hand_eye_calibration/README.md)。
-5. **先做无接触动作**：让机器人在空场景执行小范围 waypoint，检查 TF、方向、单位、延迟、限幅和急停。
-6. **再做单步任务**：从抓取、移动或放置中的一个短动作开始，保存 rosbag2、动作命令、实际关节状态和失败原因。
-7. **最后接策略**：将 VLA、RL 或 WAM 输出接到经过验证的控制接口，不允许策略直接绕过限位、碰撞检查和急停逻辑。
-
-真机实验至少记录：机器人型号和固件、URDF/SRDF、控制器配置、相机型号与频率、TF 树、动作坐标系、控制周期、动作 chunk、归一化统计、标定文件版本、随机种子、rosbag2 路径和安全事件。论文或报告中的成功率应同时给出任务定义、尝试次数、失败类型和是否需要人工恢复。
 
 推荐的真机入口：
 

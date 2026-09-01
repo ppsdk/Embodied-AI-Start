@@ -2,8 +2,6 @@
 
 [XPolicyLab](https://github.com/XPolicyLab/XPolicyLab) 是机器人策略和评测环境之间的一层适配器。策略模型保留自己的依赖、checkpoint 和推理代码；XPolicyLab 负责把观测送给模型、把动作交给环境，并用同一套接口连接 RoboDojo、RoboTwin 或真实机器人。
 
-它不是新的仿真器，也不是一个替代 PPO/SAC 的训练算法。可以把边界记成：
-
 ```text
 策略侧：模型、checkpoint、预处理、推理服务
                  <--- websocket --->
@@ -70,18 +68,18 @@ bash eval.sh RoboDojo stack_bowls demo arx_x5 joint 0 0 0 base base
 
 参数按顺序是：
 
-| 参数 | 含义 | 示例 |
-| --- | --- | --- |
-| `bench_name` | benchmark 或数据族 | `RoboDojo` |
-| `task_name` | 本次评测任务 | `stack_bowls` |
-| `ckpt_name` | checkpoint 名称或路径 | `demo`、`cotrain` |
-| `env_cfg_type` | 机器人/相机/场景配置 | `arx_x5` |
-| `action_type` | 动作空间 | `joint` 或 `ee` |
-| `seed` | 训练或评测 seed | `0` |
-| `policy_gpu_id` | 策略服务使用的 GPU | `0` |
-| `env_gpu_id` | 环境客户端使用的 GPU | `0` |
-| `policy_env_or_uv_path` | 策略侧 conda 环境名或 uv 路径 | `base` |
-| `eval_env_conda_env` | 环境侧 conda 环境名 | `base` |
+| 参数                      | 含义                          | 示例                  |
+| ------------------------- | ----------------------------- | --------------------- |
+| `bench_name`            | benchmark 或数据族            | `RoboDojo`          |
+| `task_name`             | 本次评测任务                  | `stack_bowls`       |
+| `ckpt_name`             | checkpoint 名称或路径         | `demo`、`cotrain` |
+| `env_cfg_type`          | 机器人/相机/场景配置          | `arx_x5`            |
+| `action_type`           | 动作空间                      | `joint` 或 `ee`   |
+| `seed`                  | 训练或评测 seed               | `0`                 |
+| `policy_gpu_id`         | 策略服务使用的 GPU            | `0`                 |
+| `env_gpu_id`            | 环境客户端使用的 GPU          | `0`                 |
+| `policy_env_or_uv_path` | 策略侧 conda 环境名或 uv 路径 | `base`              |
+| `eval_env_conda_env`    | 环境侧 conda 环境名           | `base`              |
 
 这里的 `base` 只是 demo 的占位环境名；真实策略应换成该策略 README 要求的环境。
 
@@ -89,14 +87,14 @@ bash eval.sh RoboDojo stack_bowls demo arx_x5 joint 0 0 0 base base
 
 每个策略放在 `policy/<POLICY>/` 下。最重要的是 `model.py` 中的 `Model` 类：
 
-| 方法 | 作用 |
-| --- | --- |
-| `__init__(model_cfg)` | 读取 `deploy.yml`，加载模型、处理器和 checkpoint |
-| `update_obs(obs)` | 接收一条观测并更新模型状态 |
-| `update_obs_batch(obs_list)` | 批量更新观测 |
-| `get_action()` | 返回一段动作 chunk |
-| `get_action_batch(env_idx_list=None)` | 按环境索引返回批量动作 chunk |
-| `reset()` | 清除当前 episode 的历史状态，不接收参数 |
+| 方法                                    | 作用                                               |
+| --------------------------------------- | -------------------------------------------------- |
+| `__init__(model_cfg)`                 | 读取 `deploy.yml`，加载模型、处理器和 checkpoint |
+| `update_obs(obs)`                     | 接收一条观测并更新模型状态                         |
+| `update_obs_batch(obs_list)`          | 批量更新观测                                       |
+| `get_action()`                        | 返回一段动作 chunk                                 |
+| `get_action_batch(env_idx_list=None)` | 按环境索引返回批量动作 chunk                       |
+| `reset()`                             | 清除当前 episode 的历史状态，不接收参数            |
 
 策略服务已经把相机颜色解码成 RGB 数组，因此运行时 `obs["vision"][camera]["color"]` 是图像数组，`model.py` 不应再次解码。
 
@@ -194,13 +192,13 @@ python -m py_compile policy/MY_POLICY/model.py policy/MY_POLICY/deploy.py
 
 ## 10. 常见问题
 
-| 现象 | 优先检查 |
-| --- | --- |
-| 服务能启动但动作维度错 | `env_cfg_type`、`action_type`、动作键名和机器人维度 |
-| 图像颜色或形状不对 | 是否重复解码，是否把 RGB 当成 BGR |
-| 每个 episode 都带着上次历史 | 是否在环境 reset 后调用 `Model.reset()` |
-| 仿真客户端连不上服务 | 端口、防火墙、策略机 IP，以及服务端是否监听 `0.0.0.0` |
-| debug 通过、sim 失败 | Isaac Sim/RoboDojo 版本、Prim/机器人配置、控制频率和单位 |
-| 结果无法比较 | benchmark 任务子集、seed、评测次数、初始场景和 success 判定不一致 |
+| 现象                        | 优先检查                                                          |
+| --------------------------- | ----------------------------------------------------------------- |
+| 服务能启动但动作维度错      | `env_cfg_type`、`action_type`、动作键名和机器人维度           |
+| 图像颜色或形状不对          | 是否重复解码，是否把 RGB 当成 BGR                                 |
+| 每个 episode 都带着上次历史 | 是否在环境 reset 后调用 `Model.reset()`                         |
+| 仿真客户端连不上服务        | 端口、防火墙、策略机 IP，以及服务端是否监听 `0.0.0.0`           |
+| debug 通过、sim 失败        | Isaac Sim/RoboDojo 版本、Prim/机器人配置、控制频率和单位          |
+| 结果无法比较                | benchmark 任务子集、seed、评测次数、初始场景和 success 判定不一致 |
 
 XPolicyLab 的价值是统一“策略如何被调用”和“环境如何拿到动作”。它不会替你解决模型训练、机器人标定、碰撞安全或 benchmark 协议设计；这些仍由策略、机器人和 RoboDojo 各自负责。

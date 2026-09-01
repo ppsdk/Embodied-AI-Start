@@ -10,7 +10,7 @@
 
 仿真器负责让物体运动、碰撞并产生传感器数据，RL/MBRL 再读取这些数据学习。换仿真器或改配置时，至少把物理步长、策略步长、动作保持（decimation）、资产版本和并行环境数记下来。
 
-~~~mermaid
+```mermaid
 flowchart LR
     MUJOCO[MuJoCo\n轻量动力学 / 控制原型] --> TRANS[transition\n观测、动作、奖励、终止]
     ISAAC[Isaac Sim\nUSD / PhysX / 传感器 / GPU] --> TRANS
@@ -18,7 +18,7 @@ flowchart LR
     TRANS --> MBRL[MBRL：dynamics / rollout / MPC]
     ISAAC --> LAB[Isaac Lab\n并行环境与机器人学习层]
     LAB --> RL
-~~~
+```
 
 仿真教程：[MuJoCo 仿真教程](mujoco-tutorial.md) · [Isaac Sim 仿真教程](isaac-sim-tutorial.md)。Isaac Lab 建立在 Isaac Sim 之上，适合把场景配置转换成大规模机器人学习环境；它不是另一个独立的物理引擎。
 
@@ -82,13 +82,13 @@ flowchart LR
     FUT --> W["WM/WAM 未来表征"]
 ```
 
-| 层                             | 主要问题                           | 典型张量/目标                                       | 不应直接推出的结论                                 |
-| ------------------------------ | ---------------------------------- | --------------------------------------------------- | -------------------------------------------------- |
+| 层                             | 主要问题                           | 典型张量/目标                                     | 不应直接推出的结论                                 |
+| ------------------------------ | ---------------------------------- | ------------------------------------------------- | -------------------------------------------------- |
 | Transformer backbone           | 如何融合 token、模态和历史？       | $[B,L,D]$、attention、causal/bidirectional mask | 使用 Transformer 不等于使用 next-token 或生成式 WM |
-| Next-token / action-token head | 如何把动作离散化并按序列预测？     | logits $[B,L,V]$、交叉熵                        | token 化不保证连续动作精度或低延迟                 |
+| Next-token / action-token head | 如何把动作离散化并按序列预测？     | logits$[B,L,V]$、交叉熵                         | token 化不保证连续动作精度或低延迟                 |
 | Diffusion head                 | 如何从噪声逐步恢复动作/未来？      | $[B,H,A]$、epsilon/x0/v loss、scheduler         | 去噪 loss 不等于闭环控制成功率                     |
 | Flow-matching head             | 如何学习从源分布到数据分布的速度？ | $v_\theta(x,t,C)$、ODE integration              | flow 标签不说明 solver、步数或控制频率             |
-| JEPA/video/3D head             | 如何预测未来表征、视频或几何？     | latent/video/3D future objective                    | 需结合动作条件和决策证据                           |
+| JEPA/video/3D head             | 如何预测未来表征、视频或几何？     | latent/video/3D future objective                  | 需结合动作条件和决策证据                           |
 
 详细公式、训练/推理伪代码见[模型基础](model-basics.md)。判断一个模型是否属于 MBRL，仍要追问它是否把 dynamics/reward 用于 rollout、MPC、value 或 policy optimization。
 
@@ -121,15 +121,15 @@ $$
 
 训练样本至少保存：
 
-| 字段 | 符号/形状 | 作用 |
-| --- | --- | --- |
-| 观测历史 | $o_{t-L+1:t}$，如 $[L,H,W,3]$ 或多视角数组 | 编码当前世界状态 |
-| 动作序列 | $a_{t:t+H-1}$，如 $[H,A]$ | 规定未来演化的外部条件 |
-| 未来观测 | $o_{t+1:t+H}$ | 训练预测目标；latent-only 方法也需要编码后的 target |
-| 时间戳/采样间隔 | $\tau_t,\Delta t$ | 区分控制频率和视频帧率 |
-| 相机信息 | 内参 $K$、外参 $T^W_C$、视角 id | 3D/多视角重投影与坐标对齐 |
-| 任务条件 | 语言 $l$、目标图像 $g$、任务 id | 条件预测或 goal-conditioned planning |
-| 可选反馈 | $r_t,d_t$、碰撞/接触、关节状态 | 下游 MBRL、失败诊断和安全评估 |
+| 字段            | 符号/形状                                      | 作用                                                |
+| --------------- | ---------------------------------------------- | --------------------------------------------------- |
+| 观测历史        | $o_{t-L+1:t}$，如 $[L,H,W,3]$ 或多视角数组 | 编码当前世界状态                                    |
+| 动作序列        | $a_{t:t+H-1}$，如 $[H,A]$                  | 规定未来演化的外部条件                              |
+| 未来观测        | $o_{t+1:t+H}$                                | 训练预测目标；latent-only 方法也需要编码后的 target |
+| 时间戳/采样间隔 | $\tau_t,\Delta t$                            | 区分控制频率和视频帧率                              |
+| 相机信息        | 内参$K$、外参 $T^W_C$、视角 id             | 3D/多视角重投影与坐标对齐                           |
+| 任务条件        | 语言$l$、目标图像 $g$、任务 id             | 条件预测或 goal-conditioned planning                |
+| 可选反馈        | $r_t,d_t$、碰撞/接触、关节状态               | 下游 MBRL、失败诊断和安全评估                       |
 
 ### 2.2 像素/视频世界模型：预测“看起来会发生什么”
 
@@ -250,48 +250,48 @@ $$
 
 前面的四类是“预测什么表示”；下面这些是与表示正交的设计选择。读论文时要同时记录表示空间、时间生成器、条件输入和是否真的接入决策。
 
-| 方向 | 怎么做 | 代表工作 | 适合回答的问题 | 主要限制 |
-| --- | --- | --- | --- | --- |
-| 离散 token 自回归 | 把观测压成离散 token，用 causal Transformer 逐 token 预测下一状态 | [IRIS](https://arxiv.org/abs/2209.00588) | 少量环境交互下，离散 latent 能否支持 imagined rollout？ | token 压缩可能丢视觉细节，长 rollout 易累积误差 |
-| 像素 diffusion WM | 对未来 RGB 帧直接做条件扩散，采样得到多种可能未来 | [DIAMOND](https://arxiv.org/abs/2405.12399) | 视觉细节是否会改善游戏/环境内 RL？ | 采样慢、显存高，画面逼真不等于动作正确 |
-| 语言条件 WM | 把描述环境规律的语言和视觉历史一起编码，并预测未来视觉/文本表征 | [Dynalang](https://arxiv.org/abs/2308.01399) | 语言描述“环境怎么运行”能否帮助跨环境泛化？ | 依赖语言是否准确、是否与当前实体对齐 |
-| 学习型物理模拟器 | 用粒子图或连续状态表示物理系统，消息传递预测速度/位置变化 | [GNS](https://arxiv.org/abs/2002.09405) | 学到的动力学能否跨初始状态和长时程 rollout？ | 通常没有视觉、语言和机器人 action 接口 |
-| 驾驶场景 WM | 用视频、动作、文本或交通结构条件预测未来驾驶场景 | [GAIA-1](https://arxiv.org/abs/2309.17080)、[DriveDreamer](https://arxiv.org/abs/2309.09777) | 车辆动作和交通约束能否控制未来视频？ | 领域集中在驾驶，不能直接迁移到机械臂接触 |
-| Digital twin WM | 用显式场景表示配合物理模拟器，复制当前场景并反事实执行动作 | [DreMa](https://arxiv.org/abs/2412.14957) | 机器人动作改变物体后，模型能否在“自己的副本”中试错？ | 场景重建、物理参数和接触模型都可能失配 |
-| 人类视频预训练 + latent action | 从无动作标签视频中学习连续 latent action，再用少量机器人数据校准 | [DreamDojo](https://arxiv.org/abs/2602.06949) | 人类视频中的交互知识能否迁移到机器人控制？ | latent action 不是原生控制量，需 target-robot post-training |
-| 机器人自主探索 | 让机器人 self-play/autonomous play 采集成功、失败和接触丰富的数据训练 WM | [PlayWorld](https://arxiv.org/abs/2603.09030) | 数据分布是否能覆盖人类示范很少出现的失败和长尾接触？ | 真实机器人采集成本、硬件安全和任务覆盖仍是瓶颈 |
-| WM-策略共同迭代 | WM 同时预测未来帧和 reward，并用更新后的策略回流数据继续校准 WM | [World-VLA-Loop](https://arxiv.org/abs/2602.06508) | 如何避免固定 WM 与后训练策略逐渐失配？ | reward 预测错误会把策略更新带偏 |
-| JEPA + diffusion 的 MBRL | 直接在联合 embedding 中学习 diffusion dynamics，避免单独预训练 latent | [JEDI](https://arxiv.org/abs/2605.13013) | 是否能兼顾 latent rollout 的效率和 diffusion 的多模态预测？ | 仍需验证跨任务、长 horizon 和真实机器人闭环 |
-| 因果/结构化 WM | 在对象或实体层级遮挡、干预并预测关系变化，让模型学习“谁影响谁” | [Causal-JEPA](https://arxiv.org/abs/2602.11389) | latent 是否捕获可干预的交互结构，而不只是相关性？ | 因果结构的可识别性依赖数据覆盖和干预设计 |
-| 动作跟随与安全验证 | 用 off-expert action、SE(3) 轨迹和风险头检查模型是否真的执行给定动作 | [WorldEcho](https://arxiv.org/abs/2608.24885)、[Calibrated Predictive Safety](https://arxiv.org/abs/2608.17496) | 预测未来是否与动作、风险和安全约束一致？ | 评测协议、校准集和真实机器人验证仍需统一 |
-| 长期记忆 WM | 用全局记忆库、位姿索引或混合 attention 保留远期地点/状态，同时限制短期推理成本 | [ReWorld](https://arxiv.org/abs/2608.23565) | 长时程回访时，模型能否恢复早期观测并保持交互一致？ | 记忆预算、检索错误和跨场景泛化会影响结果 |
-| 真实机器人在线 WM | 在真实机器人上边采集边更新 latent dynamics，并用 imagined rollout 降低试错成本 | [DayDreamer](https://arxiv.org/abs/2206.14176) | 不依赖仿真器时，模型是否仍能用少量真实交互学会站立、行走或操作？ | 安全、重置成本、传感器漂移和在线更新稳定性 |
-| 对象槽位动力学 | 先把画面拆成对象 slot，再预测对象属性和关系随时间的变化 | [SlotFormer](https://arxiv.org/abs/2210.05861)、[FOCUS](https://arxiv.org/abs/2307.02427) | 对象级结构是否改善长时程预测、探索和目标条件规划？ | slot 身份交换、遮挡和对象发现不稳定 |
-| 细粒度接触视频 WM | 在视频生成器内部按帧注入 action，刻画机械臂、物体和接触的精确对齐 | [IRASim](https://arxiv.org/abs/2406.14540) | 改变动作时间戳后，接触位置和物体响应是否同步改变？ | 视频逼真度、动作跟随和真实动力学可能脱节 |
-| 显式运动流 WM | 先预测 3D scene flow 或运动场，再用它生成未来 RGB-D/视频 | [FlowDreamer](https://arxiv.org/abs/2505.10075) | 显式运动是否改善深度、语义一致性和视觉规划？ | scene flow 误差会传到渲染，仍需动作闭环验证 |
-| WM 作为策略评测环境 | 用 latent action 或 action-conditioned video rollout 在部署前筛选策略 | [WorldEval](https://arxiv.org/abs/2505.19017)、[WorldGym](https://arxiv.org/abs/2506.00613) | 模型内策略排名是否与真实机器人排名相关？ | 评测代理可能偏爱某类动作，不能替代真实安全测试 |
-| 视觉-触觉 WM | 同时预测未来图像和触觉信号，把不可见接触约束纳入 rollout | [ViTacWorld](https://arxiv.org/abs/2607.22530) | 触觉预测是否提高接触任务成功率和策略筛选可靠性？ | 触觉传感器和仿真接口差异大，数据成本高 |
-| 层级逻辑-视觉 WM | 高层预测可解释的逻辑状态，低层预测视觉变化，再用中间目标连接长短时程 | [H-WM](https://arxiv.org/abs/2602.11291) | 逻辑子目标能否减少长 horizon 的视觉漂移和规划失败？ | 符号状态抽取、层级接口和错误传播需要单独评估 |
-| Robot-factored WM | 先用控制器、运动学和 URDF 渲染机器人未来外观，WM 只学习场景对动作的响应 | [Robot-Factored WM](https://arxiv.org/abs/2607.22535) | 换机器人本体后，动作条件接口是否仍然一致？ | 渲染质量、接触深度和控制器模型偏差 |
-| BEV/导航 WM | 在鸟瞰图或地图 latent 中预测视角、占据和路线演化 | [BEV Pretrained WM](https://arxiv.org/abs/2310.18847) | 地图级预测是否比第一视角视频更适合长程导航和主动感知？ | 主要面向导航，不能直接迁移到机械臂接触 |
+| 方向                           | 怎么做                                                                         | 代表工作                                                                                                  | 适合回答的问题                                                   | 主要限制                                                    |
+| ------------------------------ | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- | ----------------------------------------------------------- |
+| 离散 token 自回归              | 把观测压成离散 token，用 causal Transformer 逐 token 预测下一状态              | [IRIS](https://arxiv.org/abs/2209.00588)                                                                     | 少量环境交互下，离散 latent 能否支持 imagined rollout？          | token 压缩可能丢视觉细节，长 rollout 易累积误差             |
+| 像素 diffusion WM              | 对未来 RGB 帧直接做条件扩散，采样得到多种可能未来                              | [DIAMOND](https://arxiv.org/abs/2405.12399)                                                                  | 视觉细节是否会改善游戏/环境内 RL？                               | 采样慢、显存高，画面逼真不等于动作正确                      |
+| 语言条件 WM                    | 把描述环境规律的语言和视觉历史一起编码，并预测未来视觉/文本表征                | [Dynalang](https://arxiv.org/abs/2308.01399)                                                                 | 语言描述“环境怎么运行”能否帮助跨环境泛化？                     | 依赖语言是否准确、是否与当前实体对齐                        |
+| 学习型物理模拟器               | 用粒子图或连续状态表示物理系统，消息传递预测速度/位置变化                      | [GNS](https://arxiv.org/abs/2002.09405)                                                                      | 学到的动力学能否跨初始状态和长时程 rollout？                     | 通常没有视觉、语言和机器人 action 接口                      |
+| 驾驶场景 WM                    | 用视频、动作、文本或交通结构条件预测未来驾驶场景                               | [GAIA-1](https://arxiv.org/abs/2309.17080)、[DriveDreamer](https://arxiv.org/abs/2309.09777)                    | 车辆动作和交通约束能否控制未来视频？                             | 领域集中在驾驶，不能直接迁移到机械臂接触                    |
+| Digital twin WM                | 用显式场景表示配合物理模拟器，复制当前场景并反事实执行动作                     | [DreMa](https://arxiv.org/abs/2412.14957)                                                                    | 机器人动作改变物体后，模型能否在“自己的副本”中试错？           | 场景重建、物理参数和接触模型都可能失配                      |
+| 人类视频预训练 + latent action | 从无动作标签视频中学习连续 latent action，再用少量机器人数据校准               | [DreamDojo](https://arxiv.org/abs/2602.06949)                                                                | 人类视频中的交互知识能否迁移到机器人控制？                       | latent action 不是原生控制量，需 target-robot post-training |
+| 机器人自主探索                 | 让机器人 self-play/autonomous play 采集成功、失败和接触丰富的数据训练 WM       | [PlayWorld](https://arxiv.org/abs/2603.09030)                                                                | 数据分布是否能覆盖人类示范很少出现的失败和长尾接触？             | 真实机器人采集成本、硬件安全和任务覆盖仍是瓶颈              |
+| WM-策略共同迭代                | WM 同时预测未来帧和 reward，并用更新后的策略回流数据继续校准 WM                | [World-VLA-Loop](https://arxiv.org/abs/2602.06508)                                                           | 如何避免固定 WM 与后训练策略逐渐失配？                           | reward 预测错误会把策略更新带偏                             |
+| JEPA + diffusion 的 MBRL       | 直接在联合 embedding 中学习 diffusion dynamics，避免单独预训练 latent          | [JEDI](https://arxiv.org/abs/2605.13013)                                                                     | 是否能兼顾 latent rollout 的效率和 diffusion 的多模态预测？      | 仍需验证跨任务、长 horizon 和真实机器人闭环                 |
+| 因果/结构化 WM                 | 在对象或实体层级遮挡、干预并预测关系变化，让模型学习“谁影响谁”               | [Causal-JEPA](https://arxiv.org/abs/2602.11389)                                                              | latent 是否捕获可干预的交互结构，而不只是相关性？                | 因果结构的可识别性依赖数据覆盖和干预设计                    |
+| 动作跟随与安全验证             | 用 off-expert action、SE(3) 轨迹和风险头检查模型是否真的执行给定动作           | [WorldEcho](https://arxiv.org/abs/2608.24885)、[Calibrated Predictive Safety](https://arxiv.org/abs/2608.17496) | 预测未来是否与动作、风险和安全约束一致？                         | 评测协议、校准集和真实机器人验证仍需统一                    |
+| 长期记忆 WM                    | 用全局记忆库、位姿索引或混合 attention 保留远期地点/状态，同时限制短期推理成本 | [ReWorld](https://arxiv.org/abs/2608.23565)                                                                  | 长时程回访时，模型能否恢复早期观测并保持交互一致？               | 记忆预算、检索错误和跨场景泛化会影响结果                    |
+| 真实机器人在线 WM              | 在真实机器人上边采集边更新 latent dynamics，并用 imagined rollout 降低试错成本 | [DayDreamer](https://arxiv.org/abs/2206.14176)                                                               | 不依赖仿真器时，模型是否仍能用少量真实交互学会站立、行走或操作？ | 安全、重置成本、传感器漂移和在线更新稳定性                  |
+| 对象槽位动力学                 | 先把画面拆成对象 slot，再预测对象属性和关系随时间的变化                        | [SlotFormer](https://arxiv.org/abs/2210.05861)、[FOCUS](https://arxiv.org/abs/2307.02427)                       | 对象级结构是否改善长时程预测、探索和目标条件规划？               | slot 身份交换、遮挡和对象发现不稳定                         |
+| 细粒度接触视频 WM              | 在视频生成器内部按帧注入 action，刻画机械臂、物体和接触的精确对齐              | [IRASim](https://arxiv.org/abs/2406.14540)                                                                   | 改变动作时间戳后，接触位置和物体响应是否同步改变？               | 视频逼真度、动作跟随和真实动力学可能脱节                    |
+| 显式运动流 WM                  | 先预测 3D scene flow 或运动场，再用它生成未来 RGB-D/视频                       | [FlowDreamer](https://arxiv.org/abs/2505.10075)                                                              | 显式运动是否改善深度、语义一致性和视觉规划？                     | scene flow 误差会传到渲染，仍需动作闭环验证                 |
+| WM 作为策略评测环境            | 用 latent action 或 action-conditioned video rollout 在部署前筛选策略          | [WorldEval](https://arxiv.org/abs/2505.19017)、[WorldGym](https://arxiv.org/abs/2506.00613)                     | 模型内策略排名是否与真实机器人排名相关？                         | 评测代理可能偏爱某类动作，不能替代真实安全测试              |
+| 视觉-触觉 WM                   | 同时预测未来图像和触觉信号，把不可见接触约束纳入 rollout                       | [ViTacWorld](https://arxiv.org/abs/2607.22530)                                                               | 触觉预测是否提高接触任务成功率和策略筛选可靠性？                 | 触觉传感器和仿真接口差异大，数据成本高                      |
+| 层级逻辑-视觉 WM               | 高层预测可解释的逻辑状态，低层预测视觉变化，再用中间目标连接长短时程           | [H-WM](https://arxiv.org/abs/2602.11291)                                                                     | 逻辑子目标能否减少长 horizon 的视觉漂移和规划失败？              | 符号状态抽取、层级接口和错误传播需要单独评估                |
+| Robot-factored WM              | 先用控制器、运动学和 URDF 渲染机器人未来外观，WM 只学习场景对动作的响应        | [Robot-Factored WM](https://arxiv.org/abs/2607.22535)                                                        | 换机器人本体后，动作条件接口是否仍然一致？                       | 渲染质量、接触深度和控制器模型偏差                          |
+| BEV/导航 WM                    | 在鸟瞰图或地图 latent 中预测视角、占据和路线演化                               | [BEV Pretrained WM](https://arxiv.org/abs/2310.18847)                                                        | 地图级预测是否比第一视角视频更适合长程导航和主动感知？           | 主要面向导航，不能直接迁移到机械臂接触                      |
 
 #### 3D/4D 路线的统一接口
 
-| 子路线 | 状态表示 | 时间/动作接口 | 典型代表 | 主要用途 |
-| --- | --- | --- | --- | --- |
-| 动态 Gaussian | $N$ 个带位置、协方差和外观的 primitive | 机器人动作或形变场传播 | GWM、PhysMani | 机器人操作、3D 视频、neural simulator |
-| 4D occupancy | 稠密体素、稀疏体素或 triplane | 历史 occupancy + 位姿/轨迹/控制 | OccWorld、DOME、PreWorld、DTT、SparseWorld | 场景预测、碰撞检查和规划 |
-| 持续 3D latent | 带坐标的 latent feature/point map | 自运动、未来视角或环境变化 | FR3D、DynamicVGGT | 动态重建、跨视角一致性 |
-| 3D belief/scene | 多假设场景、对象 mesh/primitive 和背景 | 观测更新、对象编辑或交互动作 | 3D-Belief、WorldAct | 部分可观测推理、可交互仿真 |
+| 子路线          | 状态表示                                 | 时间/动作接口                   | 典型代表                                   | 主要用途                              |
+| --------------- | ---------------------------------------- | ------------------------------- | ------------------------------------------ | ------------------------------------- |
+| 动态 Gaussian   | $N$ 个带位置、协方差和外观的 primitive | 机器人动作或形变场传播          | GWM、PhysMani                              | 机器人操作、3D 视频、neural simulator |
+| 4D occupancy    | 稠密体素、稀疏体素或 triplane            | 历史 occupancy + 位姿/轨迹/控制 | OccWorld、DOME、PreWorld、DTT、SparseWorld | 场景预测、碰撞检查和规划              |
+| 持续 3D latent  | 带坐标的 latent feature/point map        | 自运动、未来视角或环境变化      | FR3D、DynamicVGGT                          | 动态重建、跨视角一致性                |
+| 3D belief/scene | 多假设场景、对象 mesh/primitive 和背景   | 观测更新、对象编辑或交互动作    | 3D-Belief、WorldAct                        | 部分可观测推理、可交互仿真            |
 
 ### 2.6 四类主路线怎么选
 
-| 路线 | 预测目标 | 动作条件的典型接口 | 适合先验证什么 | 主要风险 |
-| --- | --- | --- | --- | --- |
-| 像素/视频 | RGB/RGB-D 帧、视频 token | 拼接 action token、cross-attention 或条件 diffusion | 外观、遮挡、视频级反事实 | 成本高；像素逼真不等于动力学正确 |
-| latent/JEPA | 全局或局部特征 $z_t$ | $F(z_t,a_t)$ 或 action-conditioned predictor | 表征可预测性、下游控制和长时程 rollout | latent 可能丢掉接触/几何，易出现 shortcut |
-| latent/object-centric（LPWM） | 粒子、背景和对象属性 | 每粒子 latent action，可选语言/目标图像 | 对象交互、可解释分解、goal-conditioned imitation | 对象发现、遮挡和粒子身份不稳定 |
-| 3D/4D（GWM） | Gaussian/点云/隐式场的未来状态 | 在 3D latent 或 primitive 上传播机器人动作 | 深度、位姿、视角鲁棒性和神经仿真 | 标定、坐标对齐、动态拓扑和长期漂移 |
+| 路线                          | 预测目标                       | 动作条件的典型接口                                  | 适合先验证什么                                   | 主要风险                                  |
+| ----------------------------- | ------------------------------ | --------------------------------------------------- | ------------------------------------------------ | ----------------------------------------- |
+| 像素/视频                     | RGB/RGB-D 帧、视频 token       | 拼接 action token、cross-attention 或条件 diffusion | 外观、遮挡、视频级反事实                         | 成本高；像素逼真不等于动力学正确          |
+| latent/JEPA                   | 全局或局部特征$z_t$          | $F(z_t,a_t)$ 或 action-conditioned predictor      | 表征可预测性、下游控制和长时程 rollout           | latent 可能丢掉接触/几何，易出现 shortcut |
+| latent/object-centric（LPWM） | 粒子、背景和对象属性           | 每粒子 latent action，可选语言/目标图像             | 对象交互、可解释分解、goal-conditioned imitation | 对象发现、遮挡和粒子身份不稳定            |
+| 3D/4D（GWM）                  | Gaussian/点云/隐式场的未来状态 | 在 3D latent 或 primitive 上传播机器人动作          | 深度、位姿、视角鲁棒性和神经仿真                 | 标定、坐标对齐、动态拓扑和长期漂移        |
 
 ### 2.7 从 WM 到闭环控制的统一流程
 
@@ -434,9 +434,9 @@ flowchart TD
 - **RLinf**：重点观察 VLA 如何连接 rollout、奖励、策略更新与分布式训练。
 - **Fast-WAM**：重点观察未来建模在训练期与测试期分别扮演什么角色。
 
-## 6. 做方法比较时的统一坐标
+## 6. 方法比较
 
-| 维度     | 建议记录                                                                                                           |
+| 维度     |                                                                                                                    |
 | -------- | ------------------------------------------------------------------------------------------------------------------ |
 | 输入     | 单/多视角 RGB、深度、状态、触觉、语言、历史窗口                                                                    |
 | 动作     | 关节、末端位姿、离散 token、连续动作、action chunk                                                                 |
