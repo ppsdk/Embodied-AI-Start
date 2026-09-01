@@ -1,0 +1,95 @@
+site_name: Embodied AI Starter Map
+site_description: 具身智能从机器人基础走向 VLA、World Model、RL/MBRL 和 WAM 的学习地图
+site_url: https://ppsdk.github.io/Embodied-AI-Start/
+repo_url: https://github.com/ppsdk/Embodied-AI-Start
+repo_name: ppsdk/Embodied-AI-Start
+copyright: Copyright © ppsdk
+
+theme:
+  name: material
+  language: zh
+  favicon: assets/logo.png
+  logo: assets/logo.png
+  features:
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - toc.follow
+  font: false
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/weather-night
+        name: 切换到深色模式
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/white-balance-sunny
+        name: 切换到浅色模式
+
+plugins:
+  - search:
+      lang:
+        - zh
+        - en
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - tables
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Start Here:
+      - Knowledge Map: knowledge-map.md
+      - Roadmap: roadmap.md
+      - Glossary: glossary.md
+  - Foundations:
+      - Robotics: robotics.md
+      - Model Basics: model-basics.md
+      - Reinforcement Learning: reinforcement-learning.md
+  - Research:
+      - VLA and Action Policies: papers.md
+      - World Models: world-model-directions.md
+      - WAM: world-model-directions.md
+      - MBRL: reinforcement-learning.md
+  - Resources:
+      - Papers: papers.md
+      - Codebases: codebases.md
+      - Benchmarks: benchmarks.md
+  - Practice:
+      - MuJoCo: mujoco-tutorial.md
+      - Isaac Sim: isaac-sim-tutorial.md
+      - XPolicyLab: xpolicylab-tutorial.md
+      - Hand-eye Calibration: hand-eye-calibration.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/ppsdk/Embodied-AI-Start
+
+extra_css:
+  - stylesheets/extra.css

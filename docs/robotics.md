@@ -860,7 +860,7 @@ $$
 | 时间信息 | $t_i^{img},t_i^q,t_i^{tf}$ | 检查错配和延迟 |
 | 检测质量 | 重投影误差、角点数、置信度 | 剔除误检和模糊样本 |
 
-图像、CameraInfo、关节状态和 TF 应尽量对应同一时刻；机器人运动时不能用旧关节状态配最新图像。仓库提供了可运行的采样/求解骨架：[examples/hand_eye_calibration](../examples/hand_eye_calibration/README.md)。
+图像、CameraInfo、关节状态和 TF 应尽量对应同一时刻；机器人运动时不能用旧关节状态配最新图像。仓库提供了可运行的采样/求解骨架：[手眼标定入口](hand-eye-calibration.md)。
 
 ### 7.3 采样姿态
 

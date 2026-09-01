@@ -5,7 +5,7 @@
 **适合读者**：准备阅读 VLA、World Model 或动作生成论文的读者  
 **预计阅读**：25 min  
 **前置知识**：Python、深度学习、张量和概率基础  
-**下一步**：[VLA 与动作策略](papers.md#s1vla-与动作策略) · [WM 专题](world-model-directions.md) · [强化学习基础](reinforcement-learning.md)
+**下一步**：[VLA 与动作策略](papers.md) · [WM 专题](world-model-directions.md) · [强化学习基础](reinforcement-learning.md)
 
 **本文路线**：统一记号 → Transformer → Diffusion → Flow Matching → VLA/WM/WAM 接口
 

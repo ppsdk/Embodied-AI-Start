@@ -17,8 +17,7 @@
 
 **更多目标** → [MuJoCo](docs/mujoco-tutorial.md) · [Isaac Sim](docs/isaac-sim-tutorial.md) · [XPolicyLab](docs/xpolicylab-tutorial.md) · [真机实践](docs/robotics.md) · [Benchmark](docs/benchmarks.md)
 
-<details>
-<summary>按具体任务查入口</summary>
+### 按具体任务查入口
 
 | 你想做什么 | 先看什么 | 后面接什么 |
 | --- | --- | --- |
@@ -32,7 +31,6 @@
 | 研究 WAM | [WM 专题](docs/world-model-directions.md) | [WAM 代码入口](docs/codebases.md#5-world-model像素latent-与-3d4d) |
 | 做机器人策略后训练 | [强化学习基础](docs/reinforcement-learning.md) | PPO、GRPO、SAPO、RLinf |
 | 适配 RoboDojo/XPolicyLab | [XPolicyLab 教程](docs/xpolicylab-tutorial.md) | debug 评测、策略服务和环境接入 |
-</details>
 
 如果你还没有明确方向，按这个顺序读即可：
 
@@ -91,6 +89,38 @@ flowchart LR
 - [RL 与 MBRL](docs/reinforcement-learning.md)：从 DQN、PPO、SAC、IQL 到 GRPO/SAPO，关注数据来源、价值学习、探索和策略后训练。
 - [WM 专题](docs/world-model-directions.md)：按 pixel、latent、对象中心、运动场、物理状态、3D/4D 和长期记忆整理世界模型，并说明数据字段、训练目标、动作接口和闭环评价。
 - [WAM 与未来动作联合建模](docs/papers.md#s1wam世界与动作联合建模)：关注未来表征怎样进入动作生成，以及训练期监督、测试期想象和异步执行。
+
+## 推荐的文档站方案
+
+推荐使用 [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) 搭配 [GitHub Pages](https://pages.github.com/)。现有 `README + docs/` 结构可以直接映射成一套文档站：
+
+```text
+Home
+├── Start Here
+│   ├── Knowledge Map
+│   ├── Roadmap
+│   └── Glossary
+├── Foundations
+│   ├── Robotics
+│   ├── Model Basics
+│   └── Reinforcement Learning
+├── Research
+│   ├── VLA
+│   ├── World Models
+│   ├── WAM
+│   └── MBRL
+├── Resources
+│   ├── Papers
+│   ├── Codebases
+│   └── Benchmarks
+└── Practice
+    ├── MuJoCo
+    ├── Isaac Sim
+    ├── XPolicyLab
+    └── Hand-eye Calibration
+```
+
+采用这套主题后，可以获得左侧导航、右侧目录、全文搜索、深色模式、Mermaid、Admonition 和移动端布局。后续只需增加 `mkdocs.yml` 和 GitHub Pages 工作流，不需要重排现有文档内容。
 - [论文清单](docs/papers.md)：按 VLA、WM、WAM、MBRL、RL、数据和 benchmark 分级阅读。
 - [代码仓与工具](docs/codebases.md)：官方代码、仿真器、数据集、训练框架和实践入口。
 - [Benchmark 指南](docs/benchmarks.md)：LIBERO、CALVIN、ManiSkill、Meta-World、RoboDojo、RoboTwin、RoboCasa、DMControl 等的用途和比较边界。

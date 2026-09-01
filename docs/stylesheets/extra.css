@@ -1,0 +1,15 @@
+.hero {
+  padding: 1.5rem 0 1rem;
+}
+
+.hero h1 {
+  margin-bottom: 0.4rem;
+}
+
+.hero + img {
+  display: block;
+  width: 100%;
+  max-height: 28rem;
+  object-fit: contain;
+  margin: 1rem auto 2rem;
+}
