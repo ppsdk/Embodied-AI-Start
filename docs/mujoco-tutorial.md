@@ -1,6 +1,6 @@
 # MuJoCo 仿真教程
 
-MuJoCo 是一个轻量的机器人仿真器，适合先把动力学、接触和 RL 循环跑通。机器人资产常从 URDF 开始，但 MuJoCo 真正运行的是 MJCF。本文只带你完成一条最短路径：安装、加载模型、推进仿真、读取状态，最后接上 Gymnasium。
+MuJoCo 是一个轻量的机器人仿真器，适合先跑通动力学、接触和 RL 循环。机器人资产常从 URDF 开始，但 MuJoCo 真正运行的是 MJCF。本文只带你完成一条最短路径：安装、加载模型、推进仿真、读取状态，最后接上 Gymnasium。
 
 官方入口：
 
@@ -55,7 +55,7 @@ python train.py --algo sac --env HalfCheetah-v4
 
 ## 2. URDF、MJCF 和 MuJoCo
 
-三者的关系可以先记成：
+三者的关系如下：
 
 ~~~text
 URDF：机器人资产描述和 ROS 生态交换

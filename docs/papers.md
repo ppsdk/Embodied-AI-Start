@@ -37,7 +37,7 @@
 
 ## S1｜VLA 与动作策略
 
-| 论文 | 抓住一个关键点 | 入口 |
+| 论文 | 关键点 | 入口 |
 | --- | --- | --- |
 | OpenVLA: An Open-Source Vision-Language-Action Model | 开源 VLA 训练、微调与评测范式 | [arXiv](https://arxiv.org/abs/2406.09246) · [Code](https://github.com/openvla/openvla) |
 | OpenVLA-OFT: An Open-Source Fine-Tuning Recipe for OpenVLA | OpenVLA 的高效微调与推理优化 | [Code](https://github.com/moojink/openvla-oft) |
@@ -64,7 +64,7 @@
 
 ## S1｜World Model：像素、latent 与 3D/4D
 
-| 论文 | 抓住一个关键点 | 入口 |
+| 论文 | 关键点 | 入口 |
 | --- | --- | --- |
 | V-JEPA 2: Self-Supervised Video Models Enable Understanding, Prediction and Planning | 预测 latent representation 而不是逐像素重建，并连接物理理解与规划 | [arXiv](https://arxiv.org/abs/2506.09985) · [Code](https://github.com/facebookresearch/vjepa2) |
 | Genie: Generative Interactive Environments | 从视频学习可交互的潜在环境与动作条件未来 | [arXiv](https://arxiv.org/abs/2402.15391) · [Project](https://sites.google.com/view/genie-2024/home) |
@@ -114,7 +114,7 @@
 
 WAM 关注的是“未来世界表征”和“机器人动作”是否在同一个闭环里。下面的工作分别代表三种近期路线：用人类视频做任务条件、异步地想象未来、或者直接把世界演化和动作写进一个因果模型。
 
-| 论文 | 抓住一个关键点 | 入口 |
+| 论文 | 关键点 | 入口 |
 | --- | --- | --- |
 | Zero-WAM: In-Context World-Action Modeling from Human Videos for Open-Ended Task Generalization（2026，预印本） | 把人类视频当成新任务的上下文提示，不更新参数也能尝试未见任务 | [arXiv](https://arxiv.org/abs/2608.26103) |
 | WAM-TTT: Steering World-Action Models by Watching Human Play at Test Time（2026，预印本） | 冻结 WAM，只用无标注的人类视频更新轻量记忆，在测试时改变任务偏好 | [arXiv](https://arxiv.org/abs/2607.06988) |
@@ -124,7 +124,7 @@ WAM 关注的是“未来世界表征”和“机器人动作”是否在同一�
 
 ## S1｜Model-based RL
 
-| 论文 | 抓住一个关键点 | 入口 |
+| 论文 | 关键点 | 入口 |
 | --- | --- | --- |
 | World Models | latent dynamics 与 controller 的经典 MBRL 前身 | [arXiv](https://arxiv.org/abs/1803.10122) · [Project](https://worldmodels.github.io/) |
 | PlaNet: Learning Latent Dynamics for Planning from Pixels | 从像素学习潜空间动力学并做在线规划 | [arXiv](https://arxiv.org/abs/1811.04551) |
@@ -153,7 +153,7 @@ WAM 关注的是“未来世界表征”和“机器人动作”是否在同一�
 
 这些工作不是新的通用 RL 教科书算法，而是把 RL 接到已经训练好的机器人策略上。重点看它们如何处理失败数据、动作 chunk 和大模型推理延迟。
 
-| 论文 | 抓住一个关键点 | 入口 |
+| 论文 | 关键点 | 入口 |
 | --- | --- | --- |
 | Beyond Imitation: Self-Improving Robot Policies via Off-Policy Q-Planning（2026，预印本） | 冻结行为克隆策略，只训练一个小的 off-policy Q 函数，用成功和失败 rollout 做 Q 引导与自我改进 | [arXiv](https://arxiv.org/abs/2608.21204) |
 | Learning to Act While Waiting: RL Finetuning of Generalist Robot Policies Under Inference Latency（2026，预印本） | 用已提交动作和推理中的中间观测补回近似 Markov 状态，让 RL 能在 VLA 推理等待时继续学习 | [arXiv](https://arxiv.org/abs/2608.23831) |

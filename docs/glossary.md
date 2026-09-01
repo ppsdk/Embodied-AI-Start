@@ -55,7 +55,7 @@
 | JEPA | Joint Embedding Predictive Architecture | 在表征空间预测目标时空块，通常避免逐像素重建，强调可预测和可迁移的 latent dynamics。 |
 | Video World Model | Video World Model | 根据历史、动作或条件预测/生成未来视频或视频潜变量的世界模型。 |
 | Pixel-space WM | Pixel-space World Model | 在 RGB/RGB-D 帧或视频 token 上预测未来观测；像素/感知质量不等于几何或控制质量。 |
-| Latent WM | Latent World Model | 先把观测编码为 $z_t$，再在 latent 空间预测 $z_{t+1}$；可接 reward、value、MPC 或策略，但不自动构成 MBRL。 |
+| Latent WM | Latent World Model | 将观测编码为 $z_t$，再在 latent 空间预测 $z_{t+1}$；可接 reward、value、MPC 或策略，但不自动构成 MBRL。 |
 | LPWM | Latent Particle World Model | 对象中心的 latent 世界模型；从视频自监督发现粒子、背景和对象属性，并用粒子级 latent action 建模随机动态。 |
 | 3D/4D World Model | 3D/4D World Model | 建模几何、对象、视角与时间演化的世界表征，可使用点云、3D Gaussian 或隐式场。 |
 | GWM | Gaussian World Model | 面向机器人操作的动作条件 3D Gaussian 世界模型；在 Gaussian primitives 的紧凑 latent 中预测未来，可用于 3D 视频预测、模仿学习表征或 neural simulator。 |

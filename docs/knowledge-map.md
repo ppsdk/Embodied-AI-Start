@@ -1,6 +1,6 @@
 # 知识图谱：WM、MBRL、WAM 与 RL
 
-先抓住四个问题：模型预测什么？动作从哪里来？数据怎么得到？部署时要不要规划？把这四个问题想清楚，WM、MBRL、WAM 和 RL 就不容易混在一起。
+关键是四个问题：模型预测什么？动作从哪里来？数据怎么得到？部署时要不要规划。明确这四个问题，WM、MBRL、WAM 和 RL 就不容易混在一起。
 
 ## 0. 机器人学基础
 
@@ -65,7 +65,7 @@ flowchart TD
 
 ### Backbone 与生成头
 
-在比较 VLA、WM 或 WAM 时，先把“如何处理上下文”和“如何生成连续目标”拆开：
+比较 VLA、WM 或 WAM 时，将“如何处理上下文”和“如何生成连续目标”分开：
 
 ```mermaid
 flowchart LR
@@ -154,7 +154,7 @@ $$
 
 ### 2.3 Latent 世界模型：预测“状态会怎样变化”
 
-latent 路线先把观测压缩为 $z_t$，在较小空间学习动力学：
+latent 路线将观测压缩为 $z_t$，在较小空间学习动力学：
 
 $$
 z_t=E_\phi(o_t),\qquad
@@ -214,7 +214,7 @@ $$
 
 #### GWM：动作条件的 Gaussian World Model
 
-[GWM](https://arxiv.org/abs/2508.17600)（Gaussian World Model）针对机器人操作，学习在机器人动作作用下 Gaussian primitives 的传播。其核心是 **latent Diffusion Transformer + 3D variational autoencoder**：先把 3D Gaussian 场景压到紧凑 latent，在 latent 中预测未来，再用 Gaussian Splatting 重建/渲染未来场景。论文把它用于三件事：动作条件 3D 视频预测、作为 imitation learning 的视觉表征，以及作为 neural simulator 支持 MBRL。
+[GWM](https://arxiv.org/abs/2508.17600)（Gaussian World Model）针对机器人操作，学习在机器人动作作用下 Gaussian primitives 的传播。其核心是 **latent Diffusion Transformer + 3D variational autoencoder**：将 3D Gaussian 场景压到紧凑 latent，在 latent 中预测未来，再用 Gaussian Splatting 重建/渲染未来场景。论文把它用于三件事：动作条件 3D 视频预测、作为 imitation learning 的视觉表征，以及作为 neural simulator 支持 MBRL。
 
 实践时要把以下链路拆开检查：多视角/RGB-D → 初始 3D Gaussian 或点图 → 记录动作 $a_{t:t+H-1}$ → 预测 $\widehat S_{t+1:t+H}$ → 从目标相机渲染 → 比较深度/位姿/重投影和动作条件差异 → 再把模型交给策略或 MPC。GWM 的 3D 预测能力不能由静态 3DGS 或 VGGT 自动推出；后两者更适合作为 3D 重建/几何前端，是否构成 WM 要看有没有动作条件的时间预测。
 
@@ -266,7 +266,7 @@ $$
 | 动作跟随与安全验证             | 用 off-expert action、SE(3) 轨迹和风险头检查模型是否真的执行给定动作           | [WorldEcho](https://arxiv.org/abs/2608.24885)、[Calibrated Predictive Safety](https://arxiv.org/abs/2608.17496) | 预测未来是否与动作、风险和安全约束一致？                         | 评测协议、校准集和真实机器人验证仍需统一                    |
 | 长期记忆 WM                    | 用全局记忆库、位姿索引或混合 attention 保留远期地点/状态，同时限制短期推理成本 | [ReWorld](https://arxiv.org/abs/2608.23565)                                                                  | 长时程回访时，模型能否恢复早期观测并保持交互一致？               | 记忆预算、检索错误和跨场景泛化会影响结果                    |
 | 真实机器人在线 WM              | 在真实机器人上边采集边更新 latent dynamics，并用 imagined rollout 降低试错成本 | [DayDreamer](https://arxiv.org/abs/2206.14176)                                                               | 不依赖仿真器时，模型是否仍能用少量真实交互学会站立、行走或操作？ | 安全、重置成本、传感器漂移和在线更新稳定性                  |
-| 对象槽位动力学                 | 先把画面拆成对象 slot，再预测对象属性和关系随时间的变化                        | [SlotFormer](https://arxiv.org/abs/2210.05861)、[FOCUS](https://arxiv.org/abs/2307.02427)                       | 对象级结构是否改善长时程预测、探索和目标条件规划？               | slot 身份交换、遮挡和对象发现不稳定                         |
+| 对象槽位动力学                 | 将画面拆成对象 slot，再预测对象属性和关系随时间的变化                        | [SlotFormer](https://arxiv.org/abs/2210.05861)、[FOCUS](https://arxiv.org/abs/2307.02427)                       | 对象级结构是否改善长时程预测、探索和目标条件规划？               | slot 身份交换、遮挡和对象发现不稳定                         |
 | 细粒度接触视频 WM              | 在视频生成器内部按帧注入 action，刻画机械臂、物体和接触的精确对齐              | [IRASim](https://arxiv.org/abs/2406.14540)                                                                   | 改变动作时间戳后，接触位置和物体响应是否同步改变？               | 视频逼真度、动作跟随和真实动力学可能脱节                    |
 | 显式运动流 WM                  | 先预测 3D scene flow 或运动场，再用它生成未来 RGB-D/视频                       | [FlowDreamer](https://arxiv.org/abs/2505.10075)                                                              | 显式运动是否改善深度、语义一致性和视觉规划？                     | scene flow 误差会传到渲染，仍需动作闭环验证                 |
 | WM 作为策略评测环境            | 用 latent action 或 action-conditioned video rollout 在部署前筛选策略          | [WorldEval](https://arxiv.org/abs/2505.19017)、[WorldGym](https://arxiv.org/abs/2506.00613)                     | 模型内策略排名是否与真实机器人排名相关？                         | 评测代理可能偏爱某类动作，不能替代真实安全测试              |

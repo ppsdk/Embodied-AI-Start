@@ -85,7 +85,7 @@ bash eval.sh RoboDojo stack_bowls demo arx_x5 joint 0 0 0 base base
 
 ## 5. 适配器的核心接口
 
-每个策略放在 `policy/<POLICY>/` 下。最重要的是 `model.py` 中的 `Model` 类：
+每个策略放在 `policy/<POLICY>/` 下。核心接口是 `model.py` 中的 `Model` 类：
 
 | 方法                                    | 作用                                               |
 | --------------------------------------- | -------------------------------------------------- |
