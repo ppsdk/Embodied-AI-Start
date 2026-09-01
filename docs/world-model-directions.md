@@ -8,7 +8,7 @@ p(x[t+1:t+H] | x[t], a[t:t+H-1], l)
 
 其中 `x[t]` 是观测或状态，`a[t]` 是动作，`l` 是语言/目标，`H` 是预测步数。未来 `x` 可以是图像、latent、对象状态、运动场、3D/4D 场景、触觉或物理量。
 
-## 1. 先把边界说清楚
+## 1. WM先要回答什么
 
 一个面向机器人的 WM 至少满足三点：
 
@@ -20,7 +20,7 @@ p(x[t+1:t+H] | x[t], a[t:t+H-1], l)
 
 WM 与 WAM 的关系也要分开：WM 是 **consequence prediction**；World Action Model（WAM）是把这种预测结构性接入动作生成后的 policy 范式。WAM 可以使用像素、latent、flow 或 3D 表示，WAM 不是第五种表示类型。
 
-## 2. 四条表示主线
+## 2. WM用什么表示未来
 
 | 表示 | 预测对象 | 长处 | 常见风险 | 代表方向 |
 | --- | --- | --- | --- | --- |
@@ -31,16 +31,16 @@ WM 与 WAM 的关系也要分开：WM 是 **consequence prediction**；World Act
 
 这四条线不是互斥架构。一个系统可以用视频 encoder 得到 object slots，再预测 3D flow；也可以用 latent dynamics 做规划、用视频 decoder 只做可视化检查。
 
-### 2.1 其他重要表示
+### 2.1 不止四种表示
 
 - **运动场/scene flow**：直接预测哪些区域向哪里移动，适合 pushing、rearrangement 和短程 servoing。
 - **物理状态**：接触、力、摩擦、支撑、碰撞、形变和材料属性，适合插入、装配和接触丰富任务。
 - **符号/层级状态**：物体是否已抓取、抽屉是否打开、子目标是否完成，适合长程任务和恢复。
 - **记忆状态**：场景摘要、历史事件、可寻址 KV 或任务进度，解决返回旧场景和跨阶段执行。
 
-## 3. 预测形式与系统用途
+## 3. WM怎样预测和使用未来
 
-### 3.1 被动预测与动作条件预测
+### 3.1 从被动视频到动作条件预测
 
 被动 WM 学习：
 
@@ -56,7 +56,7 @@ p(x[t+1:t+H] | x[t], a[t:t+H-1], l)
 
 训练时应包含不同质量的动作，尤其是失败动作。只用 expert action 训练，模型可能学会“无论做什么都成功”。FACT 的做法是：失败轨迹不作为 imitation target，却保留其 action-consequence 作为失败后果监督。
 
-### 3.2 WM 的六种用法
+### 3.2 预测结果怎样进入系统
 
 1. **策略表征学习**：把未来 latent、动作后果或 inverse dynamics 作为辅助目标。
 2. **显式规划**：在 latent、视频或 3D 状态中 rollout 候选动作，用 MPC/MCTS/采样搜索选动作。
@@ -67,7 +67,7 @@ p(x[t+1:t+H] | x[t], a[t:t+H-1], l)
 
 同一模型可有多个角色，但报告时要写清楚：预测结果是否进入动作生成、只在训练使用还是部署时也使用，以及闭环控制是否真正调用它。
 
-## 4. 数据字段：读论文时必须问清楚
+## 4. 采样数据要记录哪些字段
 
 一条可用于动作条件 WM 的样本至少应能写成：
 
@@ -88,7 +88,7 @@ p(x[t+1:t+H] | x[t], a[t:t+H-1], l)
 
 关键区别是 **commanded action** 与 **executed action**：真实机器人有延迟、限幅和控制误差，最好记录实际状态变化，否则模型学到的可能只是命令而非后果。
 
-## 5. 训练目标和闭环检查
+## 5. 模型学什么，怎么验证
 
 常见目标包括：
 
@@ -101,7 +101,7 @@ p(x[t+1:t+H] | x[t], a[t:t+H-1], l)
 
 最低限度的闭环检查是反事实干预：固定同一个 `x[t]`，输入 expert、轻微偏离和明显错误的 `a`，比较预测未来是否有方向正确的差异。只报告视频质量不能证明动作因果性。
 
-## 6. 代表方向速查
+## 6. 代表性工作放在哪些位置
 
 | 方向 | 核心机制 | 代表工作 |
 | --- | --- | --- |
@@ -115,31 +115,31 @@ p(x[t+1:t+H] | x[t], a[t:t+H-1], l)
 | 失败感知 | 将坏动作作为 consequence/risk 监督 | FACT、WorldEcho |
 | 结构化 latent | 用 JEPA、DINO 或粒子状态替代像素重建 | V-JEPA 2、PSG-JEPA、LPWM |
 
-## 7. 近期工作：补齐“表示之外”的问题
+## 7. 最近工作补了哪些问题
 
-### 7.1 Latent 是否真的可用于控制
+### 7.1 latent能不能支撑控制
 
 V-JEPA 2、PSG-JEPA 和相关 JEPA-WM 说明，latent prediction 的关键不只是 loss 下降，还要验证：物理状态能否从 latent 中被识别；不同动作是否造成可分离的 latent 转移；规划得到的动作是否提升真实成功率。LPWM 的 Encoder 可以提供对象/粒子感知前端，但只有 Encoder 不能替代预测 dynamics、动作接口和 rollout。
 
-### 7.2 Streaming、长上下文与记忆寻址
+### 7.2 流式生成和长期记忆
 
 [MiniWorld](https://github.com/zhao-yian/MiniWorld) 的要点是 chunk-level causal + asynchronous diffusion：chunk 内可双向注意力，chunk 间保持因果依赖，并用 rolling KV cache 限制活跃计算。它说明 streaming 是执行形态，autoregressive 是依赖结构，不能混为同义词。
 
 WorldTrace 将长期视频 WM 的记忆拆成 `recent window + summary slots`，并在 RoPE 下解决旧 token 不可寻址和平均 key 的 phase cancellation。其启发是：长期记忆至少要分别考虑 **选择什么、如何压缩、能否寻址**，而不是简单增加上下文长度。
 
-### 7.3 失败后果与动作耦合
+### 7.3 失败动作也要学
 
 FACT 的训练划分很值得借鉴：成功轨迹可用于 imitation，失败动作仍用于学习“这样做会造成什么”。评估时应加入 action swap、off-expert action、失败类型覆盖和风险校准，而不仅是 expert rollout 的视频相似度。
 
-### 7.4 WAM 的运行时问题
+### 7.4 WAM落地时的运行时问题
 
 Fast-WAM、PILOT 和 WAM4D 关注训练期 world supervision 能否在推理时移除；BICPO-VLA 关注异步 action chunk 的 request-to-handoff gap：新 chunk 请求时旧 chunk 仍在执行，接管状态已经变化。评测应报告真实 control Hz、chunk stride、推理延迟、boundary jump 和成功率，而非只报 FLOPs。
 
-### 7.5 外部编排与跨本体部署
+### 7.5 外部编排和跨本体部署
 
 Harness VLA/HarnessWAM 表明，局部 predictive policy 还需要场景 belief、task graph、进度监测、验证和 recovery。Qwen-RobotManip 等跨本体工作进一步强调 representation、motion、behavior alignment，以及目标机器人上的标定、IK/FK、控制器和安全适配。跨本体 claim 必须同时报告模型迁移能力和部署工程投入。
 
-## 8. 如何评价一个 WM
+## 8. WM到底该怎么评估
 
 建议把指标分成四层：
 
@@ -150,7 +150,7 @@ Harness VLA/HarnessWAM 表明，局部 predictive policy 还需要场景 belief�
 
 World-model 内成功率不能替代真实机器人测试；生成质量提升也不能自动推出控制收益。对 learned simulator 和 evaluator，还应报告其与真实环境的策略排名相关性、候选数—延迟曲线和失效类型。
 
-## 9. 一条实用的阅读与研究检查链
+## 9. 读论文时按这条链检查
 
 ```text
 状态是否保留任务相关、对象和物理变量？
