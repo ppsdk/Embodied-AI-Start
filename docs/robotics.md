@@ -2,8 +2,8 @@
 
 > 🤖 从坐标、运动学和 ROS 2 接口开始，把仿真策略接到真实机械臂。
 
-**预计阅读**：30 min  
-**前置知识**：Python、Linux 命令行、线性代数基础  
+**预计阅读**：30 min
+**前置知识**：Python、Linux 命令行、线性代数基础
 **下一步**：[MuJoCo 教程](mujoco-tutorial.md) · [Isaac Sim 教程](isaac-sim-tutorial.md) · [强化学习基础](reinforcement-learning.md)
 
 **本文路线**：坐标与位姿 → TF → ROS 2 通信 → 控制与规划 → 标定 → 仿真/真机闭环
@@ -27,15 +27,15 @@ VLA、World Model、MBRL、WAM 和 RL 最终都要驱动真实机器人。机器
 
 每一层解决的问题不同：
 
-| 层 | 核心对象 | 必须回答的问题 |
-| --- | --- | --- |
-| 几何 | frame、$SO(3)$、$SE(3)$ | 这个点、位姿和动作是在哪个坐标系里？ |
-| 运动学 | FK、IK、Jacobian | 目标是否可达，关节如何到达？ |
-| 动力学 | $M(q)$、$C(q,\dot q)$、$g(q)$ | 需要多大力/力矩，接触会怎样？ |
-| 轨迹与控制 | 插值、PD、阻抗、力控 | 如何平滑且稳定地执行动作？ |
-| ROS 2 工具链 | TF、RViz 2、MoveIt 2、`ros2_control` | 消息、模型、规划和执行是否连通？ |
-| 感知与标定 | 内参、外参、hand-eye | 相机看到的位置能否正确变到机器人坐标系？ |
-| 安全与评测 | 限位、碰撞、急停、延迟 | 失败时能否停住，问题出在哪一层？ |
+| 层           | 核心对象                               | 必须回答的问题                           |
+| ------------ | -------------------------------------- | ---------------------------------------- |
+| 几何         | frame、$SO(3)$、$SE(3)$            | 这个点、位姿和动作是在哪个坐标系里？     |
+| 运动学       | FK、IK、Jacobian                       | 目标是否可达，关节如何到达？             |
+| 动力学       | $M(q)$、$C(q,\dot q)$、$g(q)$    | 需要多大力/力矩，接触会怎样？            |
+| 轨迹与控制   | 插值、PD、阻抗、力控                   | 如何平滑且稳定地执行动作？               |
+| ROS 2 工具链 | TF、RViz 2、MoveIt 2、`ros2_control` | 消息、模型、规划和执行是否连通？         |
+| 感知与标定   | 内参、外参、hand-eye                   | 相机看到的位置能否正确变到机器人坐标系？ |
+| 安全与评测   | 限位、碰撞、急停、延迟                 | 失败时能否停住，问题出在哪一层？         |
 
 推荐入口：
 
@@ -48,13 +48,13 @@ VLA、World Model、MBRL、WAM 和 RL 最终都要驱动真实机器人。机器
 
 没有一个官方仓库同时覆盖 TF、RViz 2、MoveIt 2、URDF、控制器和全部依赖。建议固定 Humble 分支，按顺序组合：
 
-| 目标 | 项目 | 先验证什么 |
-| --- | --- | --- |
-| TF2 广播与监听 | [`geometry2/examples_tf2_py`](https://github.com/ros2/geometry2/tree/humble/examples_tf2_py) | frame 树能否连通、查询方向是否正确 |
-| RViz 2 与规划 | [`moveit2_tutorials`](https://github.com/moveit/moveit2_tutorials/tree/humble) | Panda 模型能否显示、目标能否规划 |
-| URDF/SRDF 资源 | [`moveit_resources`](https://github.com/moveit/moveit_resources/tree/ros2) | 机器人模型、planning group 和末端 link |
-| 控制器示例 | [`ros2_control_demos`](https://github.com/ros-controls/ros2_control_demos/tree/humble) | trajectory action 和控制器状态 |
-| 手眼标定 | [`moveit_calibration`](https://github.com/moveit/moveit_calibration) | eye-in-hand/eye-to-hand 配置与求解 |
+| 目标           | 项目                                                                                        | 先验证什么                             |
+| -------------- | ------------------------------------------------------------------------------------------- | -------------------------------------- |
+| TF2 广播与监听 | [`geometry2/examples_tf2_py`](https://github.com/ros2/geometry2/tree/humble/examples_tf2_py) | frame 树能否连通、查询方向是否正确     |
+| RViz 2 与规划  | [`moveit2_tutorials`](https://github.com/moveit/moveit2_tutorials/tree/humble)               | Panda 模型能否显示、目标能否规划       |
+| URDF/SRDF 资源 | [`moveit_resources`](https://github.com/moveit/moveit_resources/tree/ros2)                   | 机器人模型、planning group 和末端 link |
+| 控制器示例     | [`ros2_control_demos`](https://github.com/ros-controls/ros2_control_demos/tree/humble)       | trajectory action 和控制器状态         |
+| 手眼标定       | [`moveit_calibration`](https://github.com/moveit/moveit_calibration)                         | eye-in-hand/eye-to-hand 配置与求解     |
 
 先验证 TF，再验证 RViz/MoveIt，最后才接真实驱动。这样可以把坐标错误、规划错误和硬件通信错误分开。
 
@@ -222,13 +222,13 @@ ros2 service call /enable_srv piper_msgs/srv/Enable \
 
 常见问题的定位边界：
 
-| 现象 | 先查什么 | 不要直接假设 |
-| --- | --- | --- |
-| 找不到 `piper` 包 | 是否 `source install/setup.bash`，是否成功 `colcon build` | 不是先改 Python 路径 |
-| 没有 `/joint_states` | 驱动进程、`can_port`、CAN 链路和控制器状态 | RViz 本身不会产生关节状态 |
-| RViz 模型姿态错误 | URDF 版本、`robot_state_publisher` 和 TF frame | 不要用任意静态 TF“修正”模型 |
-| MoveIt 能规划但不运动 | controller action、硬件使能和速度/限位 | 规划成功不代表执行成功 |
-| 夹爪数值不对 | `gripper_exist` 和 `gripper_val_mutiple`、固件版本 | 不要把夹爪当普通转动关节处理 |
+| 现象                   | 先查什么                                                      | 不要直接假设                  |
+| ---------------------- | ------------------------------------------------------------- | ----------------------------- |
+| 找不到 `piper` 包    | 是否 `source install/setup.bash`，是否成功 `colcon build` | 不是先改 Python 路径          |
+| 没有 `/joint_states` | 驱动进程、`can_port`、CAN 链路和控制器状态                  | RViz 本身不会产生关节状态     |
+| RViz 模型姿态错误      | URDF 版本、`robot_state_publisher` 和 TF frame              | 不要用任意静态 TF“修正”模型 |
+| MoveIt 能规划但不运动  | controller action、硬件使能和速度/限位                        | 规划成功不代表执行成功        |
+| 夹爪数值不对           | `gripper_exist` 和 `gripper_val_mutiple`、固件版本        | 不要把夹爪当普通转动关节处理  |
 
 Piper 的 URDF 涉及固件版本差异：上游 README 对 `S-V1.6-3` 前后的 J2/J3 DH 坐标有说明。若模型与真机零位不一致，先核对固件和对应 URDF，再进行手眼标定；不要通过修改标定外参掩盖模型版本错误。完成标定后，可按本章手眼标定和 `rosbag2` 小节记录 `/tf`、`/tf_static`、图像、`/joint_states` 与动作命令，保留失败复现所需的时间戳和参数。
 
@@ -269,13 +269,13 @@ $$
 
 所以 $R^{-1}=R^\mathsf{T}$。它有 3 个自由度，但可以用不同数量的数存储：
 
-| 表示 | 形状 | 关键注意事项 |
-| --- | --- | --- |
-| Euler 角 | 3 | 轴顺序影响结果，存在万向节锁 |
-| 旋转向量/轴角 | 3 | $r=\theta u$，长度是弧度；适合小增量 |
-| 四元数 | 4 | 必须是单位四元数；$q$ 与 $-q$ 表示同一旋转 |
-| 旋转矩阵 | $3\times3$ | 直接满足几何约束，但有 9 个存储数 |
-| 6D rotation | 6 | 两个三维向量正交化后恢复 $R$，不是 6 个旋转自由度 |
+| 表示          | 形状         | 关键注意事项                                       |
+| ------------- | ------------ | -------------------------------------------------- |
+| Euler 角      | 3            | 轴顺序影响结果，存在万向节锁                       |
+| 旋转向量/轴角 | 3            | $r=\theta u$，长度是弧度；适合小增量             |
+| 四元数        | 4            | 必须是单位四元数；$q$ 与 $-q$ 表示同一旋转     |
+| 旋转矩阵      | $3\times3$ | 直接满足几何约束，但有 9 个存储数                  |
+| 6D rotation   | 6            | 两个三维向量正交化后恢复$R$，不是 6 个旋转自由度 |
 
 旋转向量通过指数映射进入 $SO(3)$：
 
@@ -392,11 +392,11 @@ $$
 
 动作要按对象类型变换：点使用 $Rp+t$，方向/速度/法向使用 $Rv$（不加平移），标量保持不变，完整位姿用 $T'=gT$。因此通常有：
 
-| 任务输出 | 性质 | 例子 |
-| --- | --- | --- |
-| 类别、距离、碰撞判定 | 不变 | 场景整体旋转后类别不变 |
-| 法向、位移、速度、力方向 | 等变 | 场景旋转后向量变为 $Rv$ |
-| 末端位置/姿态动作 | 通常等变 | 参考系旋转后动作随之旋转 |
+| 任务输出                 | 性质     | 例子                     |
+| ------------------------ | -------- | ------------------------ |
+| 类别、距离、碰撞判定     | 不变     | 场景整体旋转后类别不变   |
+| 法向、位移、速度、力方向 | 等变     | 场景旋转后向量变为$Rv$ |
+| 末端位置/姿态动作        | 通常等变 | 参考系旋转后动作随之旋转 |
 
 直观地说，很多论文中的“点云旋转后动作也旋转”就是等变的基本含义。但重力、桌面、相机光轴、关节限位和接触可能提供固定方向，所以不能默认任务对任意 $SE(3)$ 都对称。$E(3)$ 还包含镜像反射，只有任务确实对镜像对称时才使用它。
 
@@ -432,11 +432,11 @@ ros2 run tf2_ros tf2_echo base_link tool0
 
 ROS 2 中有三种常用通信接口：
 
-| 接口 | 方向和特点 | 典型用途 |
-| --- | --- | --- |
-| topic | 发布者向零个或多个订阅者持续发送消息，不等待响应 | 图像、`/joint_states`、TF、传感器流 |
-| service | 一次请求对应一次响应，适合短操作 | 触发校准、读取配置、复位状态 |
-| action | 可反馈、可取消、带最终结果的长任务 | 轨迹执行、导航、抓取任务 |
+| 接口    | 方向和特点                                       | 典型用途                              |
+| ------- | ------------------------------------------------ | ------------------------------------- |
+| topic   | 发布者向零个或多个订阅者持续发送消息，不等待响应 | 图像、`/joint_states`、TF、传感器流 |
+| service | 一次请求对应一次响应，适合短操作                 | 触发校准、读取配置、复位状态          |
+| action  | 可反馈、可取消、带最终结果的长任务               | 轨迹执行、导航、抓取任务              |
 
 常用排查命令：
 
@@ -555,12 +555,12 @@ ros2 multicast send
 
 QoS（Quality of Service）决定消息如何传输。最容易遇到的是可靠性不兼容：传感器通常使用 `best_effort`，而调试订阅默认可能是 `reliable`，两者不匹配时看不到数据。常用选项包括：
 
-| 选项 | 含义 | 常见取值 |
-| --- | --- | --- |
-| reliability | 是否保证消息送达 | 传感器常用 `best_effort`；控制命令通常用 `reliable` |
-| durability | 新订阅者能否拿到历史消息 | 实时流常用 `volatile`；静态配置可用 `transient_local` |
-| history/depth | 保留策略和队列长度 | `keep_last` 配合合适的 depth |
-| deadline/lifespan | 更新截止时间和消息有效期 | 用于实时控制和过期数据约束 |
+| 选项              | 含义                     | 常见取值                                                  |
+| ----------------- | ------------------------ | --------------------------------------------------------- |
+| reliability       | 是否保证消息送达         | 传感器常用 `best_effort`；控制命令通常用 `reliable`   |
+| durability        | 新订阅者能否拿到历史消息 | 实时流常用 `volatile`；静态配置可用 `transient_local` |
+| history/depth     | 保留策略和队列长度       | `keep_last` 配合合适的 depth                            |
+| deadline/lifespan | 更新截止时间和消息有效期 | 用于实时控制和过期数据约束                                |
 
 查看和临时匹配发布者的 QoS：
 
@@ -575,14 +575,14 @@ ros2 topic echo /camera/image_raw --qos-reliability best_effort --qos-history ke
 
 `rclpy` 是 ROS 2 的 Python 客户端库，负责节点生命周期、参数、通信接口和回调调度；TF 数据缓存和查询由 `tf2_ros.Buffer` 负责。
 
-| API | 作用 |
-| --- | --- |
-| `rclpy.init()` / `shutdown()` | 初始化/释放 ROS 2 Python 运行时 |
-| `Node` | 节点基类，承载日志、参数、topic、service 和 timer |
-| `create_timer()` | 注册周期回调，回调不应长时间阻塞 |
-| `rclpy.spin(node)` | 交给 executor 处理回调 |
-| `rclpy.time.Time()` | TF 中的时间查询；零时间通常表示最新可用变换 |
-| `Duration` | 超时或时间间隔 |
+| API                               | 作用                                              |
+| --------------------------------- | ------------------------------------------------- |
+| `rclpy.init()` / `shutdown()` | 初始化/释放 ROS 2 Python 运行时                   |
+| `Node`                          | 节点基类，承载日志、参数、topic、service 和 timer |
+| `create_timer()`                | 注册周期回调，回调不应长时间阻塞                  |
+| `rclpy.spin(node)`              | 交给 executor 处理回调                            |
+| `rclpy.time.Time()`             | TF 中的时间查询；零时间通常表示最新可用变换       |
+| `Duration`                      | 超时或时间间隔                                    |
 
 ```python
 import rclpy
@@ -645,13 +645,13 @@ ros2 launch <your_moveit_config> demo.launch.py
 
 常见问题：
 
-| 现象 | 优先检查 |
-| --- | --- |
-| Fixed Frame 不存在 | `view_frames`、frame 名称和 TF 根节点 |
-| RobotModel 不显示 | `robot_description`、URDF、`robot_state_publisher` |
-| 传感器画面为空 | topic 数据、QoS、`frame_id` |
-| 模型跳变/抖动 | 重复 TF 发布者、时间戳、`odom -> base_link` 的唯一来源 |
-| MotionPlanning 无法规划 | TF、关节状态、SRDF group、Planning Scene 和控制器 |
+| 现象                    | 优先检查                                                 |
+| ----------------------- | -------------------------------------------------------- |
+| Fixed Frame 不存在      | `view_frames`、frame 名称和 TF 根节点                  |
+| RobotModel 不显示       | `robot_description`、URDF、`robot_state_publisher`   |
+| 传感器画面为空          | topic 数据、QoS、`frame_id`                            |
+| 模型跳变/抖动           | 重复 TF 发布者、时间戳、`odom -> base_link` 的唯一来源 |
+| MotionPlanning 无法规划 | TF、关节状态、SRDF group、Planning Scene 和控制器        |
 
 ## 5. URDF、运动学和 MoveIt 2
 
@@ -848,16 +848,16 @@ $$
 
 不要只保存图片和最终矩阵。第 $i$ 条样本至少保存同一时刻的：
 
-| 字段 | 记号/形状 | 来源与用途 |
-| --- | --- | --- |
-| 图像 | $I_i$ | `image_raw`，用于复查检测 |
-| 内参与畸变 | $K,d$ | `CameraInfo`，用于 PnP/标定板位姿 |
-| 标定板位姿 | $T^C_{T,i}$ | ArUco、棋盘格或 AprilTag |
-| 关节状态 | $q_i$、时间戳 | `/joint_states`，用于 FK |
-| 末端位姿 | $T^B_{E,i}$ | TF 查询或 FK |
-| frame 名称 | 四个 frame 字符串 | 防止矩阵方向混淆 |
-| 时间信息 | $t_i^{img},t_i^q,t_i^{tf}$ | 检查错配和延迟 |
-| 检测质量 | 重投影误差、角点数、置信度 | 剔除误检和模糊样本 |
+| 字段       | 记号/形状                    | 来源与用途                          |
+| ---------- | ---------------------------- | ----------------------------------- |
+| 图像       | $I_i$                      | `image_raw`，用于复查检测         |
+| 内参与畸变 | $K,d$                      | `CameraInfo`，用于 PnP/标定板位姿 |
+| 标定板位姿 | $T^C_{T,i}$                | ArUco、棋盘格或 AprilTag            |
+| 关节状态   | $q_i$、时间戳              | `/joint_states`，用于 FK          |
+| 末端位姿   | $T^B_{E,i}$                | TF 查询或 FK                        |
+| frame 名称 | 四个 frame 字符串            | 防止矩阵方向混淆                    |
+| 时间信息   | $t_i^{img},t_i^q,t_i^{tf}$ | 检查错配和延迟                      |
+| 检测质量   | 重投影误差、角点数、置信度   | 剔除误检和模糊样本                  |
 
 图像、CameraInfo、关节状态和 TF 应尽量对应同一时刻；机器人运动时不能用旧关节状态配最新图像。仓库提供了可运行的采样/求解骨架：[手眼标定入口](hand-eye-calibration.md)。
 
@@ -936,12 +936,12 @@ ros2 param set /my_node use_sim_time true
 - 规划成功、控制器接受、轨迹执行和任务成功分别记录；
 - 仿真和真机的相机内参、尺度、动作归一化、频率和延迟有对应关系。
 
-| 仓库主线 | 机器人学接口 | 首先验证什么 |
-| --- | --- | --- |
-| VLA | 视觉/语言/本体状态 -> task-space 或 joint action chunk | frame、单位、IK 可达性、控制频率 |
-| WM/WAM | 状态/图像 + action -> 未来表征或 action chunk | 动作敏感性、闭环收益、长时程漂移 |
-| MBRL | 学习动力学/奖励 -> imagined rollout、MPC 或价值更新 | 模型偏差、样本效率和规划成本 |
-| RL | observation、action、reward、termination | reward 是否对应真实任务和安全约束 |
-| 双臂真机 | 两臂状态、相对位姿、同步动作、碰撞约束 | 标定、同步、控制接口和急停流程 |
+| 仓库主线 | 机器人学接口                                           | 首先验证什么                      |
+| -------- | ------------------------------------------------------ | --------------------------------- |
+| VLA      | 视觉/语言/本体状态 -> task-space 或 joint action chunk | frame、单位、IK 可达性、控制频率  |
+| WM/WAM   | 状态/图像 + action -> 未来表征或 action chunk          | 动作敏感性、闭环收益、长时程漂移  |
+| MBRL     | 学习动力学/奖励 -> imagined rollout、MPC 或价值更新    | 模型偏差、样本效率和规划成本      |
+| RL       | observation、action、reward、termination               | reward 是否对应真实任务和安全约束 |
+| 双臂真机 | 两臂状态、相对位姿、同步动作、碰撞约束                 | 标定、同步、控制接口和急停流程    |
 
 机器人学的目标不是把所有问题都交给策略，而是提供一层可解释的几何、约束和执行接口：策略负责“想做什么”，TF 负责“在哪个坐标系”，MoveIt 2 负责“能否规划”，控制器负责“如何稳定执行”，安全层负责“什么时候必须停下”。

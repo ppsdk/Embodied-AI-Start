@@ -1,6 +1,6 @@
 <h1><img src="image/README/1788255651453.png" alt="" width="64" align="absmiddle"> Embodied AI Starter Map | 具身智能入门</h1>
 
-<p align="center"><a href="https://ppsdk.github.io/Embodied-AI-Start/">在线文档站：Material for MkDocs</a></p>
+<p align="center"><a href="https://ppsdk.github.io/Embodied-AI-Start/">在线文档站：Github Pages</a></p>
 
 具身智能学习地图，面向想从机器人基础走到 VLA、World Model、RL/MBRL 和 WAM 的读者。
 
@@ -17,7 +17,7 @@
 | 主路线         | 适合你如果…                   | 起点                                        |
 | -------------- | ------------------------------ | ------------------------------------------- |
 | 🤖 Robotics    | 想先搞懂坐标、控制和真机闭环   | [机器人学基础](docs/robotics.md)               |
-| 👁️ VLA       | 想研究视觉、语言和动作策略     | [模型基础](docs/model-basics.md)               |
+| 👁️ VLA/WAM   | 想研究视觉、语言和动作策略     | [模型基础](docs/model-basics.md)               |
 | 🌍 World Model | 想做未来预测、生成或 WAM       | [WM 专题](docs/world-model-directions.md)      |
 | 🎮 RL / MBRL   | 想做强化学习、规划和策略后训练 | [强化学习基础](docs/reinforcement-learning.md) |
 
