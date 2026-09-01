@@ -17,7 +17,7 @@
 | 主路线         | 适合你如果…                   | 起点                                        |
 | -------------- | ------------------------------ | ------------------------------------------- |
 | 🤖 Robotics    | 想先搞懂坐标、控制和真机       | [机器人学基础](docs/robotics.md)               |
-| 👁️ VLA/WAM   | 想研究视觉、语言和动作策略     | [模型基础](docs/model-basics.md)               |
+| 👁️ VLA        | 想研究视觉、语言和动作策略     | [VLA 专题](docs/vla.md)                        |
 | 🌍 World Model | 想做未来预测、生成或 WAM       | [WM 专题](docs/world-model-directions.md)      |
 | 🎮 RL / MBRL   | 想做强化学习、规划和策略后训练 | [强化学习基础](docs/reinforcement-learning.md) |
 
@@ -32,10 +32,10 @@
 | 学机器人坐标、TF 和规划  | [机器人学基础](docs/robotics.md)               | RViz 2、MoveIt 2、ros2_control                                 |
 | 跑 GPU 并行仿真          | [Isaac Sim 教程](docs/isaac-sim-tutorial.md)   | Isaac Lab、ManiSkill                                           |
 | 从仿真走到真实机械臂     | [机器人学基础](docs/robotics.md)               | 手眼标定、ros2_control、rosbag2 和 Piper 实践                  |
-| 研究 VLA 或动作策略      | [模型基础](docs/model-basics.md)               | [论文清单](docs/papers.md) 和 OpenVLA/OpenPI                      |
+| 研究 VLA 或动作策略      | [VLA 专题](docs/vla.md)                        | [论文清单](docs/papers.md) 和 OpenVLA/OpenPI                      |
 | 研究 World Model         | [WM 专题](docs/world-model-directions.md)      | pixel、latent、对象中心、3D/4D 和闭环验证                      |
-| 研究 WAM                 | [WM 专题](docs/world-model-directions.md)      | [WAM 代码入口](docs/codebases.md#5-world-model像素latent-与-3d4d) |
-| 做机器人策略后训练       | [强化学习基础](docs/reinforcement-learning.md) | PPO、GRPO、SAPO、RLinf                                         |
+| 研究 WAM                 | [WAM 专题](docs/wam.md)                        | [论文清单](docs/papers.md)                                       |
+| 做机器人策略后训练       | [RL / MBRL 专题](docs/mbrl.md)                 | PPO、GRPO、SAPO、RLinf                                         |
 | 适配 RoboDojo/XPolicyLab | [XPolicyLab 教程](docs/xpolicylab-tutorial.md) | debug 评测、策略服务和环境接入                                 |
 
 如果你还没有明确方向，按这个顺序读即可：
@@ -91,10 +91,10 @@ flowchart LR
 
 ### 🌍 研究方向
 
-- [VLA 与动作策略](docs/papers.md#s1vla-与动作策略)：视觉、语言和机器人状态到动作，关注动作接口、泛化和推理延迟。
-- [RL 与 MBRL](docs/reinforcement-learning.md)：从 DQN、PPO、SAC、IQL 到 GRPO/SAPO，关注数据来源、价值学习、探索和策略后训练。
+- [VLA 与动作策略](docs/vla.md)：视觉、语言和机器人状态到动作，关注动作接口、训练流程、泛化和推理延迟。
+- [RL 与 MBRL](docs/mbrl.md)：说明模型如何进入 rollout、规划和策略更新；算法细节见[强化学习基础](docs/reinforcement-learning.md)。
 - [WM 专题](docs/world-model-directions.md)：按 pixel、latent、对象中心、运动场、物理状态、3D/4D 和长期记忆整理世界模型，并说明数据字段、训练目标、动作接口和闭环评价。
-- [WAM 与未来动作联合建模](docs/papers.md#s1wam世界与动作联合建模)：关注未来表征怎样进入动作生成，以及训练期监督、测试期想象和异步执行。
+- [WAM 与未来动作联合建模](docs/wam.md)：关注未来表征怎样进入动作生成，以及训练期监督、测试期想象和异步执行。
 - [论文清单](docs/papers.md)：按 VLA、WM、WAM、MBRL、RL、数据和 benchmark 分级阅读。
 - [代码仓与工具](docs/codebases.md)：官方代码、仿真器、数据集、训练框架和实践入口。
 - [Benchmark 指南](docs/benchmarks.md)：LIBERO、CALVIN、ManiSkill、Meta-World、RoboDojo、RoboTwin、RoboCasa、DMControl 等的用途和比较边界。
@@ -126,6 +126,9 @@ ROS 2、OpenCV 和机器人依赖安装可参考[鱼香 ROS 社区论坛](https:
 │   ├── robotics.md
 │   ├── model-basics.md
 │   ├── reinforcement-learning.md
+│   ├── vla.md
+│   ├── wam.md
+│   ├── mbrl.md
 │   ├── world-model-directions.md
 │   ├── mujoco-tutorial.md
 │   ├── isaac-sim-tutorial.md

@@ -74,10 +74,10 @@ nav:
       - Model Basics: model-basics.md
       - Reinforcement Learning: reinforcement-learning.md
   - Research:
-      - VLA and Action Policies: papers.md
+      - VLA and Action Policies: vla.md
       - World Models: world-model-directions.md
-      - WAM: world-model-directions.md
-      - MBRL: reinforcement-learning.md
+      - WAM: wam.md
+      - MBRL: mbrl.md
   - Resources:
       - Papers: papers.md
       - Codebases: codebases.md

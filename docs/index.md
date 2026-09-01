@@ -12,9 +12,9 @@
 | 路线 | 适合你如果… | 起点 |
 | --- | --- | --- |
 | 🤖 Robotics | 想先搞懂坐标、控制和真机闭环 | [机器人学基础](robotics.md) |
-| 👁️ VLA | 想研究视觉、语言和动作策略 | [模型基础](model-basics.md) |
+| 👁️ VLA | 想研究视觉、语言和动作策略 | [VLA 专题](vla.md) |
 | 🌍 World Model | 想做未来预测、生成或 WAM | [WM 专题](world-model-directions.md) |
-| 🎮 RL / MBRL | 想做强化学习、规划和策略后训练 | [强化学习基础](reinforcement-learning.md) |
+| 🎮 RL / MBRL | 想做强化学习、规划和策略后训练 | [RL / MBRL 专题](mbrl.md) |
 
 ## 学习顺序
 
