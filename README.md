@@ -1,5 +1,7 @@
 <h1><img src="image/README/1788255651453.png" alt="" width="64" align="absmiddle"> Embodied AI Starter Map | 具身智能入门</h1>
 
+<p align="center"><a href="https://ppsdk.github.io/Embodied-AI-Start/">在线文档站：Material for MkDocs</a></p>
+
 具身智能学习地图，面向想从机器人基础走到 VLA、World Model、RL/MBRL 和 WAM 的读者。
 
 内容从坐标系、运动学、动力学、ROS 2、仿真和控制接口开始，逐步连接到视觉语言动作策略、动作生成、世界模型、模型辅助强化学习和世界动作模型。每条路线都配有论文、开源代码、benchmark 与实践入口，并把 observation、action、时间对齐、闭环评测和真机部署放在同一条链路里。
