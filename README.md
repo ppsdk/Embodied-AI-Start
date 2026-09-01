@@ -27,15 +27,14 @@
 flowchart LR
     K["知识图谱"] --> R["机器人学基础"]
     R --> M["模型基础"]
-    M --> RL["RL 基础"]
-    RL --> CHOOSE{"选择研究路线"}
+    M --> CHOOSE{"选择研究路线"}
     CHOOSE --> VLA["VLA"]
     CHOOSE --> WM["WM"]
-    CHOOSE --> MBRL["MBRL"]
+    CHOOSE --> RL["RL"]
     CHOOSE --> WAM["WAM"]
     VLA --> REAL["真机学习"]
     WM --> REAL
-    MBRL --> REAL
+    RL --> REAL
     WAM --> REAL
 ```
 
