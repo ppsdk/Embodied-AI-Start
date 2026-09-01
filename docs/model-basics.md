@@ -1,17 +1,17 @@
 # 模型基础：Transformer、Diffusion 与 Flow Matching
 
-这一页讲四件事：输入是什么，张量怎样流动，训练时预测什么，部署时怎样得到动作或未来。Transformer、diffusion 和 flow matching 的名字可以先放一边，先把这四件事看懂。公式是常见实现的简化写法，具体项目可能换 token 化方式、条件注入位置或采样器。
+输入是什么，张量怎样流动，训练时预测什么，部署时怎样得到动作或未来。公式是常见实现的简化写法，具体项目可能换 token 化方式、条件注入位置或采样器。
 
 ## 0. 统一记号
 
-| 符号 | 形状/含义 | 在具身任务中的例子 |
-| --- | --- | --- |
-| $B$ | batch size | 并行轨迹或图像样本数 |
-| $L$ | token 序列长度 | 图像 patch、语言 token、历史状态 token |
-| $D$ | hidden/channel dimension | Transformer 的隐向量宽度 |
-| $T$ / $H$ | 时间窗口或 action horizon | 历史 $T$ 帧、未来 $H$ 步动作 |
-| $A$ | 每步动作维度 | 关节、末端位姿 delta 或夹爪维度 |
-| $C$ | 条件上下文 | 图像、语言、机器人状态和历史 |
+| 符号          | 形状/含义                 | 在具身任务中的例子                     |
+| ------------- | ------------------------- | -------------------------------------- |
+| $B$         | batch size                | 并行轨迹或图像样本数                   |
+| $L$         | token 序列长度            | 图像 patch、语言 token、历史状态 token |
+| $D$         | hidden/channel dimension  | Transformer 的隐向量宽度               |
+| $T$ / $H$ | 时间窗口或 action horizon | 历史$T$ 帧、未来 $H$ 步动作        |
+| $A$         | 每步动作维度              | 关节、末端位姿 delta 或夹爪维度        |
+| $C$         | 条件上下文                | 图像、语言、机器人状态和历史           |
 
 常用张量约定：序列表征为 $X\in\mathbb{R}^{B\times L\times D}$，动作块为 $A_{1:H}\in\mathbb{R}^{B\times H\times A}$。`B`、`L`、`D`、`H`、`A` 必须在实现和实验表中明确，不能只写“输入一段图像、输出动作”。
 
@@ -158,18 +158,18 @@ return x
 
 因此 flow matching 的核心输出是 velocity/向量场，不是 DDPM 意义下的噪声残差；采样步数和 solver 仍会影响速度、稳定性和动作质量。π0 将 flow-based action expert 放在 VLM 条件之后，是具身场景中的重要例子。
 
-### 3.3 与 diffusion 的边界
+### 3.3 与 diffusion 的区别
 
-二者都可以从简单分布生成连续动作，也都能使用 Transformer 条件编码器，但训练/采样的语义不同：diffusion 学习去噪或等价 score 参数化，flow matching 学习路径上的速度场并做 ODE 积分。某些连续时间 diffusion、rectified flow 或蒸馏方法会让边界变得不那么明显；比较论文时应记录实际 loss、路径、solver 和采样步数，而不是只看方法标签。
+二者都可以从简单分布生成连续动作，也都能使用 Transformer 条件编码器，但训练/采样的语义不同：diffusion 学习去噪或等价 score 参数化，flow matching 学习路径上的速度场并做 ODE 积分。某些连续时间 diffusion、rectified flow 或蒸馏方法会让区别变得不那么明显；比较论文时应记录实际 loss、路径、solver 和采样步数，而不是只看方法标签。
 
 ## 4. 四类动作输出的对照
 
-| 输出机制 | 训练目标 | 推理方式 | 优点 | 主要代价/风险 | 典型位置 |
-| --- | --- | --- | --- | --- | --- |
-| 离散 next-token | token 交叉熵 | 自回归解码 | 复用语言模型、接口清晰 | 量化误差、序列延迟、动作粒度受 bin 影响 | 离散 action-token VLA |
-| 连续回归 | L1/L2/Huber/NLL | 一次前向 | 快、实现简单 | 多峰分布可能平均化，长时程相关性弱 | VLA action head、低延迟控制 |
-| Diffusion | 预测 $\epsilon/x_0/v$ 的去噪 loss | 多步反向去噪 | 多模态动作、平滑 action chunk | 采样延迟、scheduler/SNR 敏感 | Diffusion Policy、部分 VLA action head |
-| Flow matching | 速度场回归 | ODE solver 积分 | 连续路径、可用少步 solver/蒸馏 | path/solver 选择、速度场误差 | π0 类 flow action expert |
+| 输出机制        | 训练目标                           | 推理方式        | 优点                           | 主要代价/风险                           | 典型位置                               |
+| --------------- | ---------------------------------- | --------------- | ------------------------------ | --------------------------------------- | -------------------------------------- |
+| 离散 next-token | token 交叉熵                       | 自回归解码      | 复用语言模型、接口清晰         | 量化误差、序列延迟、动作粒度受 bin 影响 | 离散 action-token VLA                  |
+| 连续回归        | L1/L2/Huber/NLL                    | 一次前向        | 快、实现简单                   | 多峰分布可能平均化，长时程相关性弱      | VLA action head、低延迟控制            |
+| Diffusion       | 预测$\epsilon/x_0/v$ 的去噪 loss | 多步反向去噪    | 多模态动作、平滑 action chunk  | 采样延迟、scheduler/SNR 敏感            | Diffusion Policy、部分 VLA action head |
+| Flow matching   | 速度场回归                         | ODE solver 积分 | 连续路径、可用少步 solver/蒸馏 | path/solver 选择、速度场误差            | π0 类 flow action expert              |
 
 Transformer、diffusion、flow 不是互斥选项：Transformer 往往是 backbone，后面接 token、回归、diffusion 或 flow head。
 
@@ -204,7 +204,7 @@ flowchart LR
 
 ### 5.1 VLA：从视觉和语言得到动作
 
-VLA（Vision-Language-Action）通常把图像、语言和机器人状态送入同一个条件模型，再由动作头输出控制量。最小数据流可以写成：
+VLA（Vision-Language-Action）通常把图像、语言和机器人状态送入同一个条件模型，再由动作头输出控制量。基本数据流可以写成：
 
 ```text
 image history       -> vision encoder  -> visual tokens
@@ -229,11 +229,11 @@ S[t]       : [B,D_state]            # 可选关节/末端状态
 
 视觉和语言 token 通常先投影到同一维度 `D`，拼接后得到 `X in R^(B x L x D)`。动作头有三种常见形式：
 
-| 动作头 | 输出 | 训练目标 | 适用场景 |
-| --- | --- | --- | --- |
-| 离散 action token | `[B,L_a,V_a]` | token 交叉熵 | 复用自回归语言模型，动作粒度由码本决定 |
-| 连续回归 | `[B,H,A]` | L1、L2、Huber 或 NLL | 低延迟控制，结构简单 |
-| diffusion/flow | 带噪动作或速度场 `[B,H,A]` | 去噪 loss 或 flow matching loss | 多峰动作和平滑 action chunk |
+| 动作头            | 输出                         | 训练目标                        | 适用场景                               |
+| ----------------- | ---------------------------- | ------------------------------- | -------------------------------------- |
+| 离散 action token | `[B,L_a,V_a]`              | token 交叉熵                    | 复用自回归语言模型，动作粒度由码本决定 |
+| 连续回归          | `[B,H,A]`                  | L1、L2、Huber 或 NLL            | 低延迟控制，结构简单                   |
+| diffusion/flow    | 带噪动作或速度场 `[B,H,A]` | 去噪 loss 或 flow matching loss | 多峰动作和平滑 action chunk            |
 
 VLA 的“语言”可以只用于任务条件，也可以与视觉 token 深度融合。读代码时要确认语言 token 是否参与 action head，而不是看到模型有语言输入就默认它学到了语言条件控制。
 
@@ -315,20 +315,20 @@ L_WAM = lambda_a L_action
 
 读 WAM 论文或代码时，至少确认以下几点：
 
-| 问题 | 要查什么 |
-| --- | --- |
-| 未来表示 | 未来视频、latent、粒子、3D/4D、触觉还是 value？形状和时间跨度是多少？ |
-| 动作接口 | 关节、末端 `SE(3)`、夹爪、action chunk 还是 latent action？是否能落到控制器？ |
-| 未来的用途 | 训练期辅助 loss、测试期 rollout、候选动作排序还是 MPC？ |
-| 时间关系 | chunk 内是否双向，chunk 间是否因果？动作请求到真正接管之间有多少延迟？ |
-| 反事实证据 | 同一初始状态输入不同动作时，未来是否按动作改变？是否覆盖失败动作？ |
-| 部署代价 | denoising/ODE 步数、KV cache、control Hz、显存和真实机器人延迟。 |
+| 问题       | 要查什么                                                                        |
+| ---------- | ------------------------------------------------------------------------------- |
+| 未来表示   | 未来视频、latent、粒子、3D/4D、触觉还是 value？形状和时间跨度是多少？           |
+| 动作接口   | 关节、末端 `SE(3)`、夹爪、action chunk 还是 latent action？是否能落到控制器？ |
+| 未来的用途 | 训练期辅助 loss、测试期 rollout、候选动作排序还是 MPC？                         |
+| 时间关系   | chunk 内是否双向，chunk 间是否因果？动作请求到真正接管之间有多少延迟？          |
+| 反事实证据 | 同一初始状态输入不同动作时，未来是否按动作改变？是否覆盖失败动作？              |
+| 部署代价   | denoising/ODE 步数、KV cache、control Hz、显存和真实机器人延迟。                |
 
 训练期使用 future supervision、推理期不再生成 future 的方法，仍可称为带 world supervision 的 policy；但不能把它描述成测试时显式想象的 WAM。相反，只有视频生成而不输出动作或不影响动作选择的模型，仍是 WM 或视频生成器。
 
 ### 5.3 World Model 的四类表征
 
-世界模型的“输入是图像，输出是未来”还不够具体。实现时要先写清楚预测空间：是在像素空间预测帧，在 latent 空间预测特征，还是在带坐标的 3D/4D 空间预测场景。统一记号如下：
+WM 的表示谱系、论文比较、数据字段和闭环评价见 [WM 专题](world-model-directions.md)。实现时先写清楚预测空间，以及动作是否真正进入状态转移。
 
 $$
 z_t=E_\phi(o_{t-L+1:t}),\qquad
@@ -336,17 +336,17 @@ z_t=E_\phi(o_{t-L+1:t}),\qquad
 \widehat o_{t+1}=D_\psi(\widehat z_{t+1}).
 $$
 
-解码器 $D_\psi$ 可以省略（例如只关心 JEPA 特征），但动作条件、未来目标和时间对齐不能省略。
+解码器 $D_\psi$ 可以省略，但动作条件、未来目标和时间对齐不能省略。
 
 #### 像素/视频空间
 
-输入视频通常为 $O\in\mathbb R^{B\times L\times H\times W\times C}$，动作块为 $A\in\mathbb R^{B\times H_a\times d_a}$。模型直接输出未来帧或视频 token：
+直接预测未来帧或视频 token：
 
 $$
 \widehat O_{t+1:t+H}=G_\theta(O_{t-L+1:t},A_{t:t+H-1},C,\xi).
 $$
 
-像素重建、感知和时序损失的示意写法为
+常见目标是像素、感知或时序损失：
 
 $$
 \mathcal L_{\mathrm{video}}
@@ -355,17 +355,17 @@ $$
 +\lambda_{\mathrm{temp}}\mathcal L_{\mathrm{temp}}.
 $$
 
-生成 RGB 不等于学到了可控动力学：必须做 action-conditioned rollout，并检查改变 $A$ 是否会产生可解释的未来差异。World Models、Genie 和 Cosmos Predict2 可作为视频/可交互未来预测的阅读入口；具体实现可能在压缩视频 latent 上训练，再解码回像素。
+生成 RGB 不等于学到了可控动力学。要用不同动作做 rollout，检查未来是否随动作改变。具体论文和实现见 WM 专题。
 
 #### 全局 latent/JEPA 空间
 
-编码器输出 $Z\in\mathbb R^{B\times L\times D_z}$，预测器在 latent 中学习：
+编码器输出 latent，预测器学习未来特征：
 
 $$
 \widehat z_{t+1:t+H}=P_\theta(z_{\le t},a_{t:t+H-1}).
 $$
 
-JEPA 类目标只要求预测特征接近 target encoder 的特征，不必逐像素重建：
+JEPA 类目标让预测特征接近 target encoder 的特征，不要求逐像素重建：
 
 $$
 \mathcal L_{\mathrm{pred}}
@@ -373,24 +373,24 @@ $$
 \mathrm{stopgrad}\!\left(E_\phi(o_{t+1:t+H})\right)\right).
 $$
 
-如果要在 latent 中进行 MBRL，还要定义 reward/termination head，或者将 latent rollout 交给 value/MPC；否则它仍是预测表征，而不是完整的决策器。V-JEPA 2 适合学习未来可预测表征，PlaNet、Dreamer 和 TD-MPC2 则展示了把 latent dynamics 接到规划或 actor-critic 的方式。
+若要用于 MBRL，还需 reward/termination head，并将 latent rollout 接到 value、MPC 或 actor-critic。只有预测表征而没有决策接口时，不应称为完整 MBRL。
 
 #### 对象中心 latent：LPWM
 
-[LPWM](https://arxiv.org/abs/2603.04553) 将一帧拆成 $M$ 个前景粒子和一个背景粒子：
+[LPWM](https://arxiv.org/abs/2603.04553) 把观测拆成对象粒子和背景粒子，再预测粒子属性与随机动态：
 
 $$
 z_{\mathrm{fg},t}^{m}\in\mathbb R^{6+d_{\mathrm{obj}}},\qquad
 z_{\mathrm{bg},t}\in\mathbb R^{d_{\mathrm{bg}}}.
 $$
 
-前景粒子的 6 个显式属性是二维位置（2）、尺度（2）、深度排序（1）和透明度（1），其余维度是外观特征。Context/action module 为每个粒子产生 latent action $c_t^m$，动力学模型输出下一帧粒子分布：
+粒子可以包含位置、尺度、深度排序、透明度和外观特征：
 
 $$
 p_\xi\!\left(z_{t+1}\mid z_t,c_t^{1:M},l,g\right),
 $$
 
-其中 $l$ 是语言条件，$g$ 可以是目标图像。训练目标是时序 VAE 的 ELBO，可概括为重建、KL、透明度稀疏正则和动态先验四项：
+其中 $l$ 是语言条件，$g$ 是可选目标图像。LPWM 的粒子 action 是模型内部变量，不能直接当成机械臂关节动作。
 
 $$
 \mathcal L_{\mathrm{LPWM}}
@@ -400,11 +400,11 @@ $$
 +\beta_{\mathrm{dyn}}\mathcal L_{\mathrm{dyn}}.
 $$
 
-这是便于读者理解的合并写法；论文把首帧 static ELBO 和后续帧 dynamic ELBO 分开计算。LPWM 的粒子 action 是模型内部的随机变量，不能直接当成机械臂的关节动作；部署时仍需将真实 $a_t$ 与控制周期、相机视角和任务条件对齐。
+部署时仍需把真实 $a_t$ 与控制周期、相机视角和任务条件对齐。
 
 #### 3D/4D 空间：GWM
 
-显式 3D 场景可写成 Gaussian primitives 集合：
+显式 3D 场景可以用点、occupancy、SDF 或 Gaussian primitives 表示。例如 Gaussian 状态为：
 
 $$
 S_t=\{(\mu_i,\Sigma_i,\alpha_i,c_i)\}_{i=1}^{N},
@@ -418,119 +418,44 @@ $$
 \widehat I_{t+1}=\mathcal R(\widehat S_{t+1};K,T^W_C).
 $$
 
-[GWM](https://arxiv.org/abs/2508.17600) 用 latent DiT 和 3D VAE 在紧凑 latent 中预测 Gaussian primitives 的传播，再用 Gaussian Splatting 重建/渲染未来场景。它同时展示了动作条件 3D 视频预测、imitation learning 表征和作为 neural simulator 支持 MBRL 三种用法。复现时要固定相机内外参、初始 3D 场景、动作时间间隔和渲染视角；静态 3DGS 或 VGGT 只能作为表示/重建前端，不能凭此声称已有世界模型。
+[GWM](https://arxiv.org/abs/2508.17600) 是动作条件 3D Gaussian WM 的例子。静态 3DGS 或 VGGT 只能作为表示/重建前端，不能凭此声称已有世界模型。
 
 #### 4D occupancy：体素或 triplane 的未来场景
 
-把场景离散为 occupancy 网格时，状态可写成
+occupancy WM 把场景表示成体素、triplane 或稀疏 token：
 
 $$
 V_t\in\{0,1,\ldots,C\}^{X\times Y\times Z},
 $$
 
-其中 0 是空闲，其他值是占据类别。模型可以同时预测未来场景和自车/相机位姿：
+模型可以同时预测未来占据和相机/自车位姿：
 
 $$
 \widehat V_{t+1:t+H},\widehat p_{t+1:t+H}
 =F_\theta(V_{t-L+1:t},p_{t-L+1:t},u_{t:t+H-1}).
 $$
 
-`u_t` 不一定是机械臂关节动作，也可能是车辆控制量、目标轨迹或下一时刻位姿。OccWorld 使用离散 scene token 和时空 Transformer 预测 occupancy 与 ego trajectory；DOME 使用时空 diffusion 和轨迹重采样增强可控性；PreWorld 把 2D 监督、3D occupancy 和 4D forecasting 放在同一训练链路；Delta-Triplane Transformers 预测 triplane 的增量而不是每次生成完整网格，SparseWorld 则用稀疏动态查询降低计算量。它们适合学习空间占据的演化、碰撞检查和规划，但不应直接当成机械臂控制器。
+`u_t` 可以是机械臂动作、车辆控制量或目标轨迹。它们适合空间占据预测和碰撞检查，但不应直接当成机械臂控制器。
 
-#### 持续 3D latent：把自运动和环境运动分开
+#### 其他常见形态
 
-对于单目或少视角视频，可以维护一个带坐标的 3D latent，而不是每一步生成完整 RGB。抽象写法是
+- **持续 3D latent**：维护带坐标的场景特征，并把相机自运动与环境变化分开。没有真实机器人动作时，位姿变化只是运动代理。
+- **3D belief**：维护多个场景假设及其权重，随着新观测更新。只有动作真正进入转移并经过未来观测验证，才是动作条件 WM。
+- **符号和物理状态**：预测子目标、接触、力、碰撞或终止状态，常与视频或 latent 分支并用。
+- **长期记忆与不确定性**：用 KV、landmark 或 ensemble 保留历史和多种未来假设，服务长程规划与风险评估。
 
-$$
-z_t^{3D}=E_\phi(o_{t-L+1:t},T^W_{C,t-L+1:t}),\qquad
-\widehat z_{t+1}^{3D}=F_\theta(z_t^{3D},\Delta T_t,\xi_t),
-$$
+### 5.4 WM 表示对照表
 
-其中 $T^W_C$ 是相机外参，$\Delta T_t$ 是估计的相机自运动。FR3D 的核心是预测持久的 3D latent，并将自运动与场景自身变化解耦；这类模型能检查未来跨视角重建和几何一致性，但若没有真实机器人动作输入，$\Delta T_t$ 只是运动代理，不能自动等同于控制接口。
+| 预测空间 | 典型张量 | 主要用途 | 需要额外检查 |
+| --- | --- | --- | --- |
+| 像素/视频 | `[B,L,H,W,C]` 或视频 token | 可视化未来、生成 rollout | 画面逼真不等于动作正确 |
+| 全局 latent | `[B,L,D_z]` | 低成本预测、MPC、value | latent 是否保留接触和几何 |
+| 对象中心 latent | `[B,M,D_obj]` | 对象交互和组合泛化 | slot 身份、遮挡、粒子 action 接口 |
+| 3D/4D | 点、Gaussian、occupancy 或 flow | 空间预测、碰撞和可达性 | 坐标系、深度、标定和实时性 |
 
-#### 3D belief 与可交互场景
+统一流程是：采集带时间戳的 `(o[t], a[t])`，编码当前状态，用真实未来监督 predictor，做多步 rollout，再执行短 action chunk 并重新观测。只有当预测器进入 MPC、value 或 policy optimization，才形成 MBRL 闭环。
 
-3D-Belief 维护多个可能的 3D 场景假设，并随着新观测进行 belief update；WorldAct 则把静态生成的世界拆成对象级几何、可编辑部件和背景，使场景能进行碰撞感知的交互。实现时要显式记录假设索引 $k$：
-
-$$
-\{S_t^{(k)},w_t^{(k)}\}_{k=1}^{K},\qquad
-S_{t+1}^{(k)}\sim F_\theta(S_t^{(k)},a_t,\xi_t),
-$$
-
-其中 $w_t^{(k)}$ 是第 $k$ 个场景假设的权重。只有当 $a_t$ 真正进入状态转移并用未来观测或任务结果验证时，这种 belief 才能称为动作条件 WM；仅有可导航或可编辑的 3D 场景仍属于场景生成/交互表示。
-
-#### 其他 WM 设计：时间模型和条件接口
-
-同一个表示空间可以使用完全不同的时间模型。比较论文时要把“预测什么”与“怎么预测”分开。
-
-**离散 token 自回归（IRIS）**：先用离散 VAE 得到 $q_t$，再让因果 Transformer 预测
-
-$$
-p_\theta(q_{t+1}\mid q_{\leq t},a_{\leq t}),
-\qquad
-\mathcal L_{\mathrm{AR}}=-\sum_t\log p_\theta(q_{t+1}\mid q_{\leq t},a_{\leq t}).
-$$
-
-推理时把预测 token 解码为下一观测，再编码后继续 rollout。结构清楚、适合少量交互数据，但离散压缩和逐步误差会限制长时程预测。
-
-**像素 diffusion（DIAMOND）**：对历史帧、动作和带噪未来帧做条件去噪，采样得到多种未来。它能保留较多视觉细节，但采样慢；评测不能只看 FVD/LPIPS，还要检查动作改变时未来是否按预期改变。
-
-**语言条件（Dynalang）**：语言既可以描述任务，也可以描述“环境怎么运行”。后一种语言与视觉历史共同进入预测器：
-
-$$
-\widehat z_{t+1}=F_\theta(z_{\leq t},a_t,l_t).
-$$
-
-实验时要区分任务指令和动力学描述，检查语言是否真正帮助未见环境泛化。
-
-**学习型物理模拟器（GNS）**：用粒子位置、速度和材料属性构成图节点，通过 message passing 预测加速度或位移：
-
-$$
-h_i^{(k+1)}=\Phi\!\left(h_i^{(k)},\sum_{j\in\mathcal N(i)}\Psi(h_i^{(k)},h_j^{(k)},e_{ij})\right).
-$$
-
-GNS 是动力学模拟器，不是视觉 WM；接入机器人还需要图像/RGB-D 编码器，以及从 action 到节点受力或边界条件的接口。
-
-**Digital twin 和人类视频迁移**：DreMa 把显式 3D 场景与物理模拟器组合成可反事实执行的数字孪生；DreamDojo 从大规模人类视频学习连续 latent action，再用少量机器人数据校准。latent action 不能直接当成关节或末端动作。
-
-**自主探索与共同迭代**：PlayWorld 用机器人 autonomous play 收集成功、失败和接触丰富的数据；World-VLA-Loop 让更新后的策略轨迹回流，继续校准预测未来帧和 reward 的 WM。实验需记录数据版本，否则无法区分模型改进与数据量增加的贡献。
-
-**JEPA + diffusion（JEDI）**：直接在联合 embedding 中用 diffusion denoising 学习未来 latent，避免单独预训练 latent 与动力学目标脱节；仍需用真实任务的长时程 rollout 验证控制相关信息是否保留。
-
-**因果/结构化 WM（Causal-JEPA）**：把 mask 从图像 patch 提升到对象 latent，强迫模型利用对象间上下文来补全被遮挡状态。它在训练时制造结构化的部分可观测和近似干预：模型应利用接触和实体关系预测未来，而不是依赖背景纹理。验证时重点看反事实/干预预测和规划效率。
-
-**动作跟随与安全验证（WorldEcho）**：对同一初始状态施加专家和 off-expert action，比较预测的视觉变化、物体或末端的 $SE(3)$ 轨迹以及真实未来；再用风险/进度 head 和确定性 safety shield 过滤候选 action chunk。这个方向把“生成得像不像”改成“是否真的按动作执行”。
-
-**长期记忆（ReWorld）**：短期 attention 负责当前动作跟随，少量全局 head 或位姿索引的 landmark bank 负责访问很久以前的观测。部署时要记录 KV cache、记忆条目的位姿/时间和检索规则，才能区分生成误差与记忆检索错误。
-
-**不确定性与模型可信度（PETS）**：用 ensemble dynamics 和 trajectory sampling 产生多个未来假设，并在规划时传播预测方差。机器人应用应把不确定性和碰撞、接触、越界等安全约束分开报告；概率预测本身不是安全保证，保证通常来自独立的 deterministic shield 或 fallback。
-
-**其他可组合方向**：DayDreamer 把同一套 latent dynamics 和 imagined rollout 放到真实机器人在线学习；SlotFormer/FOCUS 先发现对象 slot，再预测对象关系或把预测误差变成探索奖励；IRASim 在视频 Transformer 内按帧注入动作，FlowDreamer 先预测 3D scene flow 再生成 RGB-D；ViTacWorld 把触觉作为与视觉并列的未来目标；H-WM 用逻辑子目标连接高层规划和低层视觉预测；WorldEval/WorldGym 把 WM 当作策略评测环境；Robot-Factored WM 则用控制器、运动学和 URDF 渲染机器人几何，让模型主要学习物体响应。它们改变的是数据闭环、条件接口或用途，不是新的统一“第五种”表示空间。详见 [WM 其他方向](world-model-directions.md)。
-
-#### 对照表
-
-| 预测空间 | 典型张量 | 目标 | 适合验证 | 常见误区 |
-| --- | --- | --- | --- | --- |
-| 像素/视频 | $[B,L,H,W,C]$ 或视频 token | 未来帧/视频 | 外观、遮挡、视频反事实 | 画面逼真不等于动力学正确 |
-| 全局 latent/JEPA | $[B,L,D_z]$ | future feature | 可预测性、迁移和低成本 rollout | latent 可能丢接触/几何 |
-| 对象中心 latent/LPWM | $[B,M,6+d_{obj}]$ + background | 粒子属性和随机动态 | 对象交互、目标条件和可解释性 | 粒子 action 不等于真实控制量 |
-| 3D/4D/GWM | $N$ 个 primitive 或点/体素集合 | 未来几何、外观和位姿 | 深度、视角变化和空间一致性 | 标定错误会伪装成模型误差 |
-| 4D occupancy | $[B,L,X,Y,Z]$ 或稀疏/triplane token | 占据、语义和自车位姿演化 | occupancy mIoU、规划误差、长时程一致性 | 体素内存大，位姿误差会污染未来 |
-| 持续 3D latent | 带坐标的 point-map/feature map | 自运动与环境运动解耦 | 跨视角重建、深度和动态一致性 | 没有真实动作时不能声称控制可用 |
-| 3D belief/scene | $K$ 个场景假设及权重 | 观测更新、对象编辑或交互动作 | 未观测区域、碰撞和任务成功率 | 场景可交互不等于已学到动力学 |
-
-统一训练/测试顺序是：采集带时间戳的 $(o_t,a_t)$ → 编码或重建当前状态 → 用真实未来监督 action-conditioned predictor → 做 $H$ 步 open-loop rollout → 只执行短 action chunk 并重新观测。把预测器接入 MPC、value 或 policy optimization 后，才进入 MBRL 闭环。
-
-## 6. 读代码和做实验的检查单
-
-1. 记录每个模块的输入/输出 shape：是否是 `[B,L,D]`、`[B,H,A]` 或 `[B,L,V]`？
-2. 对 Transformer，确认 tokenizer、位置编码、attention mask、KV cache 和 action head。
-3. 对 diffusion，确认噪声日程、`t` 的范围、预测参数化（epsilon/x0/v）、scheduler 和采样步数。
-4. 对 flow matching，确认 probability path、velocity target、时间采样、ODE solver 和积分步数。
-5. 对机器人闭环，固定 action horizon、控制频率、receding-horizon 规则、归一化统计和安全限幅。
-6. 同时报告生成质量/预测误差、任务成功率、延迟、显存和恢复能力。
-
-## 7. 基础论文
+## 6. 基础论文
 
 - [Attention Is All You Need](https://arxiv.org/abs/1706.03762)：Transformer 与 self-attention 的原始定义。
 - [Denoising Diffusion Probabilistic Models](https://arxiv.org/abs/2006.11239)：DDPM 前向加噪、反向去噪和变分目标。
