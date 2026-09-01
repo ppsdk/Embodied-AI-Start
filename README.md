@@ -19,12 +19,20 @@
 
 如果你还没有明确方向，按这个顺序读即可：
 
-```text
-知识图谱 -> 机器人学基础 -> 模型基础 -> RL 基础
-        -> 选择 VLA / WM / MBRL / WAM 路线
-        -> 在仿真 benchmark 中验证
-        -> 标定、限幅和安全检查
-        -> 小范围真机验证
+```mermaid
+flowchart TD
+    K["知识图谱"] --> R["机器人学基础"]
+    R --> M["模型基础"]
+    M --> RL["RL 基础"]
+    RL --> CHOOSE{"选择研究路线"}
+    CHOOSE --> VLA["VLA"]
+    CHOOSE --> WM["WM"]
+    CHOOSE --> MBRL["MBRL"]
+    CHOOSE --> WAM["WAM"]
+    VLA --> REAL["真机学习"]
+    WM --> REAL
+    MBRL --> REAL
+    WAM --> REAL
 ```
 
 ## 一张图看懂几条路线
