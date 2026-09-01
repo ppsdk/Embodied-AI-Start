@@ -11,7 +11,7 @@
 | 第 3 章 | Model-free RL：Online 与 Offline     | RL/MBRL   |
 | 第 4 章 | Model-based RL（MBRL）              | RL/MBRL   |
 | 第 5 章 | VLM → VLA                          | VLA       |
-| 第 6 章 | World Model：JEPA、视频与 3D        | WM        |
+| 第 6 章 | World Model：像素、latent 与 3D/4D    | WM        |
 | 第 7 章 | WAM 与 Fast-WAM                     | WAM/交叉  |
 | 第 8 章 | RL 后训练与综合项目                 | 交叉/可选 |
 
@@ -22,7 +22,7 @@
 ```mermaid
 flowchart TD
     F["第 1–2 章：共同基础"] --> V["VLA 路线：第 5 章<br/>策略闭环 + benchmark"]
-    F --> W["WM 路线：第 6 章<br/>JEPA / video / 3D"]
+    F --> W["WM 路线：第 6 章<br/>pixel / latent / 3D-4D"]
     F --> R["RL/MBRL 路线：第 3–4 章<br/>DQN/PPO/SAC/IQL + dynamics/MPC"]
     F --> A["WAM 路线：第 7 章<br/>未来表征 × 动作生成"]
     W -. "仅在用于决策时" .-> R
@@ -104,14 +104,33 @@ flowchart TD
 - [LIBERO](https://github.com/Lifelong-Robot-Learning/LIBERO)：语言条件操作评测。
 - [CALVIN](https://github.com/mees/calvin)：长时程语言条件操作评测。
 
-## 第 6 章｜World Model：JEPA、视频与 3D
+## 第 6 章｜World Model：像素、latent 与 3D/4D
 
 ### 项目链接
 
 - [V-JEPA 2](https://github.com/facebookresearch/vjepa2)：JEPA latent predictive learning。
+- [LPWM](https://github.com/taldatech/lpwm)：对象中心 latent particles、粒子级 latent action 和随机动力学。
 - [Cosmos Predict2](https://github.com/nvidia-cosmos/cosmos-predict2)：视频世界模型与 physical AI 生成。
+- [GWM](https://github.com/Gaussian-World-Model/gaussianwm)：动作条件的 3D Gaussian world model 与 neural simulator。
 - [VGGT](https://github.com/facebookresearch/vggt)：多视图几何与 3D 场景表示。
 - [3D Gaussian Splatting](https://github.com/graphdeco-inria/gaussian-splatting)：可渲染 3D 场景表示。
+- [OccWorld](https://github.com/wzzheng/OccWorld)：3D occupancy token 与未来场景/ego trajectory 预测。
+- [SparseWorld](https://github.com/MSunDYY/SparseWorld)：稀疏 4D occupancy world model，适合看效率和长时程预测。
+- [HY-World 2.0](https://github.com/Tencent-Hunyuan/HY-World-2.0)：多模态生成可导航 3D 世界的完整工程入口。
+- [PhysMani](https://github.com/vLAR-group/PhysMani)：物理约束 3D Gaussian 动力学与动态操作策略。
+- [IRIS](https://github.com/eloialonso/iris)：离散 VAE + 自回归 Transformer 世界模型。
+- [DIAMOND](https://github.com/eloialonso/diamond)：像素 diffusion 世界模型与模型内 RL。
+- [Dynalang](https://github.com/jlin816/dynalang)：语言条件 latent WM。
+- [GNS](https://github.com/google-deepmind/deepmind-research/tree/master/learning_to_simulate)：图网络物理模拟器。
+- [DriveDreamer](https://github.com/JeffWang987/DriveDreamer)：真实驾驶场景 diffusion WM。
+- [DayDreamer](https://arxiv.org/abs/2206.14176)：真实机器人在线 WM/MBRL，观察少量真实交互如何进入 imagined rollout。
+- [SlotFormer](https://slotformer.github.io/) 和 [FOCUS](https://arxiv.org/abs/2307.02427)：对象 slot 动力学与对象中心探索。
+- [IRASim](https://arxiv.org/abs/2406.14540) 和 [FlowDreamer](https://arxiv.org/abs/2505.10075)：细粒度动作-帧对齐与显式 3D scene flow。
+- [ViTacWorld](https://vitacworld.github.io/)：视觉-触觉动作条件 WM。
+- [WorldEval](https://worldeval.github.io/) 和 [WorldGym](https://arxiv.org/abs/2506.00613)：用 WM 做策略 rollout 和部署前评测。
+- [WM 其他方向](world-model-directions.md)：统一记录输入、动作、预测目标、时间跨度、决策接口和证据。
+
+学习时按下面顺序更容易定位问题：先读 IRIS/DIAMOND，理解离散自回归和像素 diffusion 如何做 imagined rollout；再读 Dynalang，理解语言如何作为环境规律条件；用 GNS 补上粒子图和物理模拟器；然后用 VGGT/3DGS、OccWorld 和 GWM/PhysMani 学 3D/4D 表示及真实动作接口；接着看 DayDreamer、SlotFormer、FOCUS、IRASim、FlowDreamer 和 ViTacWorld，补上真实在线学习、对象交互、接触对齐、显式运动和触觉；最后看 FR3D、3D-Belief、DreMa、DreamDojo、PlayWorld、WorldEval 和 WorldGym，补上自运动解耦、不确定性、数字孪生、人类视频迁移、自主探索和策略评测。没有动作条件或未来目标的 3D 重建项目，应标成几何前端，不要直接写成可用于 MBRL 的 WM。
 
 ## 第 7 章｜WAM 与 Fast-WAM
 

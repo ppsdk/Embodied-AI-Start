@@ -78,7 +78,7 @@ WAM 相关的代码和索引入口：
 
 近期论文中的新方法不一定已经有公开代码。要复现时，先从[论文清单](papers.md)的 arXiv 页面进入，再确认作者仓库、checkpoint、数据和评测脚本是否真的公开。
 
-## 5. World Model：JEPA、视频与 3D
+## 5. World Model：像素、latent 与 3D/4D
 
 World Model 在这里是广义的环境表征、未来预测和场景生成路线；动作决策能力根据各仓库的任务和评测单独记录。
 
@@ -86,8 +86,33 @@ World Model 在这里是广义的环境表征、未来预测和场景生成路�
 | --------------------- | --------------------------------- | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
 | V-JEPA 2              | JEPA / latent predictive learning | 未来表征、物理理解与动作条件研究入口         | [GitHub](https://github.com/facebookresearch/vjepa2) · [Paper](https://arxiv.org/abs/2506.09985)                |
 | Cosmos Predict2       | 视频世界模型 / physical AI 生成   | 视频未来预测、数据生成与世界模型接口探索     | [GitHub](https://github.com/nvidia-cosmos/cosmos-predict2) · [Project](https://www.nvidia.com/en-us/ai/cosmos/) |
+| LPWM                  | 对象中心 latent world model       | 从视频发现 latent particles，学习随机、动作/语言/目标条件动态 | [GitHub](https://github.com/taldatech/lpwm) · [Paper](https://arxiv.org/abs/2603.04553) · [Project](https://taldatech.github.io/lpwm-web/) |
+| GWM                   | 3D Gaussian world model           | 在 Gaussian primitives 上预测动作条件未来，可作视觉表征或 neural simulator | [GitHub](https://github.com/Gaussian-World-Model/gaussianwm) · [Paper](https://arxiv.org/abs/2508.17600) · [Project](https://gaussian-world-model.github.io/) |
 | VGGT                  | 3D 几何与多视图场景表示           | 相机/深度/点云几何，为 3D WM 提供结构化表征  | [GitHub](https://github.com/facebookresearch/vggt)                                                            |
 | 3D Gaussian Splatting | 3D 场景表示与新视角合成           | 动态/可渲染场景表示的基础组件，不等于完整 WM | [GitHub](https://github.com/graphdeco-inria/gaussian-splatting)                                               |
+| OccWorld              | 3D occupancy world model          | 读取离散 occupancy token，预测未来场景和 ego trajectory；适合学习 4D occupancy 基线 | [GitHub](https://github.com/wzzheng/OccWorld) · [Paper](https://arxiv.org/abs/2311.16038) |
+| SparseWorld            | 稀疏 4D occupancy world model      | 用稀疏、动态 query 预测未来 occupancy，关注效率和长时程场景生成 | [GitHub](https://github.com/MSunDYY/SparseWorld) · [Paper](https://arxiv.org/abs/2510.17482) |
+| HY-World 2.0           | 多模态 3D world generation        | 文本/图像/视频生成可导航 3DGS，并提供交互式 3D 场景工具链 | [GitHub](https://github.com/Tencent-Hunyuan/HY-World-2.0) · [Paper](https://arxiv.org/abs/2604.14268) |
+| PhysMani               | 物理约束的 3D Gaussian WM          | 复现动态操作中的 Gaussian velocity field 与策略融合 | [GitHub](https://github.com/vLAR-group/PhysMani) · [Paper](https://arxiv.org/abs/2607.01938) |
+| IRIS                  | 离散 token 自回归 WM               | Atari100k 少样本环境建模、离散 latent rollout 与模型内 RL | [GitHub](https://github.com/eloialonso/iris) · [Paper](https://arxiv.org/abs/2209.00588) |
+| DIAMOND               | 像素 diffusion WM                  | 在 Atari/视频环境中研究视觉细节、交互式神经游戏引擎和模型内 RL | [GitHub](https://github.com/eloialonso/diamond) · [Paper](https://arxiv.org/abs/2405.12399) · [Project](https://diamond-wm.github.io) |
+| Dynalang              | 语言条件 latent WM                | 让环境规律描述参与未来表征预测和 imagined rollout | [GitHub](https://github.com/jlin816/dynalang) · [Paper](https://arxiv.org/abs/2308.01399) |
+| GNS                   | 图网络物理模拟器                  | 粒子级流体、刚体和可变形物体动力学；作为物理 WM 前端 | [GitHub](https://github.com/google-deepmind/deepmind-research/tree/master/learning_to_simulate) · [Paper](https://arxiv.org/abs/2002.09405) |
+| DriveDreamer         | 驾驶视频 diffusion WM              | 交通结构约束、动作条件驾驶视频预测和数据生成 | [GitHub](https://github.com/JeffWang987/DriveDreamer) · [Paper](https://arxiv.org/abs/2309.09777) |
+| DreamDojo             | 人类视频预训练机器人 WM            | 用连续 latent action 迁移交互知识，再用少量机器人数据做动作校准 | [Project](https://dreamdojo-world.github.io/) · [Paper](https://arxiv.org/abs/2602.06949) |
+| PlayWorld             | 自主探索机器人 WM                  | 用机器人 autonomous play 收集长尾接触/失败数据，训练操作视频模拟器 | [Project](https://robot-playworld.github.io/) · [Paper](https://arxiv.org/abs/2603.09030) |
+| Causal-JEPA           | 因果/对象级 latent WM              | 对象级 masking 和关系预测，研究干预与规划所需的结构化表征 | [Paper](https://arxiv.org/abs/2602.11389) · [Code](https://github.com/galilai-group/cjepa) |
+| WorldEcho/WorldSync   | 动作跟随与 WM 安全评测             | 测量 off-expert action 是否真的改变未来，并接入风险 head/shield | [Paper](https://arxiv.org/abs/2608.24885) |
+| ReWorld               | 长时程交互式视频 WM                | 混合 attention + 位姿索引记忆库，学习长时程回访和实时交互 | [Paper](https://arxiv.org/abs/2608.23565) |
+| PETS                  | 概率 dynamics + 采样式 MBRL         | ensemble dynamics、不确定性传播和 trajectory sampling | [Paper](https://arxiv.org/abs/1805.12114) |
+| DayDreamer            | 真实机器人在线 WM/MBRL              | 在四足、机械臂和移动机器人上直接收集数据并做 Dreamer imagined rollout | [Project](https://danijar.com/project/daydreamer/) · [Paper](https://arxiv.org/abs/2206.14176) |
+| SlotFormer            | 对象中心 slot dynamics              | 在无对象标签的 slot 表征上预测对象关系和未来状态 | [Project](https://slotformer.github.io/) · [Paper](https://arxiv.org/abs/2210.05861) |
+| FOCUS                 | 对象中心探索 WM                    | 用对象级预测误差构造探索奖励，主动收集机器人-物体交互 | [Paper](https://arxiv.org/abs/2307.02427) |
+| IRASim                | 细粒度动作条件视频 WM               | 逐帧 action conditioning，强调机械臂-物体接触和策略评测 | [Paper](https://arxiv.org/abs/2406.14540) |
+| FlowDreamer           | RGB-D + scene-flow WM               | 显式预测 3D 运动流，再生成未来 RGB-D 帧 | [Paper](https://arxiv.org/abs/2505.10075) |
+| WorldEval             | WM 策略评测环境                    | 用 latent action 生成策略 rollout，评估真实机器人策略和 checkpoint | [Project](https://worldeval.github.io/) · [Paper](https://arxiv.org/abs/2505.19017) |
+| WorldGym              | WM policy evaluation               | 用动作条件视频模型做 Monte Carlo rollout，比较模型内外策略排名 | [Paper](https://arxiv.org/abs/2506.00613) |
+| ViTacWorld            | 视觉-触觉 WM                       | 预测动作条件下的视觉和触觉未来，服务接触任务的数据扩增和评测 | [Project](https://vitacworld.github.io/) · [Paper](https://arxiv.org/abs/2607.22530) |
 
 ## 6. 仿真、环境与基准
 
@@ -122,7 +147,7 @@ World Model 在这里是广义的环境表征、未来预测和场景生成路�
 | 第一次跑 VLA 闭环评测 | OpenVLA/OpenVLA-OFT + LIBERO                    | 有公开 checkpoint、任务定义与成功判定                          |
 | 单机 GPU 做操作 RL    | ManiSkill + CleanRL/SB3                           | GPU 并行环境与算法基线组合直接                                 |
 | 学 MBRL               | TD-MPC2 + DMControl/ManiSkill                     | 动力学模型、imagined rollout、价值和 MPC 路径清晰              |
-| 学 WM 表征/视频/3D    | V-JEPA 2 + Cosmos Predict2 + VGGT                 | 分开看 latent prediction、视频生成和几何表征，再接动作条件验证 |
+| 学 WM 表征/视频/3D    | V-JEPA 2 + LPWM + Cosmos Predict2 + GWM + VGGT    | 对比全局 latent、对象中心 latent、视频生成和 3D Gaussian，再接动作条件验证 |
 | 学开源 VLA            | OpenVLA/OpenVLA-OFT/OpenPI + LIBERO              | 代码可读，并有常见评测入口                                     |
 | 做 VLA 的 RL 后训练   | StarVLA + RLinf + LIBERO/ManiSkill                | 已有直接集成示例                                               |
 | 研究 WAM 推理效率     | FastWAM + LIBERO/RoboTwin                         | 对应论文的训练/测试设定                                        |

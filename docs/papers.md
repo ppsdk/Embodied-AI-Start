@@ -40,7 +40,7 @@
 | 论文 | 抓住一个关键点 | 入口 |
 | --- | --- | --- |
 | OpenVLA: An Open-Source Vision-Language-Action Model | 开源 VLA 训练、微调与评测范式 | [arXiv](https://arxiv.org/abs/2406.09246) · [Code](https://github.com/openvla/openvla) |
-| OpenVLA-OFT: An Open-Source Fine-Tuning Recipe for OpenVLA | OpenVLA 的高效微调与推理优化 | [arXiv](https://arxiv.org/abs/2501.19645) · [Code](https://github.com/moojink/openvla-oft) |
+| OpenVLA-OFT: An Open-Source Fine-Tuning Recipe for OpenVLA | OpenVLA 的高效微调与推理优化 | [Code](https://github.com/moojink/openvla-oft) |
 | π0.5: A Vision-Language-Action Model with Open-World Generalization | 异构机器人数据协同、语义子任务与开放世界泛化 | [arXiv](https://arxiv.org/abs/2504.16054) · [Code](https://github.com/Physical-Intelligence/openpi) |
 | Open X-Embodiment: Robotic Learning Datasets and RT-X Models | 跨本体数据混合与通用策略 | [arXiv](https://arxiv.org/abs/2310.08864) · [Project](https://robotics-transformer-x.github.io/) |
 | Octo: An Open-Source Generalist Robot Policy | 开源通用策略、数据混合与轻量适配 | [arXiv](https://arxiv.org/abs/2405.12213) · [Code](https://github.com/octo-models/octo) |
@@ -62,16 +62,53 @@
 | FlashVLA: Streaming Action Decoding for Fast and Asynchronous VLA Inference（2026，预印本） | 把不同噪声阶段的动作 chunk 放进流式缓冲区，边执行边解码，目标是降低 flow-matching VLA 的等待时间 | [arXiv](https://arxiv.org/abs/2608.27384) |
 | PHR-VLA: Planning Horizon Reasoning for Vision-Language-Action Models（2026，预印本） | 训练时用未来局部动力学表征监督 VLA，让模型在接触和细粒度操作前多看一步 | [arXiv](https://arxiv.org/abs/2608.27609) |
 
-## S1｜World Model：JEPA、视频与 3D
+## S1｜World Model：像素、latent 与 3D/4D
 
 | 论文 | 抓住一个关键点 | 入口 |
 | --- | --- | --- |
 | V-JEPA 2: Self-Supervised Video Models Enable Understanding, Prediction and Planning | 预测 latent representation 而不是逐像素重建，并连接物理理解与规划 | [arXiv](https://arxiv.org/abs/2506.09985) · [Code](https://github.com/facebookresearch/vjepa2) |
 | Genie: Generative Interactive Environments | 从视频学习可交互的潜在环境与动作条件未来 | [arXiv](https://arxiv.org/abs/2402.15391) · [Project](https://sites.google.com/view/genie-2024/home) |
+| Latent Particle World Models: Self-supervised Object-centric Stochastic Dynamics Modeling（2026，预印本） | 从视频自监督发现对象粒子，以粒子级 latent action 建模随机动态，并支持语言/目标图像条件 | [arXiv](https://arxiv.org/abs/2603.04553) · [Project](https://taldatech.github.io/lpwm-web/) · [Code](https://github.com/taldatech/lpwm) |
+| GWM: Towards Scalable Gaussian World Models for Robotic Manipulation（2025） | 用 latent DiT + 3D VAE 预测动作作用下 Gaussian primitives 的传播，连接 3D 视频预测、模仿学习和 MBRL | [arXiv](https://arxiv.org/abs/2508.17600) · [Project](https://gaussian-world-model.github.io/) · [Code](https://github.com/Gaussian-World-Model/gaussianwm) |
 | VGGT: Visual Geometry Grounded Transformer | 多视图几何、相机和 3D 场景表征，可作为 3D WM 的结构化前端 | [arXiv](https://arxiv.org/abs/2503.11651) · [Code](https://github.com/facebookresearch/vggt) |
+| OccWorld: Learning a 3D Occupancy World Model for Autonomous Driving（2023） | 用离散 occupancy token 和时空 Transformer 预测未来场景与 ego trajectory | [arXiv](https://arxiv.org/abs/2311.16038) · [Code](https://github.com/wzzheng/OccWorld) |
+| DOME: Taming Diffusion Model into High-Fidelity Controllable Occupancy World Model（2024） | 用时空 diffusion 生成可控的未来 occupancy，强调长时程和轨迹条件 | [arXiv](https://arxiv.org/abs/2410.10429) · [Project](https://gusongen.github.io/DOME) |
+| PreWorld: Semi-Supervised Vision-Centric 3D Occupancy World Model（2025） | 用 2D 监督辅助 3D occupancy、4D forecasting 和 motion planning | [arXiv](https://arxiv.org/abs/2502.07309) |
+| Delta-Triplane Transformers as Occupancy World Models（2025） | 预测紧凑 triplane 的增量，降低 4D occupancy 的生成成本 | [arXiv](https://arxiv.org/abs/2503.07338) |
+| RoboOccWorld: Occupancy World Model for Robots（2025） | 面向室内机器人场景的 occupancy evolution 与相机位姿条件预测 | [arXiv](https://arxiv.org/abs/2505.05512) |
+| FR3D: Future Dynamic 3D Reconstruction（2026，预印本） | 把相机自运动与环境变化解耦，预测持久 3D latent 的未来动态重建 | [arXiv](https://arxiv.org/abs/2606.18250) · [Project](https://fr3d-wm.github.io) |
+| PhysMani: Physics-principled 3D World Model for Dynamic Object Manipulation（2026，预印本） | 学习无散 Gaussian velocity field，并把预测的 3D 动态接入操作策略 | [arXiv](https://arxiv.org/abs/2607.01938) · [Code](https://github.com/vLAR-group/PhysMani) |
+| 3D-Belief: Embodied Belief Inference via Generative 3D World Modeling（2026，预印本） | 在 3D 中维护多假设 belief，更新未观测区域并评测导航/操作 | [arXiv](https://arxiv.org/abs/2605.11367) |
+| IRIS: Transformers are Sample-Efficient World Models（2022） | 离散 VAE + 自回归 Transformer，在 Atari100k 中用少量交互学习可 rollout 的环境模型 | [arXiv](https://arxiv.org/abs/2209.00588) · [Code](https://github.com/eloialonso/iris) |
+| DIAMOND: Diffusion for World Modeling（2024） | 用像素 diffusion 建模环境未来，研究视觉细节对模型内 RL 的影响 | [arXiv](https://arxiv.org/abs/2405.12399) · [Code](https://github.com/eloialonso/diamond) · [Project](https://diamond-wm.github.io) |
+| Dynalang: Learning to Model the World with Language（2023） | 让描述环境规律的语言参与未来视觉/文本表征预测，并用 imagined rollout 学策略 | [arXiv](https://arxiv.org/abs/2308.01399) · [Code](https://github.com/jlin816/dynalang) |
+| Learning to Simulate Complex Physics with Graph Networks（GNS，2020） | 用粒子图和消息传递学习流体、刚体和可变形物体动力学 | [arXiv](https://arxiv.org/abs/2002.09405) · [Code](https://github.com/google-deepmind/deepmind-research/tree/master/learning_to_simulate) |
+| GAIA-1: A Generative World Model for Autonomous Driving（2023） | 用视频、文本和动作 token 生成可控驾驶场景 | [arXiv](https://arxiv.org/abs/2309.17080) |
+| DriveDreamer: Towards Real-world-driven World Models for Autonomous Driving（2023） | 先学习交通结构约束，再用 diffusion 预测真实驾驶未来 | [arXiv](https://arxiv.org/abs/2309.09777) · [Code](https://github.com/JeffWang987/DriveDreamer) |
+| Dream to Manipulate: Compositional World Models Empowering Robot Imitation Learning with Imagination（DreMa，2024） | 用 Gaussian Splatting + 物理模拟器构造可组合数字孪生，生成反事实机器人数据 | [arXiv](https://arxiv.org/abs/2412.14957) · [Project](https://dreamtomanipulate.github.io/) |
+| Robotic World Model: A Neural Network Simulator for Robust Policy Optimization in Robotics（2025） | 用双自回归机制学习部分可观测随机动力学，并在模型中做策略优化 | [arXiv](https://arxiv.org/abs/2501.10100) |
+| DreamDojo: A Generalist Robot World Model from Large-Scale Human Videos（2026，预印本） | 从大规模人类视频学习连续 latent action，再用少量机器人数据校准动作可控性 | [arXiv](https://arxiv.org/abs/2602.06949) · [Project](https://dreamdojo-world.github.io/) |
+| PlayWorld: Learning Robot World Models from Autonomous Play（2026，预印本） | 用机器人自主探索收集长尾接触和失败数据，训练更可靠的操作视频 WM | [arXiv](https://arxiv.org/abs/2603.09030) · [Project](https://robot-playworld.github.io/) |
+| World-VLA-Loop: Closed-Loop Learning of Video World Model and VLA Policy（2026，预印本） | 联合预测未来帧和 reward，并让更新后的策略轨迹回流继续校准 WM | [arXiv](https://arxiv.org/abs/2602.06508) |
+| JEDI: Joint Embedding Diffusion World Model for Online MBRL（2026，预印本） | 在联合 embedding 中端到端学习 diffusion dynamics，兼顾 JEPA 表征和多模态 rollout | [arXiv](https://arxiv.org/abs/2605.13013) |
+| Causal-JEPA: Learning World Models through Object-Level Latent Masking（2026，预印本） | 在对象 latent 上做遮挡预测，逼迫模型利用交互关系而非背景捷径 | [arXiv](https://arxiv.org/abs/2602.11389) · [Code](https://github.com/galilai-group/cjepa) |
+| WorldEcho / WorldSync: Do Robotic World Models Really Follow Actions?（2026，预印本） | 用 off-expert action、视觉完整性和 $SE(3)$ 轨迹对齐检查动作跟随，并改进动作干预一致性 | [arXiv](https://arxiv.org/abs/2608.24885) |
+| ReWorld: An Interactive World Model with Long-Horizon Memory（2026，预印本） | 用混合 attention 和位姿索引记忆库兼顾短期交互与长时程回访 | [arXiv](https://arxiv.org/abs/2608.23565) |
+| Deep Reinforcement Learning in a Handful of Trials using Probabilistic Dynamics Models（PETS，2018） | 用概率 dynamics ensemble 和 trajectory sampling 将不确定性纳入模型预测控制 | [arXiv](https://arxiv.org/abs/1805.12114) |
+| DayDreamer: World Models for Physical Robot Learning（2022） | 把 Dreamer 直接放到真实四足、机械臂和移动机器人上在线学习，说明 WM 不一定只在仿真器里训练 | [arXiv](https://arxiv.org/abs/2206.14176) · [Project](https://danijar.com/project/daydreamer/) |
+| SlotFormer: Unsupervised Visual Dynamics Simulation with Object-Centric Models（2022） | 在无对象标签的 slot 表征上建模对象关系和未来状态，可用于 VQA、目标条件规划和模型内决策 | [arXiv](https://arxiv.org/abs/2210.05861) · [Project](https://slotformer.github.io/) |
+| FOCUS: Object-Centric World Models for Robotics Manipulation（2023） | 用对象中心 WM 产生探索奖励，主动寻找机器人-物体交互，而不是只拟合专家轨迹 | [arXiv](https://arxiv.org/abs/2307.02427) |
+| IRASim: A Fine-Grained World Model for Robot Manipulation（2024） | 在视频扩散 Transformer 的每个 block 注入逐帧动作条件，专门改善机械臂与物体接触的时序对齐 | [arXiv](https://arxiv.org/abs/2406.14540) |
+| FlowDreamer: A RGB-D World Model with Flow-based Motion Representations for Robot Manipulation（2025） | 先预测显式 3D scene flow，再生成未来 RGB-D；把运动几何从渲染过程里单独拿出来建模 | [arXiv](https://arxiv.org/abs/2505.10075) |
+| WorldEval: World Model as Real-World Robot Policies Evaluator（2025） | 用 latent action 驱动视频 WM，在线比较真实机器人策略和 checkpoint；重点是策略评测，不是替代真实执行 | [arXiv](https://arxiv.org/abs/2505.19017) · [Project](https://worldeval.github.io/) |
+| WorldGym: World Model as An Environment for Policy Evaluation（2025） | 用动作条件视频 WM 做 Monte Carlo policy rollout，并检验模型内排名与真实成功率的相关性 | [arXiv](https://arxiv.org/abs/2506.00613) |
+| H-WM: Robotic Task and Motion Planning Guided by Hierarchical World Model（2026，预印本） | 将高层逻辑状态预测和低层视觉状态预测分开，再用层级中间目标减少长时程误差累积 | [arXiv](https://arxiv.org/abs/2602.11291) |
+| ViTacWorld: Scaling Visuo-Tactile World Models for Contact-Rich Robot Manipulation（2026，预印本） | 同时预测视觉和触觉未来，服务接触丰富任务的数据扩增与策略评测；提醒读者相机看不到的接触信息也要建模 | [arXiv](https://arxiv.org/abs/2607.22530) · [Project](https://vitacworld.github.io/) |
+| Robot-Factored World Models via Robot Rendering（2026，预印本） | 将 action 先通过控制器和 URDF 渲染成机器人几何，再让 WM 学习物体响应，减少动作执行过程和未来状态泄漏 | [arXiv](https://arxiv.org/abs/2607.22535) |
+| Bird's Eye View Based Pretrained World model for Visual Navigation（2023） | 在 BEV 表征上预训练导航世界模型，说明移动机器人 WM 可以预测地图/视角演化，而不只生成第一视角视频 | [arXiv](https://arxiv.org/abs/2310.18847) |
 | A Comprehensive Survey on World Models for Embodied AI | 从表征、时间建模、空间建模和决策用途区分 WM 路线 | [arXiv](https://arxiv.org/abs/2510.16732) |
 
-这里的 WM 是广义环境表征/预测/生成范式；JEPA、视频和 3D/4D 路线不要求自带 planner 或 actor-critic。只有加入动作条件与决策收益证据，才应进一步主张其控制价值。
+这里的 WM 是广义环境表征/预测/生成范式；JEPA、视频、物理模拟和 3D/4D 路线不要求自带 planner 或 actor-critic。Occupancy、驾驶、游戏和动态重建论文常来自不同领域，阅读时要核对动作接口、坐标系和任务类型。只有加入动作条件与决策收益证据，才应进一步主张其控制价值。
 
 ## S1｜WAM：世界与动作联合建模
 

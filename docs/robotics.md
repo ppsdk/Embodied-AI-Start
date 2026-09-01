@@ -876,7 +876,7 @@ $$
 以及旋转差：
 
 $$
-e^R_{ij}=\cos^{-1}\left(\frac{\operatorname{tr}(R_{ij})-1}{2}\right),
+e^R_{ij}=\cos^{-1}\left(\frac{\mathrm{tr}(R_{ij})-1}{2}\right),
 \qquad
 R_{ij}=(\widehat R^B_{T,j})^{-1}\widehat R^B_{T,i}.
 $$

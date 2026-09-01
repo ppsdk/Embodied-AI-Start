@@ -57,7 +57,7 @@ $$
 
 - 随机策略：$\pi(a\mid s)$ 表示在状态 $s$ 下选择动作 $a$ 的概率或密度。
 - 确定性策略：$a=\mu(s)$，同一状态在无外部噪声时映射到同一动作。
-- 隐式策略：没有独立 Actor，而由 $\operatorname*{arg\,max}_a Q(s,a)$ 定义动作，例如 DQN。
+- 隐式策略：没有独立 Actor，而由 $\mathrm{arg\,max}_a Q(s,a)$ 定义动作，例如 DQN。
 
 ## 2. V、Q、A：价值函数的统一语言
 
@@ -236,7 +236,7 @@ $$
 
 ### 5.1 DQN：离散动作的 value-based RL
 
-DQN 的训练数据来自智能体与环境的交互，而不是预先存在的 $Q$ 值标签。令 $\mathcal A$ 表示有限离散动作集合，$|\mathcal A|$ 表示动作数，$\beta_t(a\mid s)$ 表示第 $t$ 步实际收集数据的**行为策略**。先固定一个确定性的并列决策规则 $a_{\mathrm g}(s)$：对 $\operatorname*{arg\,max}_{a\in\mathcal A}Q_{\theta_t}(s,a)$ 出现并列时，按预先约定的顺序选一个动作。常用的 $\epsilon_{\mathrm g}$-greedy 行为策略为
+DQN 的训练数据来自智能体与环境的交互，而不是预先存在的 $Q$ 值标签。令 $\mathcal A$ 表示有限离散动作集合，$|\mathcal A|$ 表示动作数，$\beta_t(a\mid s)$ 表示第 $t$ 步实际收集数据的**行为策略**。先固定一个确定性的并列决策规则 $a_{\mathrm g}(s)$：对 $\mathrm{arg\,max}_{a\in\mathcal A}Q_{\theta_t}(s,a)$ 出现并列时，按预先约定的顺序选一个动作。常用的 $\epsilon_{\mathrm g}$-greedy 行为策略为
 
 $$
 \beta_t(a\mid s)=
@@ -250,7 +250,7 @@ $$
 DQN 是 **off-policy**：产生数据的是带随机探索的行为策略 $\beta_t$，而学习目标对应的目标策略是贪心策略
 
 $$
-\pi_Q(s)=\operatorname*{arg\,max}_{a\in\mathcal A}Q(s,a).
+\pi_Q(s)=\mathrm{arg\,max}_{a\in\mathcal A}Q(s,a).
 $$
 
 Bellman target 直接评价下一状态下的最大动作价值，而不要求下一动作继续服从产生该条数据的 $\beta_t$。此外，replay 中的样本可能由更早时刻 $k<t$ 的网络参数 $\theta_k$ 所对应的行为策略产生，当前网络仍可反复使用它们。这正是 off-policy 的核心，而不是“数据不来自环境”。因此，标准 DQN 通常是**在线交互收集数据、离策略复用数据**；如果只给一个固定数据集，也可以计算同样的 TD loss，但普通 DQN 容易对数据覆盖之外的动作产生过高估计，不能因此直接视为稳健的 offline RL 算法。
@@ -262,12 +262,12 @@ y_t=r_t+\gamma m_t\max_{a'}Q_{\bar\theta}(s_{t+1},a'),\qquad
 L_Q=\mathbb{E}_{z_t\sim\mathcal R}[(Q_\theta(s_t,a_t)-y_t)^2].
 $$
 
-它没有独立 Actor；评估策略通常是 $a^*=\operatorname*{arg\,max}_a Q_\theta(s,a)$。`max` 容易挑中被噪声高估的动作，Double DQN 因而用在线网络选动作、目标网络评价动作。
+它没有独立 Actor；评估策略通常是 $a^*=\mathrm{arg\,max}_a Q_\theta(s,a)$。`max` 容易挑中被噪声高估的动作，Double DQN 因而用在线网络选动作、目标网络评价动作。
 
 #### 算法流程
 
 1. **初始化**：创建在线 $Q_\theta$、目标 $Q_{\bar\theta}$ 和 replay buffer $\mathcal R$；令 $\bar\theta\leftarrow\theta$。
-2. **由行为策略采样动作**：输入当前状态 $s_t$，从 $a_t\sim\beta_t(\cdot\mid s_t)$ 采样；也就是以概率 $\epsilon_{\mathrm g}$ 从 $\mathcal A$ 均匀随机选动作，否则选择 $\operatorname*{arg\,max}_{a\in\mathcal A}Q_{\theta_t}(s_t,a)$。这里的 $\beta_t$ 负责产生数据，不是最终要学习的贪心策略 $\pi_Q$。
+2. **由行为策略采样动作**：输入当前状态 $s_t$，从 $a_t\sim\beta_t(\cdot\mid s_t)$ 采样；也就是以概率 $\epsilon_{\mathrm g}$ 从 $\mathcal A$ 均匀随机选动作，否则选择 $\mathrm{arg\,max}_{a\in\mathcal A}Q_{\theta_t}(s_t,a)$。这里的 $\beta_t$ 负责产生数据，不是最终要学习的贪心策略 $\pi_Q$。
 3. **环境交互并记录字段**：执行离散动作索引 $a_t$；环境返回奖励 $r_t$、下一状态 $s_{t+1}$、bootstrap 终止标记 $d_t$ 和轨迹边界标记 $b_t$，将 $z_t=(s_t,a_t,r_t,s_{t+1},d_t,b_t)$ 写入 $\mathcal R$。可另存 episode 标识 $e_t$ 和任务标识 $u_t$，但 DQN 的 TD 更新无需保存行为动作概率 $\beta_t(a_t\mid s_t)$。
 4. **从历史数据采样并构造 target**：从 $\mathcal R$ 随机取 $B$ 个转移，它们可以来自不同时间、不同探索率和不同旧网络参数；堆叠为 $\mathbf S:[B,*S]$、离散索引 $\mathbf A:[B]$、奖励 $\mathbf R:[B,1]$、下一状态 $\mathbf S':[B,*S]$、终止标记 $\mathbf d:[B,1]$ 和边界标记 $\mathbf b:[B,1]$。用 $\mathbf A$ gather 出 $Q_\theta(\mathbf S,\mathbf A)$，并以 $\mathbf m=1-\mathbf d$ 构造 target；普通 DQN 用目标网络直接取 $\max Q$，Double DQN 用在线网络选下一动作、目标网络评价该动作。这个贪心 backup 与采样时的 $\beta_t$ 不同，因此属于 off-policy 更新。
 5. **更新在线网络**：最小化 TD error，只对 $Q_\theta$ 反向传播，target 必须停止梯度。
@@ -276,7 +276,7 @@ $$
 
 ### 5.2 DDPG：连续动作的确定性 Actor-Critic
 
-DDPG 用 Actor $\mu_\phi(s)$ 近似连续动作的 $\operatorname*{arg\,max}$，并用 Critic 评价状态动作对：
+DDPG 用 Actor $\mu_\phi(s)$ 近似连续动作的 $\mathrm{arg\,max}$，并用 Critic 评价状态动作对：
 
 $$
 y_t=r_t+\gamma m_tQ_{\bar\theta}(s_{t+1},\mu_{\bar\phi}(s_{t+1})),
@@ -308,8 +308,8 @@ TD3 在 DDPG 上加入三项改进：
 3. 对目标动作加入截断噪声，平滑 Critic 对窄峰动作的估计。
 
 $$
-\tilde a_{t+1}=\operatorname{clip}\!\left(
-\mu_{\bar\phi}(s_{t+1})+\operatorname{clip}(\epsilon^{\mathrm{targ}},-c,c),
+\tilde a_{t+1}=\mathrm{clip}\!\left(
+\mu_{\bar\phi}(s_{t+1})+\mathrm{clip}(\epsilon^{\mathrm{targ}},-c,c),
 a_{\min},a_{\max}\right),
 $$
 
@@ -422,7 +422,7 @@ clipped objective 为
 $$
 J^{CLIP}(\theta)=\mathbb{E}\left[
 \min\left(\rho_t\hat A_t,
-\operatorname{clip}(\rho_t,1-\epsilon_{\mathrm{clip}},1+\epsilon_{\mathrm{clip}})\hat A_t\right)
+\mathrm{clip}(\rho_t,1-\epsilon_{\mathrm{clip}},1+\epsilon_{\mathrm{clip}})\hat A_t\right)
 \right].
 $$
 
@@ -493,8 +493,8 @@ Group Relative Policy Optimization（GRPO）是 PPO 的一种变体，最初用�
 
 $$
 \hat A_{j,i,t}=\hat A_{j,i}=
-\frac{R_{j,i}-\operatorname{mean}(\mathbf R_j)}
-{\operatorname{std}(\mathbf R_j)+\varepsilon_{\mathrm{std}}}.
+\frac{R_{j,i}-\mathrm{mean}(\mathbf R_j)}
+{\mathrm{std}(\mathbf R_j)+\varepsilon_{\mathrm{std}}}.
 $$
 
 其中 $\varepsilon_{\mathrm{std}}>0$ 是数值稳定项；组内标准差接近零时，该组几乎不提供相对排序信号。仅有 outcome reward 时，同一输出中的 token 共享这个 Advantage。令 token 级新旧策略概率比为
@@ -521,7 +521,7 @@ J_{GRPO}(\theta)=\mathbb E_j\left[
 \frac{1}{G}\sum_{i=1}^{G}\frac{1}{L_{j,i}}\sum_{t=1}^{L_{j,i}}
 \left(
 \min\left(\rho_{j,i,t}\hat A_{j,i,t},
-\operatorname{clip}(\rho_{j,i,t},1-\epsilon_{\mathrm{clip}},1+\epsilon_{\mathrm{clip}})\hat A_{j,i,t}\right)
+\mathrm{clip}(\rho_{j,i,t},1-\epsilon_{\mathrm{clip}},1+\epsilon_{\mathrm{clip}})\hat A_{j,i,t}\right)
 -\beta D_{j,i,t}^{\mathrm{KL}}
 \right)
 \right].

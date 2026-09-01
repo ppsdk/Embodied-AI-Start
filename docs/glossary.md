@@ -54,8 +54,36 @@
 | WM | World Model | 广义的环境表征、未来预测和场景生成范式，可覆盖 JEPA latent、视频、状态和 3D/4D 表示；不要求自带 planner。 |
 | JEPA | Joint Embedding Predictive Architecture | 在表征空间预测目标时空块，通常避免逐像素重建，强调可预测和可迁移的 latent dynamics。 |
 | Video World Model | Video World Model | 根据历史、动作或条件预测/生成未来视频或视频潜变量的世界模型。 |
+| Pixel-space WM | Pixel-space World Model | 在 RGB/RGB-D 帧或视频 token 上预测未来观测；像素/感知质量不等于几何或控制质量。 |
+| Latent WM | Latent World Model | 先把观测编码为 $z_t$，再在 latent 空间预测 $z_{t+1}$；可接 reward、value、MPC 或策略，但不自动构成 MBRL。 |
+| LPWM | Latent Particle World Model | 对象中心的 latent 世界模型；从视频自监督发现粒子、背景和对象属性，并用粒子级 latent action 建模随机动态。 |
 | 3D/4D World Model | 3D/4D World Model | 建模几何、对象、视角与时间演化的世界表征，可使用点云、3D Gaussian 或隐式场。 |
+| GWM | Gaussian World Model | 面向机器人操作的动作条件 3D Gaussian 世界模型；在 Gaussian primitives 的紧凑 latent 中预测未来，可用于 3D 视频预测、模仿学习表征或 neural simulator。 |
+| Occupancy World Model | Occupancy World Model | 在体素、稀疏体素或 triplane 上预测未来空间占据和语义；常见于自动驾驶和移动机器人，不天然等于机械臂控制模型。 |
+| 4D Occupancy | 4D Occupancy | 随时间变化的 3D occupancy 序列；通常同时建模场景演化与自车/相机位姿。 |
+| Dynamic Gaussian | Dynamic Gaussian Splatting | 让 3D Gaussian 的位置、形状、外观或透明度随时间变化的表示；只有加入未来预测或动作条件后才是 WM。 |
+| 3D Belief World Model | 3D Belief World Model | 用多个带权场景假设表示部分可观测世界，并根据新观测进行更新；重点是空间不确定性而不只是渲染逼真度。 |
+| Triplane | Triplane Representation | 用三个正交二维特征平面隐式表示三维场，常用于压缩 occupancy/场景 latent；预测 triplane delta 可降低 4D WM 成本。 |
 | Action-conditioned WM | Action-conditioned World Model | 将 action 作为条件并检验未来表征/视频/3D 状态是否对动作敏感。 |
+| IRIS | Transformers are Sample-Efficient World Models | 离散 VAE 与自回归 Transformer 组成的世界模型；预测离散观测 token，并在模型内进行 RL rollout。 |
+| DIAMOND | DIffusion As a Model Of eNvironment Dreams | 像素 diffusion 世界模型；通过反复去噪生成环境未来，可作为交互式神经模拟器。 |
+| Dynalang | Dynamic Language Agent | 将描述环境规律的语言与视觉历史一起用于未来表征预测和 imagined rollout。 |
+| GNS | Graph Network-based Simulator | 用粒子图和 message passing 学习物理动力学的模拟器；本身不包含视觉或机器人动作接口。 |
+| Latent Action | Latent Action | 从无动作标签的视频中推断的隐变量动作；需要额外校准，不能直接当成机器人关节或末端动作。 |
+| Digital Twin WM | Digital Twin World Model | 将显式场景、物理参数和模拟器组合成可反事实执行的环境副本。 |
+| Autonomous Play | Autonomous Play | 机器人通过自发探索收集交互、成功、失败和接触数据，用于训练或校准世界模型。 |
+| Causal World Model | Causal World Model | 在实体、属性和交互关系层面建模可干预的因果结构；目标是支持反事实预测和决策，而不只是生成相关的未来画面。 |
+| Action Following | Action Following | 检查世界模型是否按给定 action 产生对应未来变化；应包含 off-expert action、轨迹对齐和动作干预测试。 |
+| World Model Memory | World Model Memory | 让模型保留并检索长时程历史观测或场景地标的机制；要同时报告记忆容量、检索规则和回访准确率。 |
+| Probabilistic Dynamics | Probabilistic Dynamics | 输出未来状态分布或多个假设的动力学模型；不确定性可用于规划惩罚，但本身不是安全保证。 |
+| DayDreamer | DayDreamer | 将 Dreamer imagined rollout 用到真实机器人在线学习的世界模型系统；重点是少量真实交互，而不是离线视频生成。 |
+| SlotFormer | SlotFormer | 在对象中心 slot 表征上学习自回归视觉动力学；slot 是模型内部对象表示，不等于真实物体 ID。 |
+| Scene Flow | Scene Flow | 每个 3D 点或像素随时间的运动向量；在 FlowDreamer 中先预测运动，再生成未来 RGB-D。 |
+| World Model Policy Evaluation | World Model Policy Evaluation | 用动作条件 WM 生成策略 rollout 并比较策略排名；模型内成功率必须和真实执行相关性、偏差和安全性一起报告。 |
+| Visuo-Tactile WM | Visuo-Tactile World Model | 同时预测视觉和触觉未来的动作条件 WM，适合插入、抓取和接触丰富任务。 |
+| Hierarchical WM | Hierarchical World Model | 将逻辑/任务级状态预测与视觉/运动级预测分层，用中间子目标连接长短时间尺度。 |
+| Robot-Factored WM | Robot-Factored World Model | 将动作通过控制器、运动学和 URDF 渲染为机器人几何，再由 WM 学习环境响应，减少 embodiment-specific action realization。 |
+| BEV World Model | Bird's-Eye-View World Model | 在鸟瞰图、地图或占据 latent 中预测空间和视角演化，常用于导航；不天然适合机械臂接触建模。 |
 | WAM | World Action Model | 将世界未来预测与动作生成联合或紧密耦合的具身模型范式。 |
 | VLM | Vision-Language Model | 联合处理视觉和语言的多模态模型。 |
 | VLA | Vision-Language-Action Model | 由视觉、语言及可能的状态历史直接生成机器人动作的模型。 |
