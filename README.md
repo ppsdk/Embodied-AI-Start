@@ -125,6 +125,11 @@ ROS 2、OpenCV 和机器人依赖安装可参考[鱼香 ROS 社区论坛](https:
 
 ## 致谢
 
-感谢 [jiangranlv/embodied-ai-start](https://github.com/jiangranlv/embodied-ai-start)、[TianxingChen/Embodied-AI-Guide](https://github.com/TianxingChen/Embodied-AI-Guide)、[OpenMOSS/Awesome-WAM](https://github.com/OpenMOSS/Awesome-WAM)、[RoboDojo](https://robodojo-benchmark.com/) 和 [Embodied Meta-LLM Leaderboard](https://ppsdk.github.io/embodied-meta-leaderboard/) 提供的资源整理、方向分类和评测思路。
+感谢所有公开论文、代码、数据集、仿真器和教程的作者与维护者。本仓库的学习路径和资源索引参考了以下项目：
 
-本仓库链接的代码、论文、数据和许可证归原作者及维护者所有。本仓库只作学习导航和交叉引用，不代表与相关项目存在官方合作或背书关系。
+- **资源整理与方向索引**：[jiangranlv/embodied-ai-start](https://github.com/jiangranlv/embodied-ai-start)、[TianxingChen/Embodied-AI-Guide](https://github.com/TianxingChen/Embodied-AI-Guide) 和 [OpenMOSS/Awesome-WAM](https://github.com/OpenMOSS/Awesome-WAM)。它们帮助整理具身学习、VLA、WM 和 WAM 的阅读入口。
+- **模型与策略实现**：[OpenVLA](https://github.com/openvla/openvla)、[OpenPI](https://github.com/Physical-Intelligence/openpi)、[Diffusion Policy](https://github.com/real-stanford/diffusion_policy)、[LeRobot](https://github.com/huggingface/lerobot)、[V-JEPA 2](https://github.com/facebookresearch/vjepa2)、[TD-MPC2](https://github.com/nicklashansen/tdmpc2) 和 [DreamerV3](https://github.com/danijar/dreamerv3)。这些项目提供了 VLA、动作策略、latent world model 和 MBRL 的可运行参考。
+- **仿真、数据与评测**：[MuJoCo](https://github.com/google-deepmind/mujoco)、[Isaac Sim](https://developer.nvidia.com/isaac/sim)、[Gymnasium](https://github.com/Farama-Foundation/Gymnasium)、[ManiSkill](https://github.com/haosulab/ManiSkill)、[LIBERO](https://github.com/Lifelong-Robot-Learning/LIBERO)、[CALVIN](https://github.com/mees/calvin)、[RoboTwin](https://github.com/RoboTwin-Platform/RoboTwin)、[RoboDojo](https://robodojo-benchmark.com/) 和 [Embodied Meta-LLM Leaderboard](https://ppsdk.github.io/embodied-meta-leaderboard/)。它们提供环境、数据协议、任务定义和评测思路。
+- **机器人软件与实践**：[ROS 2](https://docs.ros.org/en/humble/)、[MoveIt 2](https://moveit.picknik.ai/humble/index.html)、[ros2_control](https://control.ros.org/humble/index.html)、[OpenCV](https://opencv.org/)、[鱼香 ROS 社区](https://fishros.org.cn/forum/) 和 [bimanual-vla](https://github.com/SUNNYsyy2005/bimanual-vla)。这些项目覆盖通信、坐标变换、规划、控制、视觉处理和真机部署。
+
+本仓库链接的代码、论文、数据和许可证归原作者及维护者所有。链接只用于学习导航和交叉引用，不代表与相关项目存在官方合作或背书关系。使用代码或数据时，请以原项目的许可证、引用要求和当前文档为准。
