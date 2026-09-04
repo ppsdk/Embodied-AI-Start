@@ -17,7 +17,7 @@
 | 主路线         | 适合你如果…                   | 起点                                        |
 | -------------- | ------------------------------ | ------------------------------------------- |
 | 🤖 Robotics    | 想先搞懂坐标、控制和真机       | [机器人学基础](docs/robotics.md)               |
-| 👁️ VLA        | 想研究视觉、语言和动作策略     | [VLA 专题](docs/vla.md)                        |
+| 👁️ VLA       | 想研究视觉、语言和动作策略     | [VLA 专题](docs/vla.md)                        |
 | 🌍 World Model | 想做未来预测、生成或 WAM       | [WM 专题](docs/world-model-directions.md)      |
 | 🔗 WAM         | 想研究未来世界与动作联合建模   | [WAM 专题](docs/wam.md)                        |
 | 🎮 RL / MBRL   | 想做强化学习、规划和策略后训练 | [强化学习基础](docs/reinforcement-learning.md) |
@@ -26,18 +26,18 @@
 
 ### 按具体任务查入口
 
-| 你想做什么               | 先看什么                                    | 后面接什么                                                     |
-| ------------------------ | ------------------------------------------- | -------------------------------------------------------------- |
-| 先看懂全貌               | [知识图谱](docs/knowledge-map.md)              | [学习路线](docs/roadmap.md)                                       |
-| 跑一个 RL 示例           | [强化学习基础](docs/reinforcement-learning.md) | [MuJoCo 教程](docs/mujoco-tutorial.md)                            |
-| 学机器人坐标、TF 和规划  | [机器人学基础](docs/robotics.md)               | RViz 2、MoveIt 2、ros2_control                                 |
-| 跑 GPU 并行仿真          | [Isaac Sim 教程](docs/isaac-sim-tutorial.md)   | Isaac Lab、ManiSkill                                           |
-| 从仿真走到真实机械臂     | [机器人学基础](docs/robotics.md)               | 手眼标定、ros2_control、rosbag2 和 Piper 实践                  |
-| 研究 VLA 或动作策略      | [VLA 专题](docs/vla.md)                        | [论文清单](docs/papers.md) 和 OpenVLA/OpenPI                      |
-| 研究 World Model         | [WM 专题](docs/world-model-directions.md)      | pixel、latent、对象中心、3D/4D 和闭环验证                      |
-| 研究 WAM                 | [WAM 专题](docs/wam.md)                        | [论文清单](docs/papers.md)                                       |
-| 做机器人策略后训练       | [RL / MBRL 专题](docs/mbrl.md)                 | PPO、GRPO、SAPO、RLinf                                         |
-| 适配 RoboDojo/XPolicyLab | [XPolicyLab 教程](docs/xpolicylab-tutorial.md) | debug 评测、策略服务和环境接入                                 |
+| 你想做什么               | 先看什么                                    | 后面接什么                                    |
+| ------------------------ | ------------------------------------------- | --------------------------------------------- |
+| 先看懂全貌               | [知识图谱](docs/knowledge-map.md)              | [学习路线](docs/roadmap.md)                      |
+| 跑一个 RL 示例           | [强化学习基础](docs/reinforcement-learning.md) | [MuJoCo 教程](docs/mujoco-tutorial.md)           |
+| 学机器人坐标、TF 和规划  | [机器人学基础](docs/robotics.md)               | RViz 2、MoveIt 2、ros2_control                |
+| 跑 GPU 并行仿真          | [Isaac Sim 教程](docs/isaac-sim-tutorial.md)   | Isaac Lab、ManiSkill                          |
+| 从仿真走到真实机械臂     | [机器人学基础](docs/robotics.md)               | 手眼标定、ros2_control、rosbag2 和 Piper 实践 |
+| 研究 VLA 或动作策略      | [VLA 专题](docs/vla.md)                        | [论文清单](docs/papers.md) 和 OpenVLA/OpenPI     |
+| 研究 World Model         | [WM 专题](docs/world-model-directions.md)      | pixel、latent、对象中心、3D/4D 和闭环验证     |
+| 研究 WAM                 | [WAM 专题](docs/wam.md)                        | [论文清单](docs/papers.md)                       |
+| 做机器人策略后训练       | [RL / MBRL 专题](docs/mbrl.md)                 | PPO、GRPO、SAPO、RLinf                        |
+| 适配 RoboDojo/XPolicyLab | [XPolicyLab 教程](docs/xpolicylab-tutorial.md) | debug 评测、策略服务和环境接入                |
 
 如果你还没有明确方向，按这个顺序读即可：
 
