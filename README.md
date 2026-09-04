@@ -144,6 +144,17 @@ ROS 2、OpenCV 和机器人依赖安装可参考[鱼香 ROS 社区论坛](https:
 └── LICENSE
 ```
 
+
+<p align="center">
+  <a href="https://star-history.com/#ppsdk/Embodied-AI-Start&Date">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=ppsdk/Embodied-AI-Start&type=Date&theme=dark">
+      <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=ppsdk/Embodied-AI-Start&type=Date">
+      <img alt="Embodied-AI-Start Star 趋势图" src="https://api.star-history.com/svg?repos=ppsdk/Embodied-AI-Start&type=Date">
+    </picture>
+  </a>
+</p>
+
 ## 致谢
 
 感谢所有公开论文、代码、数据集、仿真器和教程的作者与维护者。本仓库的学习路径和资源索引参考了以下项目：
