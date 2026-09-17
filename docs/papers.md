@@ -177,15 +177,22 @@ Robot Agent 位于 VLA/WAM 和任务执行之间。阅读时重点看 planner �
 
 ## S2｜数据、基准与评测
 
-采集协议、Human-to-Robot 验收、切分标注和训练 mixture 见 [具身数据专题](embodied-data.md)。
+采集协议、Human-to-Robot 对齐质量检查、切分标注和训练 mixture 见 [具身数据专题](embodied-data.md)。
 
 | 论文/项目 | 用途 | 入口 |
 | --- | --- | --- |
 | D4RL: Datasets for Deep Data-Driven Reinforcement Learning | Offline RL 经典数据与评测协议 | [arXiv](https://arxiv.org/abs/2004.07219) · [Code](https://github.com/Farama-Foundation/D4RL) |
 | Qwen-RobotManip Technical Report: Alignment Unlocks Scale for Robotic Manipulation Foundation Models | 表示、相机坐标系运动和行为对齐；包含 egocentric human-to-robot 合成与跨本体 action mask | [arXiv](https://arxiv.org/abs/2606.17846) · [Official Repo](https://github.com/QwenLM/Qwen-RobotManip) |
+| MimicPlay: Long-Horizon Imitation Learning by Watching Human Play | 用 human play 学习高层计划，再用少量遥操作示范学习低层控制 | [arXiv](https://arxiv.org/abs/2302.12422) · [Code](https://github.com/j96w/MimicPlay) |
 | Universal Manipulation Interface | 用手持夹具和视觉定位采集野外操作示范，再映射到机器人执行 | [arXiv](https://arxiv.org/abs/2402.10329) · [Code](https://github.com/real-stanford/universal_manipulation_interface) |
+| DexCap: Scalable and Portable Mocap Data Collection System for Dexterous Manipulation | 便携式手腕/手指动捕、三维环境观测、运动学 retarget 和人机纠偏 | [arXiv](https://arxiv.org/abs/2403.07788) · [Code](https://github.com/j96w/DexCap) |
 | EgoMimic: Scaling Imitation Learning via Egocentric Video | 将第一视角人类视频与机器人演示共同用于模仿学习 | [arXiv](https://arxiv.org/abs/2410.24221) · [Code](https://github.com/SimarKareer/EgoMimic) |
 | Open-TeleVision: Teleoperation with Immersive Active Visual Feedback | VR/XR 主动视觉反馈与人形机器人遥操作采集 | [arXiv](https://arxiv.org/abs/2407.01512) · [Code](https://github.com/OpenTeleVision/TeleVision) |
+| AnyTeleop: A General Vision-Based Dexterous Robot Arm-Hand Teleoperation System | 统一多种手臂、手、相机配置与仿真/真机环境的视觉遥操作 | [arXiv](https://arxiv.org/abs/2307.04577) · [Project](https://yzqin.github.io/anyteleop/) |
+| GELLO: A General, Low-Cost, and Intuitive Teleoperation Framework for Robot Manipulators | 用与目标机械臂运动学结构相近的低成本主控制器采集示范 | [arXiv](https://arxiv.org/abs/2309.13037) · [Code](https://github.com/wuphilipp/gello_software) |
+| RoboTurk: A Crowdsourcing Platform for Robotic Skill Learning through Imitation | 通过移动设备和远程操作者众包采集 6-DoF 机器人示范 | [arXiv](https://arxiv.org/abs/1811.02790) |
+| A Reduction of Imitation Learning and Structured Prediction to No-Regret Online Learning | DAgger 经典论文；在策略诱导的状态分布上迭代收集专家纠偏 | [arXiv](https://arxiv.org/abs/1011.0686) |
+| RH20T: A Comprehensive Robotic Dataset for Learning Diverse Skills in One-Shot | 同步视觉、力、音频和动作，并配套人类示范视频与语言描述 | [arXiv](https://arxiv.org/abs/2307.00595) · [Project](https://rh20t.github.io/) |
 | DROID: A Large-Scale In-The-Wild Robot Manipulation Dataset | 分布式、多场景真实机器人操作采集和统一数据组织 | [arXiv](https://arxiv.org/abs/2403.12945) · [Project](https://droid-dataset.github.io/droid/) |
 | LIBERO: Benchmarking Knowledge Transfer for Lifelong Robot Learning | 语言条件操作与知识迁移评测 | [arXiv](https://arxiv.org/abs/2306.03310) · [Project](https://libero-project.github.io/main.html) |
 | CALVIN: A Benchmark for Language-Conditioned Policy Learning for Long-Horizon Robot Manipulation Tasks | 语言条件长时程闭环与任务链 | [arXiv](https://arxiv.org/abs/2112.03227) · [Code](https://github.com/mees/calvin) |

@@ -35,7 +35,7 @@
 | 学机器人坐标、TF 和规划  | [机器人学基础](docs/robotics.md)               | RViz 2、MoveIt 2、ros2_control                |
 | 跑 GPU 并行仿真          | [Isaac Sim 教程](docs/isaac-sim-tutorial.md)   | Isaac Lab、ManiSkill                          |
 | 从仿真走到真实机械臂     | [机器人学基础](docs/robotics.md)               | 手眼标定、ros2_control、rosbag2 和 Piper 实践 |
-| 设计具身数据采集与配比   | [具身数据专题](docs/embodied-data.md) | Ego/UMI、VR、主从臂、切分标注与 mixture       |
+| 设计具身数据采集与配比   | [具身数据专题](docs/embodied-data.md) | 五类主路线、切分标注、质检、训练配比及扩展数据 |
 | 研究 VLA 或动作策略      | [VLA 专题](docs/vla.md)                        | [论文清单](docs/papers.md) 和 OpenVLA/OpenPI     |
 | 研究 World Model         | [WM 专题](docs/world-model-directions.md)      | pixel、latent、对象中心、3D/4D 和闭环验证     |
 | 研究 WAM                 | [WAM 专题](docs/wam.md)                        | [论文清单](docs/papers.md)                       |
@@ -101,7 +101,7 @@ flowchart LR
 
 ### 🌍 研究方向
 
-- [具身数据](docs/embodied-data.md)：采集前任务协议、Ego/UMI/遥操作、跨本体对齐、切分标注、数据治理与训练配比。
+- [具身数据](docs/embodied-data.md)：以 Ego + 人手、human-to-robot 运动学对齐、UMI + Ego、VR 和主从臂为五类主线，覆盖采集前/中/后标注、处理和训练配比。
 - [VLA 与动作策略](docs/vla.md)：视觉、语言和机器人状态到动作，关注动作格式、训练流程、泛化和推理延迟。
 - [RL 与 MBRL](docs/mbrl.md)：说明模型如何进入 rollout、规划和策略更新；算法细节见[强化学习基础](docs/reinforcement-learning.md)。
 - [WM 专题](docs/world-model-directions.md)：按 pixel、latent、对象中心、运动场、物理状态、3D/4D 和长期记忆整理世界模型，并说明数据字段、训练目标、动作条件和闭环评价。

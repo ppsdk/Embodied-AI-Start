@@ -153,10 +153,16 @@ World Model 在这里是广义的环境表征、未来预测和场景生成路�
 | 数据/工具 | 内容 | 链接 |
 | --- | --- | --- |
 | Qwen-RobotManip | egocentric human-to-robot 合成、相机坐标系末端动作和跨本体 action mask；官方 README 当前未提供模型权重 | [Official Repo](https://github.com/QwenLM/Qwen-RobotManip) · [Report](https://arxiv.org/abs/2606.17846) |
+| MimicPlay | 从 human play 学高层计划，用少量遥操作示范训练低层控制 | [GitHub](https://github.com/j96w/MimicPlay) · [Paper](https://arxiv.org/abs/2302.12422) |
 | Universal Manipulation Interface | UMI 式手持夹具、视觉定位、野外数据采集和机器人复现 | [GitHub](https://github.com/real-stanford/universal_manipulation_interface) · [Project](https://umi-gripper.github.io/) |
+| DexCap | 便携式手腕/手指动捕、三维场景记录、retarget 与人机纠偏 | [GitHub](https://github.com/j96w/DexCap) · [Paper](https://arxiv.org/abs/2403.07788) |
 | EgoMimic | egocentric human video 与机器人演示的联合模仿学习 | [GitHub](https://github.com/SimarKareer/EgoMimic) · [Paper](https://arxiv.org/abs/2410.24221) |
 | Open-TeleVision | VR/XR 沉浸式主动视觉反馈与遥操作采集 | [GitHub](https://github.com/OpenTeleVision/TeleVision) · [Project](https://robot-tv.github.io/) |
+| AnyTeleop | 面向多种手臂、手、相机和仿真/真机环境的视觉手部遥操 | [Project](https://yzqin.github.io/anyteleop/) · [Paper](https://arxiv.org/abs/2307.04577) |
+| GELLO | 与目标机械臂运动学结构相近的低成本主控制器 | [GitHub](https://github.com/wuphilipp/gello_software) · [Paper](https://arxiv.org/abs/2309.13037) |
 | ACT/ALOHA | 低成本主从臂双臂遥操作、同步相机/关节数据和 action chunking | [GitHub](https://github.com/tonyzhaozh/act) · [Paper](https://arxiv.org/abs/2304.13705) |
+| robomimic | 离线人类示范数据、行为克隆/offline RL 算法与可复现实验 | [GitHub](https://github.com/ARISE-Initiative/robomimic) · [Paper](https://arxiv.org/abs/2108.03298) |
+| RH20T | 视觉、力、音频、动作、人类视频与语言组成的多模态真机数据 | [Project](https://rh20t.github.io/) · [Paper](https://arxiv.org/abs/2307.00595) |
 | Open X-Embodiment | 多机构、多本体机器人轨迹与 RLDS 数据生态 | [Project](https://robotics-transformer-x.github.io/) |
 | DROID | 大规模、场景多样的真实机器人操作数据 | [Project](https://droid-dataset.github.io/droid/) · [Code](https://github.com/droid-dataset/droid) |
 | BridgeData V2 | 通用机器人操作轨迹 | [Project](https://rail-berkeley.github.io/bridgedata/) |
@@ -168,7 +174,7 @@ World Model 在这里是广义的环境表征、未来预测和场景生成路�
 | 目标                  | 基础组合                                          | 原因                                                           |
 | --------------------- | ------------------------------------------------- | -------------------------------------------------------------- |
 | 第一次跑 VLA 闭环评测 | OpenVLA/OpenVLA-OFT + LIBERO                    | 有公开 checkpoint、任务定义与成功判定                          |
-| 设计具身数据管线      | UMI/Open-TeleVision/ACT + RLDS/LeRobot          | 覆盖采集、同步、切分、标注、跨本体转换和 loader                 |
+| 设计具身数据管线      | Qwen-RobotManip/UMI/Open-TeleVision/GELLO/ACT + RLDS/LeRobot | 覆盖 Ego 与动作对齐、UMI、VR、主从臂、同步、标注和 loader |
 | 构建 Robot Agent      | RPent + 冻结 VLA + LIBERO-Pro/RoboCasa          | planner、类型化工具、记忆、失败恢复和闭环评测链路完整           |
 | 单机 GPU 做操作 RL    | ManiSkill + CleanRL/SB3                           | GPU 并行环境与算法基线组合直接                                 |
 | 学 MBRL               | TD-MPC2 + DMControl/ManiSkill                     | 动力学模型、imagined rollout、价值和 MPC 路径清晰              |

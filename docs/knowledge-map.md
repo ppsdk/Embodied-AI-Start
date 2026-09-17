@@ -104,7 +104,7 @@ VLA/WAM 决定局部动作或未来条件下的动作生成，Robot Agent 决定
 | ---------------------------------------------- | ------------------------------------------------------------------------- |
 | 坐标、TF、MoveIt 2、控制和真机                 | [机器人学基础](robotics.md)                                                  |
 | Transformer、Diffusion、Flow Matching 和动作头 | [模型基础](model-basics.md)                                                  |
-| Ego/UMI、遥操作、切分标注和训练配比            | [具身数据专题](embodied-data.md)                                                |
+| 五类主采集路线、episode/segment/step 标注和训练配比 | [具身数据专题](embodied-data.md)                                           |
 | 视觉语言到动作                                 | [VLA 专题](vla.md)                                                           |
 | 预测未来视频、latent 或 3D/4D 世界             | [WM 专题](world-model-directions.md)                                         |
 | 未来表征与动作联合建模                         | [WAM 专题](wam.md)                                                           |

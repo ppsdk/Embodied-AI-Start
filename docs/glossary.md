@@ -14,7 +14,15 @@
 | --- | --- | --- |
 | Embodied AI | Embodied Artificial Intelligence | 在环境中通过感知与动作闭环完成任务的智能系统。 |
 | Embodied Data | Embodied Interaction Data | 带任务语境的观测、机器人状态、动作、标定、结果和来源记录；视频本身不等于完整具身数据。 |
+| Human Observation / Play Data | Human Video or Play Data | 人类自由操作或完成任务的视频，可学习目标、进度和交互结构；若没有机器人动作，不能直接监督机器人控制。 |
+| Human Motion Data | Human Kinematic Data | 由动捕、数据手套、手腕/手指估计或 UMI 等接口记录的人体/工具运动，需要 retarget 后才能成为目标机器人动作。 |
+| Robot Demonstration | Robot Demonstration Data | 通过手把手、手柄、VR、视觉手部遥操、主从臂或远程众包产生的机器人观测和动作轨迹。 |
+| Intervention / Correction | Intervention or Corrective Data | 策略执行中由人接管或修正产生的数据，需记录触发原因、控制权切换、修正动作和恢复结果。 |
+| Synthetic / Transformed Data | Synthetic or Derived Embodied Data | 由仿真、渲染、retarget、重标注或增强生成的数据；应保留源样本、生成方法和置信度。 |
 | Data Contract | Embodied Data Contract | 在采集前固定任务定义、传感器、坐标系、动作语义、频率、时间戳、成功条件和数据 schema 的约定。 |
+| Annotation Schema | Annotation Schema | 规定任务、对象、技能阶段、结果、失败、接管和动作等标签的名称、取值、层级、来源与版本。 |
+| Label Provenance | Label Provenance | 记录标签来自传感器、规则、模型、操作者还是人工复核，并保存置信度、证据和生成版本。 |
+| Weak / Pseudo Label | Weak or Pseudo Label | 由模型、规则或 retarget 产生的非直接真值标签；训练时应按置信度降权、屏蔽或复核。 |
 | Episode / Segment / Step | Trajectory Data Hierarchy | episode 是一次完整尝试，segment 是技能或事件阶段，step 是一个时间对齐的观测—状态—动作单元。 |
 | Egocentric Video | First-person Video | 由操作者头戴或手持相机记录的第一视角视频；若没有机器人动作，需要 latent action、retarget 或其他对齐后才能监督控制。 |
 | Retargeting | Motion Retargeting | 将人手、手柄、主臂或其他本体的运动映射到目标机器人自由度、末端轨迹和夹爪语义。 |

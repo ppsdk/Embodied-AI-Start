@@ -85,17 +85,17 @@ flowchart TD
 <a id="embodied-data"></a>
 ## 第 3 章｜具身数据：采集、处理与训练配比
 
-本章先建立“任务协议 → 采集 → 对齐 → 处理 → 混合训练”的数据闭环。不要把小时数当成唯一规模指标；先统一 observation/action schema、坐标系、时间戳、成功谓词和 provenance，再组合 Ego + 人手、UMI + Ego、VR/XR、主从臂、自主 rollout 与仿真数据。
+本章先建立“类型划分 → 任务协议 → 采集 → 对齐 → 处理 → 混合训练”的数据闭环。五类主线是 Ego + 人手、Ego 人手到机械臂的运动学/动作对齐、UMI + Ego、VR/XR 遥操作和主从臂遥操作；自主交互、纠偏、众包、仿真和合成数据作为补充。
 
 | 学习步骤 | 本章要得到的结果 |
 | --- | --- |
-| 1. 采集前协议 | task spec、`episode → segment → step` schema、标定和安全约束 |
-| 2. 多路线采集 | 人类/UMI、VR、主从臂、真机自主与失败数据的互补分工 |
-| 3. 人机/本体对齐 | 表示、几何、运动、行为四层对齐及回放验收 |
-| 4. 采集后处理 | Raw/Processed/Curated 分层、切分、标注、质检和治理 |
+| 1. 采集前协议 | task spec、annotation schema、标签字典、标定和安全约束 |
+| 2. 五类主采集路线 | Ego + 人手、运动学/动作对齐、UMI + Ego、VR/XR 和主从臂 |
+| 3. 人机/本体对齐 | 检查时间、坐标、动作语义、运动学和任务效果，并按用途分级 |
+| 4. 采集与处理标注 | 采集中事件标记，episode/segment/step 切分，语言/对象/动作/结果标注与复核 |
 | 5. 训练配比 | 按 WM、VLA/WAM、目标本体和 Agent 目标设置 sample/chunk mixture |
 
-完整字段、触觉/力矩模态、Human-to-Robot 验收门禁、Agent 轨迹和四阶段配比见 **[具身数据专题](embodied-data.md)**。论文与代码入口集中在该页和[资源清单](codebases.md)。
+五类主路线的详细流程，以及补充类型、采集前/中/后标注、触觉/力矩模态、Human-to-Robot 对齐质量检查、Agent 轨迹和四阶段配比见 **[具身数据专题](embodied-data.md)**。论文与代码入口集中在该页和[资源清单](codebases.md)。
 
 ## 第 4 章｜Model-free RL：Online 与 Offline
 
