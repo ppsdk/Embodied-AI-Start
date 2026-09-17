@@ -1,4 +1,4 @@
-# 代码仓、数据与基准
+# 代码仓、具身数据、Robot Agent 与基准
 
 > 🛠️ 按研究路线查找可运行代码、数据集、仿真环境和基准实现。
 
@@ -6,7 +6,7 @@
 **前置知识**：Git、Python 环境和基础命令行<br>
 **下一步**：[学习路线](roadmap.md) · [MuJoCo 教程](mujoco-tutorial.md) · [Isaac Sim 教程](isaac-sim-tutorial.md)
 
-**本文路线**：核心仓库 → 模型/策略 → RL/MBRL → WM/WAM → 仿真与真机
+**本文路线**：核心仓库 → 模型/策略 → Robot Agent → RL/MBRL → WM/WAM → 仿真、数据与真机
 
 ## 1. 核心仓库
 
@@ -15,6 +15,7 @@
 | StarVLA      | 模块化 VLA 研究与工程平台                               | [GitHub](https://github.com/starVLA/starVLA) · [Docs/Project](https://starvla.github.io/) · [Paper](https://arxiv.org/abs/2604.05014)                  |
 | RLinf        | 面向具身/智能体基础模型的可扩展 RL 后训练基础设施       | [GitHub](https://github.com/RLinf/RLinf) · [Docs](https://rlinf.readthedocs.io/) · [Paper](https://arxiv.org/abs/2509.15965)                           |
 | FastWAM      | Fast-WAM 官方训练与评测代码                             | [GitHub](https://github.com/yuantianyuan01/FastWAM) · [Project](https://yuantianyuan01.github.io/FastWAM/) · [Paper](https://arxiv.org/abs/2603.16666) |
+| RPent        | 组合 planner、VLA/WAM/解析原语、记忆、模拟器和真机的 Robot Agent 基础设施 | [GitHub](https://github.com/RLinf/RPent) · [Docs](https://rpent.readthedocs.io/) · [Harness VLA](https://arxiv.org/abs/2607.08448) |
 | OpenPI       | Physical Intelligence 的 π0 / π0.5 开源实现与模型入口 | [GitHub](https://github.com/Physical-Intelligence/openpi) · [π0.5 Paper](https://arxiv.org/abs/2504.16054)                                          |
 | bimanual-vla | 双臂 VLA 真机部署入口与运行参考                         | [GitHub](https://github.com/SUNNYsyy2005/bimanual-vla)                                                                                             |
 | XPolicyLab   | 策略适配、服务化部署与跨 benchmark 评测连接             | [GitHub](https://github.com/XPolicyLab/XPolicyLab) · [Website](https://xpolicylab.github.io/) · [教程](xpolicylab-tutorial.md) |
@@ -60,7 +61,16 @@ StarVLA 与 RLinf 的直接组合示例：
 | ACT              | 低成本双臂操作与 action chunking        | [GitHub](https://github.com/tonyzhaozh/act)                                                                              |
 | LeRobot           | Hugging Face 的低成本机器人学习工具链，包含 SmolVLA、数据采集和策略训练入口 | [GitHub](https://github.com/huggingface/lerobot) · [Docs](https://huggingface.co/docs/lerobot/) |
 
-## 4. RL 与 MBRL
+## 4. Robot Agent 与工具编排
+
+| 项目 | 适合学习什么 | 入口 |
+| --- | --- | --- |
+| RPent | service-oriented 的 planner、工具注册、环境/VLA server、任务记忆与真机扩展 | [GitHub](https://github.com/RLinf/RPent) · [Docs](https://rpent.readthedocs.io/en/latest/) |
+| Harness VLA | 冻结 VLA 外围的 reference-seed exploration、原语编排、任务/全局记忆和失败模型 | [Project](https://harnessvla.github.io/) · [Paper](https://arxiv.org/abs/2607.08448) |
+
+开始实践时先跑通一个冻结 VLA + 类型化工具 + 执行后验证闭环，再增加记忆和恢复。完整里程碑见 [Robot Agent 专题](robot-agent.md)。
+
+## 5. RL 与 MBRL
 
 | 项目              | 类型                                                               | 链接                                                                                                 |
 | ----------------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
@@ -84,7 +94,7 @@ WAM 相关的代码和索引入口：
 
 近期论文中的新方法不一定已经有公开代码。要复现时，先从[论文清单](papers.md)的 arXiv 页面进入，再确认作者仓库、checkpoint、数据和评测脚本是否真的公开。
 
-## 5. World Model：像素、latent 与 3D/4D
+## 6. World Model：像素、latent 与 3D/4D
 
 World Model 在这里是广义的环境表征、未来预测和场景生成路线；动作决策能力根据各仓库的任务和评测单独记录。
 
@@ -120,7 +130,7 @@ World Model 在这里是广义的环境表征、未来预测和场景生成路�
 | WorldGym              | WM policy evaluation               | 用动作条件视频模型做 Monte Carlo rollout，比较模型内外策略排名 | [Paper](https://arxiv.org/abs/2506.00613) |
 | ViTacWorld            | 视觉-触觉 WM                       | 预测动作条件下的视觉和触觉未来，服务接触任务的数据扩增和评测 | [Project](https://vitacworld.github.io/) · [Paper](https://arxiv.org/abs/2607.22530) |
 
-## 6. 仿真、环境与基准
+## 7. 仿真、环境与基准
 
 | 项目         | 特点                                     | 推荐用途                           | 链接                                                                                                           |
 | ------------ | ---------------------------------------- | ---------------------------------- | -------------------------------------------------------------------------------------------------------------- |
@@ -138,19 +148,28 @@ World Model 在这里是广义的环境表征、未来预测和场景生成路�
 | RoboCasa     | 家庭厨房与长时程操作                     | WM/WAM、VLA 与 RL 的复杂接触任务   | [GitHub](https://github.com/robocasa/robocasa)                                                                    |
 | DMControl    | 连续控制任务套件                         | MBRL 原型、动力学和规划对比        | [GitHub](https://github.com/google-deepmind/dm_control)                                                           |
 
-## 7. 机器人数据（部分）
+## 8. 具身数据采集、处理与数据集
 
-| 数据/生态         | 内容                                 | 链接                                                |
-| ----------------- | ------------------------------------ | --------------------------------------------------- |
-| Open X-Embodiment | 多机构、多本体机器人轨迹集合         | [Project](https://robotics-transformer-x.github.io/)   |
-| DROID             | 大规模、场景多样的真实机器人操作数据 | [Project](https://droid-dataset.github.io/)            |
-| BridgeData V2     | 通用机器人操作轨迹                   | [Project](https://rail-berkeley.github.io/bridgedata/) |
+| 数据/工具 | 内容 | 链接 |
+| --- | --- | --- |
+| Qwen-RobotManip | egocentric human-to-robot 合成、相机坐标系末端动作和跨本体 action mask；官方 README 当前未提供模型权重 | [Official Repo](https://github.com/QwenLM/Qwen-RobotManip) · [Report](https://arxiv.org/abs/2606.17846) |
+| Universal Manipulation Interface | UMI 式手持夹具、视觉定位、野外数据采集和机器人复现 | [GitHub](https://github.com/real-stanford/universal_manipulation_interface) · [Project](https://umi-gripper.github.io/) |
+| EgoMimic | egocentric human video 与机器人演示的联合模仿学习 | [GitHub](https://github.com/SimarKareer/EgoMimic) · [Paper](https://arxiv.org/abs/2410.24221) |
+| Open-TeleVision | VR/XR 沉浸式主动视觉反馈与遥操作采集 | [GitHub](https://github.com/OpenTeleVision/TeleVision) · [Project](https://robot-tv.github.io/) |
+| ACT/ALOHA | 低成本主从臂双臂遥操作、同步相机/关节数据和 action chunking | [GitHub](https://github.com/tonyzhaozh/act) · [Paper](https://arxiv.org/abs/2304.13705) |
+| Open X-Embodiment | 多机构、多本体机器人轨迹与 RLDS 数据生态 | [Project](https://robotics-transformer-x.github.io/) |
+| DROID | 大规模、场景多样的真实机器人操作数据 | [Project](https://droid-dataset.github.io/droid/) · [Code](https://github.com/droid-dataset/droid) |
+| BridgeData V2 | 通用机器人操作轨迹 | [Project](https://rail-berkeley.github.io/bridgedata/) |
 
-## 8. 按目标选技术栈
+采集前任务协议、采集后切分/标注/对齐，以及分阶段训练配比见 [具身数据专题](embodied-data.md)。
+
+## 9. 按目标选技术栈
 
 | 目标                  | 基础组合                                          | 原因                                                           |
 | --------------------- | ------------------------------------------------- | -------------------------------------------------------------- |
 | 第一次跑 VLA 闭环评测 | OpenVLA/OpenVLA-OFT + LIBERO                    | 有公开 checkpoint、任务定义与成功判定                          |
+| 设计具身数据管线      | UMI/Open-TeleVision/ACT + RLDS/LeRobot          | 覆盖采集、同步、切分、标注、跨本体转换和 loader                 |
+| 构建 Robot Agent      | RPent + 冻结 VLA + LIBERO-Pro/RoboCasa          | planner、类型化工具、记忆、失败恢复和闭环评测链路完整           |
 | 单机 GPU 做操作 RL    | ManiSkill + CleanRL/SB3                           | GPU 并行环境与算法基线组合直接                                 |
 | 学 MBRL               | TD-MPC2 + DMControl/ManiSkill                     | 动力学模型、imagined rollout、价值和 MPC 路径清晰              |
 | 学 WM 表征/视频/3D    | V-JEPA 2 + LPWM + Cosmos Predict2 + GWM + VGGT    | 对比全局 latent、对象中心 latent、视频生成和 3D Gaussian，再接动作条件验证 |

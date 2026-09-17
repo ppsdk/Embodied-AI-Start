@@ -6,11 +6,23 @@
 **前置知识**：无<br>
 **下一步**：[知识图谱](knowledge-map.md) · [机器人学基础](robotics.md)
 
-**本文路线**：RL 范式 → WM/MBRL/WAM → VLA → 模型结构
+**本文路线**：具身数据与 Agent → RL 范式 → WM/MBRL/WAM → VLA → 模型结构
+
+详细流程见 [具身数据专题](embodied-data.md) 和 [Robot Agent 专题](robot-agent.md)。
 
 | 缩写/术语 | 英文 | 简明解释 |
 | --- | --- | --- |
 | Embodied AI | Embodied Artificial Intelligence | 在环境中通过感知与动作闭环完成任务的智能系统。 |
+| Embodied Data | Embodied Interaction Data | 带任务语境的观测、机器人状态、动作、标定、结果和来源记录；视频本身不等于完整具身数据。 |
+| Data Contract | Embodied Data Contract | 在采集前固定任务定义、传感器、坐标系、动作语义、频率、时间戳、成功条件和数据 schema 的约定。 |
+| Episode / Segment / Step | Trajectory Data Hierarchy | episode 是一次完整尝试，segment 是技能或事件阶段，step 是一个时间对齐的观测—状态—动作单元。 |
+| Egocentric Video | First-person Video | 由操作者头戴或手持相机记录的第一视角视频；若没有机器人动作，需要 latent action、retarget 或其他对齐后才能监督控制。 |
+| Retargeting | Motion Retargeting | 将人手、手柄、主臂或其他本体的运动映射到目标机器人自由度、末端轨迹和夹爪语义。 |
+| Action Mask | Cross-embodiment Action Mask | 标记统一动作向量中当前本体实际存在并参与损失的维度，避免对缺失自由度施加监督。 |
+| Robot Agent | Robot/Physical Agent | 在感知和控制模型之上分解任务、选择工具、验证执行结果、使用记忆并进行失败恢复的运行时系统。 |
+| Tool / Skill Registry | Typed Robot Tool Registry | 向 planner 暴露 VLA、WAM、解析运动和夹爪技能的类型化接口，包含前置/后置条件、超时和错误码。 |
+| Task / Global Memory | Task-specific / Global Agent Memory | 分别保存任务相关成功轨迹，以及可跨任务迁移的规则和失败模型；写入、检索和过期策略需要显式定义。 |
+| Recovery | Failure Recovery | 在执行失败或状态偏离后诊断原因、重置局部状态、重新 grounding 并选择替代技能的闭环过程。 |
 | MDP | Markov Decision Process | 用状态、动作、转移、奖励和折扣描述序贯决策。 |
 | POMDP | Partially Observable MDP | 智能体只能看到不完整观测，需要用历史或记忆推断状态。 |
 | Configuration $q$ | Joint Configuration | 机器人所有关节位置/角度组成的配置向量。 |
@@ -161,6 +173,12 @@
 - VLA 关注从视觉/语言到动作的策略映射。
 - WAM 强调未来世界与动作之间的联合或耦合建模。
 - 两者边界可能重叠；判断时应看训练目标和部署时数据流，而不只看论文自称。
+
+### Robot Agent vs VLA/WAM
+
+- **VLA/WAM** 生成局部动作或动作相关未来；**Robot Agent** 负责任务分解、工具选择、结果验证、记忆和恢复。
+- Agent 可以把 VLA/WAM 当作工具，但不能代替高频控制器、碰撞约束、watchdog 和急停。
+- 判断一个系统是否具有 Agent 层，要看是否存在跨调用状态、执行反馈和重规划，而不是是否使用了 LLM。
 
 ### Transformer vs Diffusion vs Flow Matching
 

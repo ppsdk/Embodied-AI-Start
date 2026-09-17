@@ -1,43 +1,51 @@
 # 具身智能章节式学习路线
 
-> 🧭 按章节从机器人基础走到 VLA、World Model、RL/MBRL 和 WAM。
+> 🧭 按章节从机器人基础、具身数据走到 VLA、World Model、RL/MBRL、WAM 和 Robot Agent。
 
-**预计阅读**：15 min<br>
+**预计阅读**：25 min<br>
 **前置知识**：Python、基础深度学习<br>
 **下一步**：[机器人学基础](robotics.md) · [模型基础](model-basics.md)
 
-**本文路线**：基础概念与控制 → 模型与数据 → RL/MBRL → VLA → WM/WAM → 综合实践
+**本文路线**：基础概念与控制 → 具身数据 → RL/MBRL、VLA 与 WM/WAM → Robot Agent → 综合实践
 
-不用严格从第 1 章读到第 8 章。先读共同基础，再按自己的研究问题选择路线；遇到不懂的概念，回来查对应章节即可。
+不用严格从第 1 章读到第 10 章。先读共同基础与具身数据，再按自己的研究问题选择路线；遇到不懂的概念，回来查对应章节即可。
 
 ## 总览
 
-| 章节    | 主题                                | 路线      |
-| ------- | ----------------------------------- | --------- |
-| 第 1 章 | MDP、机器人学与控制                 | 共同基础  |
-| 第 2 章 | 模型基础、动作策略与 benchmark 协议 | 共同基础  |
-| 第 3 章 | Model-free RL：Online 与 Offline    | RL/MBRL   |
-| 第 4 章 | Model-based RL（MBRL）              | RL/MBRL   |
-| 第 5 章 | VLM → VLA                          | VLA       |
-| 第 6 章 | World Model：像素、latent 与 3D/4D  | WM        |
-| 第 7 章 | WAM 与 Fast-WAM                     | WAM/交叉  |
-| 第 8 章 | RL 后训练与综合项目                 | 交叉/可选 |
+| 章节     | 主题                                | 路线       |
+| -------- | ----------------------------------- | ---------- |
+| 第 1 章  | MDP、机器人学与控制                 | 共同基础   |
+| 第 2 章  | 模型基础、动作策略与 benchmark 协议 | 共同基础   |
+| 第 3 章  | 具身数据：采集、处理与训练配比      | 数据底座   |
+| 第 4 章  | Model-free RL：Online 与 Offline    | RL/MBRL    |
+| 第 5 章  | Model-based RL（MBRL）              | RL/MBRL    |
+| 第 6 章  | VLM → VLA                          | VLA        |
+| 第 7 章  | World Model：像素、latent 与 3D/4D  | WM         |
+| 第 8 章  | WAM 与 Fast-WAM                     | WAM/交叉   |
+| 第 9 章  | Robot Agent：规划、工具、记忆与恢复 | Agent/交叉 |
+| 第 10 章 | RL 后训练与综合项目                 | 交叉/可选  |
 
 ## 实操路线与依赖
 
-第 1–2 章是共同基础。之后可以按目标并行推进：想做 RL 就走第 3–4 章，想做 VLA 就走第 5 章，想做世界模型就走第 6 章。
+第 1–2 章是共同基础，第 3 章给所有数据驱动路线建立统一的数据契约。之后可以按目标并行推进：想做 RL 就走第 4–5 章，想做 VLA 就走第 6 章，想做世界模型就走第 7 章；需要长时程任务编排与失败恢复时，再进入第 8–9 章。
 
 ```mermaid
 flowchart TD
-    F["第 1–2 章：共同基础"] --> V["VLA 路线：第 5 章<br/>策略闭环 + benchmark"]
-    F --> W["WM 路线：第 6 章<br/>pixel / latent / 3D-4D"]
-    F --> R["RL/MBRL 路线：第 3–4 章<br/>DQN/PPO/SAC/IQL + dynamics/MPC"]
-    F --> A["WAM 路线：第 7 章<br/>未来表征 × 动作生成"]
+    F["第 1–2 章：共同基础"] --> D["第 3 章：具身数据<br/>采集契约 + 对齐 + 配比"]
+    F --> R["RL/MBRL 路线：第 4–5 章<br/>DQN/PPO/SAC/IQL + dynamics/MPC"]
+    D --> R
+    D --> V["VLA 路线：第 6 章<br/>策略闭环 + benchmark"]
+    D --> W["WM 路线：第 7 章<br/>pixel / latent / 3D-4D"]
+    V --> A["WAM 路线：第 8 章<br/>未来表征 × 动作生成"]
     W -. "仅在用于决策时" .-> R
     V -. "可选 RL 后训练" .-> R
     V -. "动作与未来联合" .-> A
     W -. "未来表征接动作" .-> A
-    V --> E["第 8 章：RL 后训练与交叉项目<br/>GRPO / SAPO"]
+    V --> G["第 9 章：Robot Agent<br/>规划 + 工具 + 记忆 + 恢复"]
+    A --> G
+    R --> G
+    G --> E["第 10 章：RL 后训练与交叉项目<br/>GRPO / SAPO"]
+    V --> E
     W --> E
     R --> E
     A --> E
@@ -74,9 +82,24 @@ flowchart TD
 - [OpenPI](https://github.com/Physical-Intelligence/openpi)：π0/π0.5 开源实现。
 - [GR00T N1](https://arxiv.org/abs/2503.14734)、[SmolVLA](https://arxiv.org/abs/2506.01844)、[MolmoAct](https://arxiv.org/abs/2508.07917)：分别看人形基础模型、小模型低延迟部署和空间动作推理。
 
-## 第 3 章｜Model-free RL：Online 与 Offline
+<a id="embodied-data"></a>
+## 第 3 章｜具身数据：采集、处理与训练配比
 
-先阅读[强化学习基础](reinforcement-learning.md)，用数据来源、价值对象、bootstrap target、策略改进和稳定性机制这五个问题统一理解 DQN、DDPG、TD3、TD3+BC、SAC、PPO 与 IQL；GRPO/SAPO 放在第 8 章的基础模型/VLA 后训练语境中学习。
+本章先建立“任务协议 → 采集 → 对齐 → 处理 → 混合训练”的数据闭环。不要把小时数当成唯一规模指标；先统一 observation/action schema、坐标系、时间戳、成功谓词和 provenance，再组合 Ego + 人手、UMI + Ego、VR/XR、主从臂、自主 rollout 与仿真数据。
+
+| 学习步骤 | 本章要得到的结果 |
+| --- | --- |
+| 1. 采集前协议 | task spec、`episode → segment → step` schema、标定和安全约束 |
+| 2. 多路线采集 | 人类/UMI、VR、主从臂、真机自主与失败数据的互补分工 |
+| 3. 人机/本体对齐 | 表示、几何、运动、行为四层对齐及回放验收 |
+| 4. 采集后处理 | Raw/Processed/Curated 分层、切分、标注、质检和治理 |
+| 5. 训练配比 | 按 WM、VLA/WAM、目标本体和 Agent 目标设置 sample/chunk mixture |
+
+完整字段、触觉/力矩模态、Human-to-Robot 验收门禁、Agent 轨迹和四阶段配比见 **[具身数据专题](embodied-data.md)**。论文与代码入口集中在该页和[资源清单](codebases.md)。
+
+## 第 4 章｜Model-free RL：Online 与 Offline
+
+先阅读[强化学习基础](reinforcement-learning.md)，用数据来源、价值对象、bootstrap target、策略改进和稳定性机制这五个问题统一理解 DQN、DDPG、TD3、TD3+BC、SAC、PPO 与 IQL；GRPO/SAPO 放在第 10 章的基础模型/VLA 后训练语境中学习。
 
 ### 项目链接
 
@@ -88,7 +111,7 @@ flowchart TD
 - [Implicit Q-Learning](https://github.com/ikostrikov/implicit_q_learning)：IQL 参考实现。
 - [Minari](https://github.com/Farama-Foundation/Minari)：离线轨迹数据 API。
 
-## 第 4 章｜Model-based RL（MBRL）
+## 第 5 章｜Model-based RL（MBRL）
 
 ### 项目链接
 
@@ -101,7 +124,7 @@ flowchart TD
 - [Isaac Sim 仿真教程](isaac-sim-tutorial.md)：理解 Isaac Sim 场景、传感器与脚本生命周期。
 - [Isaac Lab](https://github.com/isaac-sim/IsaacLab)：建立在 Isaac Sim 之上的机器人学习框架。
 
-## 第 5 章｜从 VLM 到 VLA
+## 第 6 章｜从 VLM 到 VLA
 
 ### 项目链接
 
@@ -112,7 +135,7 @@ flowchart TD
 - [LIBERO](https://github.com/Lifelong-Robot-Learning/LIBERO)：语言条件操作评测。
 - [CALVIN](https://github.com/mees/calvin)：长时程语言条件操作评测。
 
-## 第 6 章｜World Model：像素、latent 与 3D/4D
+## 第 7 章｜World Model：像素、latent 与 3D/4D
 
 ### 项目链接
 
@@ -138,7 +161,7 @@ flowchart TD
 - [WorldEval](https://worldeval.github.io/) 和 [WorldGym](https://arxiv.org/abs/2506.00613)：用 WM 做策略 rollout 和部署前评测。
 - [WM 其他方向](world-model-directions.md)：统一记录输入、动作、预测目标、时间跨度、决策用法和证据。
 
-## 第 7 章｜WAM 与 Fast-WAM
+## 第 8 章｜WAM 与 Fast-WAM
 
 ### 项目链接
 
@@ -148,7 +171,22 @@ flowchart TD
 - [Cosmos Predict2](https://github.com/nvidia-cosmos/cosmos-predict2)：视频未来生成参考实现。
 - 近期继续看 [Zero-WAM](https://arxiv.org/abs/2608.26103)、[WAM-TTT](https://arxiv.org/abs/2607.06988) 和 [GlanceWAM](https://arxiv.org/abs/2608.23927)：它们分别对应人类视频上下文、测试时记忆适配和异步未来想象。
 
-## 第 8 章｜RL 后训练与综合项目
+<a id="robot-agent"></a>
+## 第 9 章｜Robot Agent：规划、工具、记忆与恢复
+
+本章以 [RPent](https://github.com/RLinf/RPent) 为主框架，将 Robot Agent 理解为 VLA/WAM 和实时控制器之上的运行时编排层。先做类型化工具、执行后验证和固定调用预算，再加入失败恢复、记忆、WAM 查询和主动感知；planner 不能绕过 watchdog、急停和实时安全控制器。
+
+| 学习步骤 | 本章要得到的结果 |
+| --- | --- |
+| 1. 分层 | belief、planner、tool registry、executor、evaluator、memory 和安全层边界 |
+| 2. Harness VLA 案例 | 将冻结 VLA 作为可重试的接触丰富原语，与固定解析技能组合 |
+| 3. 恢复与记忆 | 失败分类、task/global memory 的写入门禁、过期和污染控制 |
+| 4. WAM 与主动感知 | 候选未来筛选、失败预演、恢复规划和信息价值查询 |
+| 5. 公平评测 | 固定 VLA、seed、环境步、工具/模型调用、token 和墙钟预算 |
+
+完整接口、Harness VLA 证据边界、Agent 训练轨迹配比、安全层和消融矩阵见 **[Robot Agent 专题](robot-agent.md)**。代码入口见 [RPent 文档](https://rpent.readthedocs.io/en/latest/)和[资源清单](codebases.md)。
+
+## 第 10 章｜RL 后训练与综合项目
 
 先比较 PPO 的 Value Critic + GAE、GRPO 的组内相对 Advantage + hard clip，以及 SAPO 的 group-based Advantage + soft gate。GRPO/SAPO 用于 VLA 时，要验证同组 rollout 是否具有可比任务条件、奖励是否可靠、动作概率比是否定义正确，以及成组采样成本是否可接受，不能直接假设 LLM 后训练收益会迁移到具身闭环。
 

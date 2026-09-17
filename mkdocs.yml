@@ -1,5 +1,5 @@
 site_name: Embodied AI Starter Map
-site_description: 具身智能从机器人基础走向 VLA、World Model、RL/MBRL 和 WAM 的学习地图
+site_description: 具身智能从机器人基础、具身数据走向 VLA、World Model、RL/MBRL、WAM 和 Robot Agent 的学习地图
 site_url: https://ppsdk.github.io/Embodied-AI-Start/
 repo_url: https://github.com/ppsdk/Embodied-AI-Start
 repo_name: ppsdk/Embodied-AI-Start
@@ -67,17 +67,19 @@ nav:
   - 具身智能学习地图: index.md
   - Start Here:
       - Knowledge Map: knowledge-map.md
-      - Roadmap: roadmap.md
+      - Learning Roadmap: roadmap.md
       - Glossary: glossary.md
   - Foundations:
       - Robotics: robotics.md
       - Model Basics: model-basics.md
       - Reinforcement Learning: reinforcement-learning.md
   - Research:
+      - Embodied Data: embodied-data.md
       - VLA and Action Policies: vla.md
       - World Models: world-model-directions.md
       - WAM: wam.md
       - MBRL: mbrl.md
+      - Robot Agent: robot-agent.md
   - Resources:
       - Papers: papers.md
       - Codebases: codebases.md

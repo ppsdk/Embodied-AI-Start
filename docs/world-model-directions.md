@@ -172,9 +172,9 @@ execute a^(n*)
 
 Fast-WAM、PILOT 和 WAM4D 关注训练期 world supervision 能否在推理时移除；BICPO-VLA 关注异步 action chunk 的 request-to-handoff gap：新 chunk 请求时旧 chunk 仍在执行，接管状态已经变化。评测应报告真实 control Hz、chunk stride、推理延迟、boundary jump 和成功率，而非只报 FLOPs。
 
-### 7.5 外部agent和跨本体部署
+### 7.5 Robot Agent和跨本体部署
 
-Harness VLA/HarnessWAM 表明，局部 predictive policy 还需要场景 belief、task graph、进度监测、验证和 recovery。Qwen-RobotManip 等跨本体工作进一步强调 representation、motion、behavior alignment，以及目标机器人上的标定、IK/FK、控制器和安全适配。
+[Harness VLA](https://arxiv.org/abs/2607.08448) 及其 [RPent](https://github.com/RLinf/RPent) 实现表明，局部 predictive policy 还需要场景 belief、task graph、进度监测、验证和 recovery；名称按公开项目统一为 Harness VLA。Qwen-RobotManip 等跨本体工作进一步强调 representation、motion、behavior alignment，以及目标机器人上的标定、IK/FK、控制器和安全适配。完整的工具、记忆与恢复路线见 [Robot Agent 专题](robot-agent.md)。
 
 ## 8. WM该怎么评估
 

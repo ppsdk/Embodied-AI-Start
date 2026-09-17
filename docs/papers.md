@@ -1,12 +1,12 @@
-# 论文清单：VLA、WM、MBRL 与 WAM
+# 论文清单：具身数据、VLA、WM、MBRL、WAM 与 Robot Agent
 
 > 📚 按问题和方法阅读论文，先建立主线，再补充相邻方向。
 
 **预计阅读**：20 min<br>
 **前置知识**：模型基础、机器人学基础和 RL 基础<br>
-**下一步**：[知识图谱](knowledge-map.md) · [WM 专题](world-model-directions.md) · [Benchmark 指南](benchmarks.md)
+**下一步**：[具身数据](embodied-data.md) · [Robot Agent](robot-agent.md) · [知识图谱](knowledge-map.md) · [WM 专题](world-model-directions.md) · [Benchmark 指南](benchmarks.md)
 
-**本文路线**：模型基础 → VLA → WM/WAM → MBRL → Offline/Online RL → 评测
+**本文路线**：模型基础 → 具身数据与 VLA → WM/WAM → Robot Agent → MBRL → Offline/Online RL → 评测
 
 ## 阅读标记
 
@@ -128,6 +128,15 @@ WAM 关注的是“未来世界表征”和“机器人动作”是否在同一�
 | Riemann-1.0: An Embodied World Action Model for Physical AI（2026，预印本） | 用统一的因果序列同时建模多视角视觉、机器人状态和动作，把策略与可交互世界模拟放进一个模型 | [arXiv](https://arxiv.org/abs/2608.27033) |
 | Making Latent Evolution Explicit: Operator-Structured Transitions for World Action Models（2026，预印本） | 用结构化算子描述 latent 的演化，试图让 WAM 的状态转移更容易分析和控制 | [arXiv](https://arxiv.org/abs/2608.27259) |
 
+## S1｜Robot Agent：工具编排、记忆与恢复
+
+Robot Agent 位于 VLA/WAM 和任务执行之间。阅读时重点看 planner 能调用哪些类型化工具、执行结果如何回流、记忆如何写入和检索，以及提升是否来自更好的编排而不是更大的调用预算。工程边界和公平基线见 [Robot Agent 专题](robot-agent.md)。
+
+| 论文/项目 | 关键点 | 入口 |
+| --- | --- | --- |
+| Harness VLA: Steering Frozen VLAs into Reliable Manipulation Primitives via Memory-Guided Agents（2026，预印本） | 冻结 VLA，通过 reference-seed exploration 学习原语调用、Task Specific Memory、Global Memory 和失败恢复 | [arXiv](https://arxiv.org/abs/2607.08448) · [Project](https://harnessvla.github.io/) |
+| RPent: Agentic Infrastructure for the Physical World | 将感知、推理、记忆、VLA/WAM/解析原语和环境执行拆为可组合服务；适合沿代码追踪完整 physical-agent 闭环 | [Code](https://github.com/RLinf/RPent) · [Docs](https://rpent.readthedocs.io/en/latest/) |
+
 ## S1｜Model-based RL
 
 | 论文 | 关键点 | 入口 |
@@ -168,9 +177,16 @@ WAM 关注的是“未来世界表征”和“机器人动作”是否在同一�
 
 ## S2｜数据、基准与评测
 
+采集协议、Human-to-Robot 验收、切分标注和训练 mixture 见 [具身数据专题](embodied-data.md)。
+
 | 论文/项目 | 用途 | 入口 |
 | --- | --- | --- |
 | D4RL: Datasets for Deep Data-Driven Reinforcement Learning | Offline RL 经典数据与评测协议 | [arXiv](https://arxiv.org/abs/2004.07219) · [Code](https://github.com/Farama-Foundation/D4RL) |
+| Qwen-RobotManip Technical Report: Alignment Unlocks Scale for Robotic Manipulation Foundation Models | 表示、相机坐标系运动和行为对齐；包含 egocentric human-to-robot 合成与跨本体 action mask | [arXiv](https://arxiv.org/abs/2606.17846) · [Official Repo](https://github.com/QwenLM/Qwen-RobotManip) |
+| Universal Manipulation Interface | 用手持夹具和视觉定位采集野外操作示范，再映射到机器人执行 | [arXiv](https://arxiv.org/abs/2402.10329) · [Code](https://github.com/real-stanford/universal_manipulation_interface) |
+| EgoMimic: Scaling Imitation Learning via Egocentric Video | 将第一视角人类视频与机器人演示共同用于模仿学习 | [arXiv](https://arxiv.org/abs/2410.24221) · [Code](https://github.com/SimarKareer/EgoMimic) |
+| Open-TeleVision: Teleoperation with Immersive Active Visual Feedback | VR/XR 主动视觉反馈与人形机器人遥操作采集 | [arXiv](https://arxiv.org/abs/2407.01512) · [Code](https://github.com/OpenTeleVision/TeleVision) |
+| DROID: A Large-Scale In-The-Wild Robot Manipulation Dataset | 分布式、多场景真实机器人操作采集和统一数据组织 | [arXiv](https://arxiv.org/abs/2403.12945) · [Project](https://droid-dataset.github.io/droid/) |
 | LIBERO: Benchmarking Knowledge Transfer for Lifelong Robot Learning | 语言条件操作与知识迁移评测 | [arXiv](https://arxiv.org/abs/2306.03310) · [Project](https://libero-project.github.io/main.html) |
 | CALVIN: A Benchmark for Language-Conditioned Policy Learning for Long-Horizon Robot Manipulation Tasks | 语言条件长时程闭环与任务链 | [arXiv](https://arxiv.org/abs/2112.03227) · [Code](https://github.com/mees/calvin) |
 | ManiSkill2 | 大规模操作任务、数据生成与仿真评测 | [arXiv](https://arxiv.org/abs/2302.04659) · [Code](https://github.com/haosulab/ManiSkill) |
